@@ -82,6 +82,10 @@ function Profil({ id }) {
 
 **Pourquoi** : la version `useEffect` couple trois états dans le composant et déclenche le fetch *après* le premier rendu (effet post-paint), d'où un flash et un waterfall si plusieurs composants imbriqués font pareil. Surtout, l'état de chargement est local et non coordonnable : impossible de regrouper plusieurs chargements sous un même fallback. La version Suspense sort le chargement et l'erreur de l'arbre de rendu et les confie à des frontières. React peut alors *batcher* les suspensions sœurs sous un seul fallback, démarrer le fetch au moment du rendu (voire pendant le SSR streaming), et garder le composant pur. C'est un changement de mécanisme : on déclare une frontière au lieu de gérer un automate d'états à la main.
 
+## Idée reçue : « Suspense, c'est React qui fetch pour moi »
+
+Faux. Suspense ne sait rien faire de réseau : il n'a aucune notion de fetch, de cache ou de retry. C'est un *protocole* — un composant jette une promesse, React montre le fallback et réessaie quand elle résout — rien de plus. La donnée, le cache et la déduplication restent entièrement à votre charge ou à celle d'une lib (TanStack Query, `use()` sur une promesse cachée, RSC `async`). Croire que Suspense « gère le data fetching » mène droit au piège de la promesse créée dans le rendu : sans source qui stabilise et met en cache la promesse, vous bouclez. Suspense orchestre l'*affichage* de l'état de chargement ; il ne charge rien.
+
 ## Intégration : libs et RSC
 
 Les libs de server state exposent un mode Suspense (`useSuspenseQuery` chez TanStack Query) : la query suspend au lieu de retourner `isLoading`. Côté RSC, un composant serveur `async` *est* déjà suspendable : `await` dans le composant, frontière `<Suspense>` côté parent, et le SSR streame le fallback puis le contenu (voir `streaming-ssr`).

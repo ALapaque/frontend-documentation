@@ -99,6 +99,10 @@ React Router v7 absorbe Remix : loaders, `action` pour les mutations, et un mode
 SPA fortement typée, beaucoup de search params structurés : TanStack Router. App full-stack avec SSR, mutations par form actions, migration depuis Remix : React Router v7. Dans les deux cas, déléguez le cache de données à TanStack Query plutôt que de tout charger dans le loader.
 :::
 
+### Idée reçue : « le loader remplace TanStack Query »
+
+Non : ils répondent à des questions différentes. Le loader décide *quand* charger (au moment de la navigation, en parallèle du rendu) et *où* poser les frontières de la route. TanStack Query décide *comment* gérer le cache : déduplication des requêtes concurrentes, revalidation en arrière-plan, invalidation après mutation, staleness. Un loader qui `fetch` directement recharge tout à chaque visite et ne sait ni dédupliquer ni revalider. Le pattern correct combine les deux : le loader appelle `ensureQueryData`, donc le routeur déclenche le chargement tôt *et* le cache de Query gère le cycle de vie de la donnée. Les voir comme concurrents fait soit dupliquer un cache à la main dans les loaders, soit perdre le préchargement par route.
+
 ## À retenir
 
 :::cheatsheet
