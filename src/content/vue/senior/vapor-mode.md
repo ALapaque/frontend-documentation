@@ -38,8 +38,9 @@ const count = ref(0)
 </template>
 ```
 
-Stabilisé avec Vue 3.6, Vapor s'active par composant (`<script setup vapor>`) et
-exige le runtime Vapor au montage. Un composant Vapor et un composant v-node
+Introduit avec Vue 3.6 — **encore en beta** au moment d'écrire (la dernière
+version stable est 3.5), donc à ne pas mettre en prod aveuglément. Vapor s'active
+par composant (`<script setup vapor>`) et exige le runtime Vapor au montage. Un composant Vapor et un composant v-node
 peuvent cohabiter, mais le franchissement de frontière a un coût d'interop — d'où
 le déploiement par îlots.
 
