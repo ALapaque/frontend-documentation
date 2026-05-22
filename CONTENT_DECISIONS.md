@@ -245,6 +245,33 @@ initial (build-time / lazy). L'audit Lighthouse (perf/a11y/SEO) n'a **pas** pu
 réel ; les fondations a11y/SEO (landmarks, focus visible, skip-link,
 reduced-motion, prerender, meta complètes) sont en place.
 
+## 2026-05-22 — Extension hors-brief (couverture maximale)
+
+Ajout de **8 modules** et **5 pages comparatives** au-delà de la liste calibrée
+du §5, pour combler des manques identifiés lors d'un audit (sujets 2026 absents).
+Catalogue : 60 → **68 modules**, 3 → **8 comparatifs**, 69 → **82 routes**.
+
+**Angular** (le plus lacunaire) :
+- `medior/signal-forms` — Signal Forms (developer preview). Signalé comme le manque
+  n°1 par l'utilisateur. Note explicite « API susceptible de bouger ».
+- `medior/async-resource` — `resource()` / `httpResource()` / interop `rxResource`.
+- `medior/signal-queries` — `input()`/`output()`/`model()` + `viewChild()`/`contentChild()` signal.
+- `senior/state-architecture` — NgRx SignalStore vs services+signals vs Store classique
+  (comble l'asymétrie : React et Vue avaient déjà un module d'état, pas Angular).
+
+**Vue** (features classiques absentes) : `medior/suspense` (`<Suspense>` + async components),
+`medior/teleport` (`<Teleport>`), `medior/transitions` (`<Transition>`/`<TransitionGroup>`).
+
+**React** : `medior/refs-dom` (`useRef`, `ref` as prop en 19, `useImperativeHandle`).
+
+**Comparatifs** : `forms`, `view-transitions` (API native), `routing`, `testing`,
+`accessibility`.
+
+Mêmes standards que le reste (sections, code 2026, `:::compare` + **Pourquoi**,
+promesse de niveau, `:::tri` pour les comparatifs). Numéros d'`order` poursuivis
+dans chaque groupe (medior 8-10, senior 8). Le catalogue, le sitemap, les cartes
+OG et l'index de recherche s'étendent automatiquement à ces slugs au build.
+
 ## 2026-05-22 — Niveau « Next » (prochaine version majeure)
 
 Ajout d'un **4ᵉ niveau** `next` (en plus de junior/medior/senior), une section
