@@ -68,7 +68,7 @@ const FEATURED: ReadonlyArray<[Framework, 'junior' | 'medior' | 'senior', string
       <div class="featured">
         @for (m of featured(); track m.slug + m.framework; let first = $first) {
           <div [class.lead-cell]="first">
-            <app-module-card [meta]="m" />
+            <app-module-card [meta]="m" [showFramework]="true" />
           </div>
         }
       </div>
