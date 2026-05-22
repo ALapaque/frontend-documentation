@@ -102,6 +102,7 @@ import type { ModuleMeta } from '../content/content.types';
 })
 export class ModuleCardComponent {
   readonly meta = input.required<ModuleMeta>();
+  /** Show a framework tag (logo + name) instead of the order number. */
   readonly showFramework = input(false);
   protected readonly fwLabel = computed(() => FRAMEWORK_LABEL[this.meta().framework]);
   protected order(): string {

@@ -43,6 +43,14 @@ const FRAMEWORKS = new Set(['angular', 'react', 'vue']);
 const LEVELS = new Set(['junior', 'medior', 'senior', 'next']);
 const OG_BY_LEVEL: Record<string, OgVariant> = { junior: 'sage', medior: 'gold', senior: 'crimson', next: 'iris' };
 
+/** YAML parses unquoted dates as Date objects; normalize to YYYY-MM-DD. */
+function fmtDate(value: unknown): string {
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  const s = String(value ?? '');
+  const d = new Date(s);
+  return Number.isNaN(d.getTime()) ? s : d.toISOString().slice(0, 10);
+}
+
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -231,7 +239,7 @@ function normalizeMeta(data: Record<string, unknown>, framework: string, level: 
     order: Number(data['order'] ?? 99),
     duration: Number(data['duration'] ?? 0),
     prerequisites: Array.isArray(data['prerequisites']) ? (data['prerequisites'] as string[]) : [],
-    updated: String(data['updated'] ?? ''),
+    updated: fmtDate(data['updated']),
     seoTitle: String(data['seoTitle'] ?? title),
     seoDescription: String(data['seoDescription'] ?? ''),
     ogVariant: (data['ogVariant'] as OgVariant) ?? OG_BY_LEVEL[level] ?? 'gold',
@@ -341,7 +349,7 @@ async function main(): Promise<void> {
       topic,
       title,
       lead: String(d['lead'] ?? ''),
-      updated: String(d['updated'] ?? ''),
+      updated: fmtDate(d['updated']),
       seoTitle: String(d['seoTitle'] ?? title),
       seoDescription: String(d['seoDescription'] ?? ''),
       related: Array.isArray(d['related']) ? (d['related'] as CompareMeta['related']) : [],

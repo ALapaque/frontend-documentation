@@ -49,9 +49,9 @@ const TAGLINE: Record<Framework, string> = {
       <app-ornament />
 
       <section class="container section">
-        <div class="bar glass">
+        <div class="bar">
           <app-level-filter [(selected)]="filter" />
-          <a routerLink="/compare/state-management" class="label-mono compare">
+          <a routerLink="/compare/state-management" class="compare label-mono">
             Comparatifs cross-framework →
           </a>
         </div>
@@ -96,21 +96,21 @@ const TAGLINE: Record<Framework, string> = {
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 28px;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-pill);
-      background: var(--glass);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      gap: 14px 24px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-soft);
     }
     .compare {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       color: var(--accent);
-      transition: color var(--dur) var(--ease-out);
+      transition: color var(--dur) var(--ease-out), gap var(--dur) var(--ease-out);
     }
     .compare:hover {
       color: var(--accent-2);
+      gap: 10px;
     }
     .grid {
       display: grid;
