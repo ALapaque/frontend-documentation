@@ -79,6 +79,15 @@ de `computed`), mais à produire des effets de bord : logs, DOM impératif,
 intégrations tierces.
 
 :::callout{type="warn"}
-N'écris jamais dans un signal depuis un `effect` sans `allowSignalWrites`. Tu
-crées des boucles de mise à jour difficiles à tracer.
+Écrire dans un signal depuis un `effect` est autorisé (le flag `allowSignalWrites`
+a disparu en Angular 19), mais reste un *code smell* : tu risques des boucles de
+mise à jour. Pour dériver de l'état, c'est presque toujours `computed` qu'il faut,
+pas un `effect` qui réécrit.
+:::
+
+:::callout{type="tip"}
+`signal()` accepte une option `equal` pour personnaliser la comparaison (ex.
+égalité structurelle). Et `linkedSignal()` (stable depuis Angular 20) crée un
+signal *inscriptible* qui se réinitialise sur une source — l'état dérivé que
+`computed` ne peut pas couvrir car il est en lecture seule.
 :::

@@ -26,21 +26,31 @@ const last = ref('Lovelace');
 const fullName = computed(() => `${first.value} ${last.value}`);
 ```
 
+Garde le getter **pur** : pas de mutation ni d'appel réseau dedans. Un `computed`
+qui produit un effet de bord casse la mise en cache et devient imprévisible.
+
 ## watch : réagir à un changement précis
 
 `watch` exécute un effet de bord quand une source change, avec l'ancienne et la
-nouvelle valeur.
+nouvelle valeur. Par défaut il ne se déclenche **pas** au montage : ajoute
+`{ immediate: true }` si tu veux aussi réagir à la valeur initiale.
 
 ```js
 watch(query, (next, prev) => {
   fetchResults(next);
-});
+}, { immediate: true });
 ```
+
+Pour observer une `ref` d'objet ou un `reactive`, passe par un getter
+(`() => obj.champ`) ; observer l'objet directement n'est profond que via
+`{ deep: true }`, plus coûteux.
 
 ## watchEffect : suivi automatique
 
 `watchEffect` s'exécute immédiatement et re-déclenche dès qu'une dépendance
-lue à l'intérieur change — sans la déclarer.
+lue à l'intérieur change — sans la déclarer. Il ne donne pas l'ancienne valeur,
+et ne suit que les dépendances réellement lues lors de l'exécution courante (un
+accès dans une branche `if` non prise n'est pas tracé).
 
 :::cheatsheet
 - title: "computed"
