@@ -35,6 +35,10 @@ import { RouterLink } from '@angular/router';
     .foot {
       margin-top: var(--section-gap);
       padding-bottom: 48px;
+      border-top: 2px solid var(--border-strong);
+    }
+    .ornament-line {
+      display: none;
     }
     .grid {
       display: grid;
@@ -47,14 +51,17 @@ import { RouterLink } from '@angular/router';
       flex-direction: column;
       gap: 10px;
     }
+    .col .label-mono {
+      color: var(--ink);
+    }
     .col a {
       color: var(--text-soft);
       font-size: 14px;
       width: fit-content;
-      transition: color var(--dur) var(--ease);
+      transition: color var(--dur) var(--ease-out);
     }
     .col a:hover {
-      color: var(--gold);
+      color: var(--accent);
     }
     .dim {
       color: var(--text-dim);

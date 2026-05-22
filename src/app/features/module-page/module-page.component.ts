@@ -48,10 +48,11 @@ interface RelatedView {
       <article class="container layout reveal">
         <header class="head">
           <app-breadcrumb [items]="crumbs(mod.meta)" />
-          <app-eyebrow>Module {{ orderLabel(mod.meta.order) }}</app-eyebrow>
-          <h1 class="display-l">{{ mod.meta.title }}</h1>
-          <p class="lead">{{ mod.meta.seoDescription }}</p>
-          <div class="meta">
+          <div class="head-tile tile tile-ink">
+            <app-eyebrow>Module {{ orderLabel(mod.meta.order) }}</app-eyebrow>
+            <h1 class="display-l hl">{{ mod.meta.title }}</h1>
+            <p class="lead">{{ mod.meta.seoDescription }}</p>
+            <div class="meta">
             <app-level-chip [level]="mod.meta.level" />
             @if (mod.meta.duration) {
               <span class="label-mono dim">{{ mod.meta.duration }} min</span>
@@ -59,6 +60,7 @@ interface RelatedView {
             @if (mod.meta.prerequisites.length) {
               <span class="label-mono dim">Prérequis : {{ mod.meta.prerequisites.join(' · ') }}</span>
             }
+            </div>
           </div>
         </header>
 
@@ -106,7 +108,7 @@ interface RelatedView {
           <footer class="end">
             <nav class="pager" aria-label="Navigation des modules">
               @if (prev(); as p) {
-                <a class="page prev" [routerLink]="['/', p.framework, p.level, p.slug]">
+                <a class="page prev tile tile-press" [routerLink]="['/', p.framework, p.level, p.slug]">
                   <span class="label-mono dim">← Précédent</span>
                   <span class="t">{{ p.title }}</span>
                 </a>
@@ -114,7 +116,7 @@ interface RelatedView {
                 <span></span>
               }
               @if (next(); as n) {
-                <a class="page next" [routerLink]="['/', n.framework, n.level, n.slug]">
+                <a class="page next tile tile-press" [routerLink]="['/', n.framework, n.level, n.slug]">
                   <span class="label-mono dim">Suivant →</span>
                   <span class="t">{{ n.title }}</span>
                 </a>

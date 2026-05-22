@@ -36,128 +36,190 @@ const FEATURED: ReadonlyArray<[Framework, 'junior' | 'medior' | 'senior', string
     ModuleCardComponent,
   ],
   template: `
-    <section class="hero container reveal">
-      <app-eyebrow>Practical Docs · 2026</app-eyebrow>
-      <h1 class="display-xl">
-        Three frameworks.<br />
-        One <span class="accent">discipline</span>.
-      </h1>
-      <p class="lead">
-        Angular, React et Vue — expliqués du Junior au Senior. Pas de bullshit,
-        des exemples minimaux, des diagrammes là où le texte échoue.
-      </p>
-      <div class="cta">
-        <a routerLink="/angular" class="btn primary">Explorer Angular</a>
-        <a routerLink="/compare/state-management" class="btn ghost">Voir les comparatifs</a>
+    <section class="container bento reveal stagger">
+      <div class="cell hero tile tile-ink" style="--i: 0">
+        <app-eyebrow>Practical Docs · 2026</app-eyebrow>
+        <h1 class="display-2xl headline">
+          Three frameworks.<br />
+          One <span class="accent">discipline</span>.
+        </h1>
+        <p class="lead">
+          Angular, React et Vue — expliqués du Junior au Senior. Pas de bullshit,
+          des exemples minimaux, des diagrammes là où le texte échoue.
+        </p>
+        <div class="cta">
+          <a routerLink="/angular" class="btn primary">Explorer Angular</a>
+          <a routerLink="/compare/state-management" class="btn ghost">Voir les comparatifs</a>
+        </div>
       </div>
-      <p class="label-mono meta">{{ total() }} modules · Junior → Senior</p>
+
+      <div class="cell stat tile tile-accent" style="--i: 1">
+        <span class="label-mono">Catalogue</span>
+        <span class="display-xl tnum num">{{ total() }}</span>
+        <span class="stat-label">modules · Junior → Senior</span>
+      </div>
+
+      @for (fw of frameworks; track fw; let idx = $index) {
+        <div class="cell fw" [style.--i]="idx + 2">
+          <app-framework-card [framework]="fw" [tagline]="tagline[fw]" [count]="count(fw)" />
+        </div>
+      }
+
+      <div class="cell feat-head" style="--i: 5">
+        <h2 class="section-h">À la <span class="accent">une</span></h2>
+      </div>
+
+      @for (m of featured(); track m.slug + m.framework; let i = $index; let first = $first) {
+        <div class="cell mod" [class.mod-lead]="first" [style.--i]="i + 6">
+          <app-module-card [meta]="m" />
+        </div>
+      }
+
+      <div class="cell philosophy tile tile-press" style="--i: 12">
+        <div class="col">
+          <span class="label-mono">Clarté</span>
+          <p>
+            Un concept à la fois, nommé pour ce qu'il est. Pas de jargon gratuit,
+            pas de détour.
+          </p>
+        </div>
+        <div class="col">
+          <span class="label-mono">Profondeur</span>
+          <p>
+            Trois niveaux assumés. Le Senior creuse l'implémentation là où le
+            Junior pose les fondations.
+          </p>
+        </div>
+        <div class="col">
+          <span class="label-mono">Honnêteté</span>
+          <p>
+            Les pièges, les trade-offs, les idées reçues. On dit quand un outil ne
+            vaut pas son coût.
+          </p>
+        </div>
+      </div>
     </section>
 
     <app-ornament />
-
-    <section class="container section">
-      <div class="cards">
-        @for (fw of frameworks; track fw) {
-          <app-framework-card [framework]="fw" [tagline]="tagline[fw]" [count]="count(fw)" />
-        }
-      </div>
-    </section>
-
-    <section class="container section">
-      <h2 class="section-h">À la <span class="accent">une</span></h2>
-      <div class="featured">
-        @for (m of featured(); track m.slug + m.framework; let first = $first) {
-          <div [class.lead-cell]="first">
-            <app-module-card [meta]="m" />
-          </div>
-        }
-      </div>
-    </section>
-
-    <section class="container section philosophy">
-      <div class="col">
-        <span class="label-mono">Clarté</span>
-        <p>
-          Un concept à la fois, nommé pour ce qu'il est. Pas de jargon gratuit,
-          pas de détour.
-        </p>
-      </div>
-      <div class="col">
-        <span class="label-mono">Profondeur</span>
-        <p>
-          Trois niveaux assumés. Le Senior creuse l'implémentation là où le
-          Junior pose les fondations.
-        </p>
-      </div>
-      <div class="col">
-        <span class="label-mono">Honnêteté</span>
-        <p>
-          Les pièges, les trade-offs, les idées reçues. On dit quand un outil ne
-          vaut pas son coût.
-        </p>
-      </div>
-    </section>
   `,
   styles: `
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-flow: dense;
+      gap: 18px;
+      padding-top: clamp(40px, 7vw, 80px);
+      padding-bottom: clamp(40px, 7vw, 72px);
+      align-items: stretch;
+    }
+    .cell {
+      min-width: 0;
+    }
+
+    /* Hero — large dark tile */
     .hero {
-      padding-top: clamp(64px, 12vw, 140px);
+      grid-column: span 8;
+      grid-row: span 2;
       display: flex;
       flex-direction: column;
-      gap: 24px;
       align-items: flex-start;
+      gap: 22px;
+      padding: clamp(28px, 4vw, 48px);
     }
-    .lead {
-      max-width: 620px;
+    .hero .headline {
+      color: var(--on-ink);
+    }
+    .hero .lead {
+      color: var(--on-ink-soft);
+      max-width: 560px;
     }
     .cta {
       display: flex;
       gap: 14px;
       flex-wrap: wrap;
-      margin-top: 8px;
+      margin-top: 4px;
     }
     .btn {
       padding: 13px 22px;
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       font-size: 15px;
-      transition: transform var(--dur) var(--ease);
+      font-weight: 600;
+      border: 1.5px solid var(--border-strong);
+      box-shadow: var(--shadow-1);
+      transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .btn.primary {
-      background: linear-gradient(135deg, var(--gold), var(--gold-soft));
-      color: #0a0a0c;
-      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
     }
     .btn.ghost {
-      border: 1px solid var(--border);
-      color: var(--text);
+      background: var(--bg-card);
+      color: var(--ink);
     }
     .btn:hover {
-      transform: translateY(-2px);
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-2);
     }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+
+    /* Accent stat tile */
+    .stat {
+      grid-column: span 4;
+      grid-row: span 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      padding: clamp(24px, 3vw, 36px);
     }
-    .section-h {
-      margin-bottom: 24px;
+    .stat .label-mono {
+      color: rgba(255, 255, 255, 0.85);
     }
-    .featured {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+    .stat .num {
+      color: #fff;
+      line-height: 0.9;
     }
-    .featured .lead-cell {
-      grid-column: span 1;
+    .stat .stat-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(18px, 2.2vw, 24px);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    /* Framework cards */
+    .fw {
+      grid-column: span 4;
+    }
+    .fw ::ng-deep .card {
+      height: 100%;
+    }
+
+    .feat-head {
+      grid-column: 1 / -1;
+      margin-top: 8px;
+    }
+
+    /* Featured module tiles */
+    .mod {
+      grid-column: span 4;
+    }
+    .mod-lead {
+      grid-column: span 4;
       grid-row: span 2;
     }
-    .featured .lead-cell ::ng-deep .card {
+    .mod-lead ::ng-deep .card {
       justify-content: flex-start;
       gap: 16px;
     }
+
+    /* Philosophy strip — single bordered tile, 3 columns */
     .philosophy {
+      grid-column: 1 / -1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
+      gap: clamp(24px, 4vw, 48px);
+      padding: clamp(28px, 4vw, 44px);
+      margin-top: 8px;
     }
     .philosophy .col {
       display: flex;
@@ -168,13 +230,42 @@ const FEATURED: ReadonlyArray<[Framework, 'junior' | 'medior' | 'senior', string
       color: var(--text-soft);
       max-width: 36ch;
     }
+
+    @media (max-width: 1040px) {
+      .hero {
+        grid-column: span 12;
+        grid-row: auto;
+      }
+      .stat {
+        grid-column: span 12;
+        grid-row: auto;
+      }
+      .fw {
+        grid-column: span 6;
+      }
+      .mod,
+      .mod-lead {
+        grid-column: span 6;
+        grid-row: auto;
+      }
+    }
     @media (max-width: 860px) {
-      .featured,
-      .philosophy {
+      .bento {
         grid-template-columns: 1fr;
       }
-      .featured .lead-cell {
-        grid-row: span 1;
+      .cell,
+      .hero,
+      .stat,
+      .fw,
+      .mod,
+      .mod-lead,
+      .feat-head,
+      .philosophy {
+        grid-column: 1 / -1;
+        grid-row: auto;
+      }
+      .philosophy {
+        grid-template-columns: 1fr;
       }
     }
   `,

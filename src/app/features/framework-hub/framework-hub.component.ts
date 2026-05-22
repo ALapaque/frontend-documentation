@@ -38,12 +38,14 @@ const TAGLINE: Record<Framework, string> = {
   template: `
     @if (fw(); as framework) {
       <section class="container head reveal">
-        <app-eyebrow>Framework · {{ label()!.toUpperCase() }}</app-eyebrow>
-        <h1 class="display-l">{{ label() }}</h1>
-        <p class="lead">{{ tagline() }}</p>
-        <p class="label-mono dim">
-          {{ modules().length }} modules · 3 niveaux · MAJ {{ updated() }}
-        </p>
+        <div class="head-tile tile tile-ink">
+          <app-eyebrow>Framework · {{ label()!.toUpperCase() }}</app-eyebrow>
+          <h1 class="display-l hl">{{ label() }}</h1>
+          <p class="lead">{{ tagline() }}</p>
+          <p class="label-mono dim">
+            {{ modules().length }} modules · 3 niveaux · MAJ {{ updated() }}
+          </p>
+        </div>
       </section>
 
       <app-ornament />
@@ -74,10 +76,22 @@ const TAGLINE: Record<Framework, string> = {
   styles: `
     .head {
       padding-top: clamp(48px, 9vw, 96px);
+    }
+    .head-tile {
       display: flex;
       flex-direction: column;
-      gap: 14px;
       align-items: flex-start;
+      gap: 14px;
+      padding: clamp(28px, 4vw, 48px);
+    }
+    .head-tile .hl {
+      color: var(--on-ink);
+    }
+    .head-tile .lead {
+      color: var(--on-ink-soft);
+    }
+    .head-tile .dim {
+      color: var(--on-ink-soft);
     }
     .dim {
       color: var(--text-dim);
@@ -91,12 +105,17 @@ const TAGLINE: Record<Framework, string> = {
       margin-bottom: 28px;
     }
     .compare {
-      color: var(--gold);
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .compare:hover {
+      color: var(--accent-2);
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 18px;
+      align-items: stretch;
     }
   `,
 })
