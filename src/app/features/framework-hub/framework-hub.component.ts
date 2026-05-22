@@ -15,6 +15,7 @@ import { OrnamentComponent } from '../../ui/ornament.component';
 import { ModuleCardComponent } from '../../ui/module-card.component';
 import { LevelFilterComponent, type LevelFilter } from '../../ui/level-filter.component';
 import { ContentService } from '../../content/content.service';
+import { SeoService } from '../../core/seo/seo.service';
 import { FRAMEWORK_LABEL, isFramework, type Framework } from '../../core/levels';
 
 const FILTER_KEY = 'pd:level-filter';
@@ -128,6 +129,17 @@ export class FrameworkHubComponent {
   });
 
   constructor() {
+    const seo = inject(SeoService);
+    effect(() => {
+      const fw = this.fw();
+      if (!fw) return;
+      seo.set({
+        title: FRAMEWORK_LABEL[fw],
+        description: TAGLINE[fw],
+        path: `/${fw}`,
+      });
+    });
+
     if (this.isBrowser) {
       const stored = localStorage.getItem(FILTER_KEY) as LevelFilter | null;
       if (stored) this.filter.set(stored);

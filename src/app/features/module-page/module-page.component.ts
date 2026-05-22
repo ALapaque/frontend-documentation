@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EyebrowComponent } from '../../ui/eyebrow.component';
 import { LevelChipComponent } from '../../ui/level-chip.component';
@@ -10,10 +17,10 @@ import { BreadcrumbComponent, type Crumb } from '../../ui/breadcrumb.component';
 import { TocSidebarComponent } from '../../ui/toc-sidebar.component';
 import { SafeHtmlPipe } from '../../core/safe-html.pipe';
 import { ContentService } from '../../content/content.service';
-import { FRAMEWORK_LABEL, isFramework, type Framework } from '../../core/levels';
+import { SeoService } from '../../core/seo/seo.service';
+import { SITE_NAME, REPO_CONTENT } from '../../core/site';
+import { FRAMEWORK_LABEL } from '../../core/levels';
 import type { CompiledModule, ModuleMeta } from '../../content/content.types';
-
-const REPO = 'https://github.com/ALapaque/frontend-documentation/blob/main/src/content';
 
 interface RelatedView {
   readonly label: string;
@@ -278,16 +285,38 @@ interface RelatedView {
 export class ModulePageComponent {
   private readonly content = inject(ContentService);
 
+  constructor() {
+    const seo = inject(SeoService);
+    effect(() => {
+      const mod = this.module();
+      if (!mod) return;
+      const { framework, level, slug, title, seoDescription, updated } = mod.meta;
+      const path = `/${framework}/${level}/${slug}`;
+      seo.set({
+        title: mod.meta.seoTitle || title,
+        description: seoDescription,
+        path,
+        type: 'article',
+        image: `/og/${framework}-${level}-${slug}.svg`,
+        jsonLd: {
+          '@context': 'https://schema.org',
+          '@type': 'TechArticle',
+          headline: title,
+          description: seoDescription,
+          datePublished: updated,
+          dateModified: updated,
+          author: { '@type': 'Organization', name: SITE_NAME },
+          keywords: [framework, level].join(', '),
+          proficiencyLevel: level,
+        },
+      });
+    });
+  }
+
   readonly module = input<CompiledModule | null>(null);
   readonly framework = input<string>('');
   readonly level = input<string>('');
   readonly slug = input<string>('');
-
-  protected readonly frameworkLabel = computed(() =>
-    isFramework(this.framework())
-      ? FRAMEWORK_LABEL[this.framework() as Framework]
-      : this.framework(),
-  );
 
   private readonly siblings = computed(() => {
     const mod = this.module();
@@ -333,7 +362,7 @@ export class ModulePageComponent {
   }
 
   protected sourceUrl(meta: ModuleMeta): string {
-    return `${REPO}/${meta.framework}/${meta.level}/${meta.slug}.md`;
+    return `${REPO_CONTENT}/${meta.framework}/${meta.level}/${meta.slug}.md`;
   }
 
   protected orderLabel(order: number): string {

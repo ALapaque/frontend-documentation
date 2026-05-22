@@ -5,6 +5,8 @@ import { OrnamentComponent } from '../../ui/ornament.component';
 import { FrameworkCardComponent } from '../../ui/framework-card.component';
 import { ModuleCardComponent } from '../../ui/module-card.component';
 import { ContentService } from '../../content/content.service';
+import { SeoService } from '../../core/seo/seo.service';
+import { SITE_TAGLINE } from '../../core/site';
 import { FRAMEWORKS, type Framework } from '../../core/levels';
 import type { ModuleMeta } from '../../content/content.types';
 
@@ -181,6 +183,21 @@ export class LandingComponent {
   private readonly content = inject(ContentService);
   protected readonly frameworks = FRAMEWORKS;
   protected readonly tagline = TAGLINE;
+
+  constructor() {
+    inject(SeoService).set({
+      title: SITE_TAGLINE,
+      description:
+        'Documentation pédagogique Angular, React et Vue — du Junior au Senior. Exemples minimaux, pièges et trade-offs.',
+      path: '/',
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Practical Docs',
+        description: 'Documentation pédagogique multi-framework.',
+      },
+    });
+  }
 
   protected readonly total = computed(() => this.content.catalogue.length);
 

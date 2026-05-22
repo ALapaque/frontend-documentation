@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { EyebrowComponent } from '../../ui/eyebrow.component';
+import { SeoService } from '../../core/seo/seo.service';
 
 @Component({
   selector: 'app-about',
@@ -17,4 +18,13 @@ import { EyebrowComponent } from '../../ui/eyebrow.component';
     </section>
   `,
 })
-export class AboutComponent {}
+export class AboutComponent {
+  constructor() {
+    inject(SeoService).set({
+      title: 'À propos',
+      description:
+        'Practical Docs — documentation pédagogique multi-framework. Angular 21, SSR avec hydration, zoneless.',
+      path: '/about',
+    });
+  }
+}

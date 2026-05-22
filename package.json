@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "content": "tsx scripts/build-content.ts",
+    "content": "tsx scripts/build-content.ts && tsx scripts/build-seo.ts",
     "prestart": "npm run content",
     "start": "ng serve",
     "predev": "npm run content",
@@ -13,7 +13,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:frontend-documentation": "node dist/frontend-documentation/server/server.mjs",
-    "scaffold:stubs": "tsx scripts/scaffold-stubs.ts"
+    "scaffold:stubs": "tsx scripts/scaffold-stubs.ts",
+    "smoke": "node scripts/smoke.mjs"
   },
   "private": true,
   "packageManager": "npm@10.9.7",

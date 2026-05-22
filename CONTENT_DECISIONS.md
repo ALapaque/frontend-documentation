@@ -187,3 +187,58 @@ en Phase 3 lors de la mise en place du pipeline `:::tri`. Ils sont complets
 Plutôt qu'une section codée en dur dans le composant, le récapitulatif de fin de
 module passe par un bloc `:::cheatsheet` au sein du markdown, à la main de
 l'auteur — cohérent avec le reste du pipeline de contenu.
+
+## 2026-05-22 — Phase 5 (Polish)
+
+### Prerender complet
+
+`app.routes.server.ts` fournit `getPrerenderParams` depuis le catalogue : les 69
+routes (landing, hubs, 60 modules, 3 comparatifs, search, about) sont
+**prerendues** au build. La route `**` reste en `Server` pour les vrais 404.
+Vérifié : `Prerendered 69 static routes`, et smoke test 69/69 à 200.
+
+### SEO par route
+
+`SeoService` (Title, Meta, canonical, OpenGraph, Twitter, JSON-LD) est appelé
+depuis chaque page via un `effect` lisant la donnée résolue — les balises
+atterrissent donc dans le HTML prerendu. Les modules émettent un JSON-LD
+`TechArticle`, la landing un `WebSite`.
+
+### Artefacts SEO générés au build
+
+`scripts/build-seo.ts` (chaîné après `build-content` dans `npm run content`)
+écrit dans `public/` : `sitemap.xml`, `llms.txt`, `robots.txt` et une carte
+**OpenGraph SVG par module** (`og/{key}.svg`) + une carte par défaut. Tous
+gitignorés (générés).
+
+### OG en SVG, pas en PNG
+
+Les cartes OG sont des **SVG** (légers, sans dépendance native, cohérents avec
+l'esthétique). Limite connue : certains crawlers sociaux (Twitter/Facebook)
+préfèrent PNG/JPEG. Rasterisation SVG→PNG (via `sharp`/`@resvg`) à prévoir comme
+étape de déploiement si le partage social riche est requis. Police OG : serif
+générique (Georgia) faute d'embarquer Fraunces dans le SVG.
+
+### `SITE_URL` à configurer au déploiement
+
+`src/app/core/site.ts` fixe `SITE_URL = https://practical-docs.example`
+(placeholder). À remplacer par le domaine réel avant déploiement — utilisé pour
+les URLs absolues (canonical, OG, sitemap, llms.txt). Pas de détection d'hôte au
+prerender.
+
+### Contraste `--text-dim`
+
+`--text-dim` relevé de `#5E5A52` à `#8A8478` : la valeur d'origine du brief
+échouait WCAG AA (~2.8:1) sur les petits labels mono. La nouvelle dépasse 4.5:1
+sur `--bg`. Léger écart assumé à la palette du brief, au profit de
+l'accessibilité (elle-même exigée par le brief).
+
+### Budget JS & Lighthouse non mesurés ici
+
+Bundle initial ~92 Ko gzip — proche du **plancher** Angular 21 (core + router +
+hydration + zoneless) ; la cible 80 Ko du brief est sous ce plancher une fois
+le routing et l'hydration inclus. Shiki et MiniSearch sont déjà hors bundle
+initial (build-time / lazy). L'audit Lighthouse (perf/a11y/SEO) n'a **pas** pu
+être lancé : pas de Chrome dans l'environnement. À exécuter sur un déploiement
+réel ; les fondations a11y/SEO (landmarks, focus visible, skip-link,
+reduced-motion, prerender, meta complètes) sont en place.

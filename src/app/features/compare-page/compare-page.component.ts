@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EyebrowComponent } from '../../ui/eyebrow.component';
 import { OrnamentComponent } from '../../ui/ornament.component';
@@ -7,6 +14,7 @@ import { CodeBlockComponent } from '../../ui/code-block.component';
 import { TriCodeComponent } from '../../ui/tri-code.component';
 import { SafeHtmlPipe } from '../../core/safe-html.pipe';
 import { ContentService } from '../../content/content.service';
+import { SeoService } from '../../core/seo/seo.service';
 import { FRAMEWORK_LABEL } from '../../core/levels';
 import type { CompiledCompare, ModuleMeta } from '../../content/content.types';
 
@@ -152,6 +160,20 @@ export class ComparePageComponent {
   private readonly content = inject(ContentService);
   readonly doc = input<CompiledCompare | null>(null);
   readonly topic = input<string>('');
+
+  constructor() {
+    const seo = inject(SeoService);
+    effect(() => {
+      const d = this.doc();
+      if (!d) return;
+      seo.set({
+        title: d.meta.seoTitle || d.meta.title,
+        description: d.meta.seoDescription || d.meta.lead,
+        path: `/compare/${d.meta.topic}`,
+        type: 'article',
+      });
+    });
+  }
 
   protected readonly related = computed<RelatedView[]>(() => {
     const d = this.doc();

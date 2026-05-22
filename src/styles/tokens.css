@@ -17,7 +17,7 @@
   /* Text */
   --text: #ede7db; /* primary */
   --text-soft: #a39e92; /* secondary */
-  --text-dim: #5e5a52; /* tertiary, labels */
+  --text-dim: #8a8478; /* tertiary, labels — raised from #5E5A52 for WCAG AA */
 
   /* Accents */
   --gold: #c9a876; /* accent principal, niveau Medior */

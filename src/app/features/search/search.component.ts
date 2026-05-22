@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { EyebrowComponent } from '../../ui/eyebrow.component';
 import { LevelChipComponent } from '../../ui/level-chip.component';
 import { SearchService, type SearchResult } from '../../core/search-index/search.service';
+import { SeoService } from '../../core/seo/seo.service';
 import { FRAMEWORKS, FRAMEWORK_LABEL, type Framework } from '../../core/levels';
 
 interface Group {
@@ -152,6 +153,14 @@ export class SearchComponent {
       results: results.filter((r) => r.framework === fw),
     })).filter((g) => g.results.length > 0);
   });
+
+  constructor() {
+    inject(SeoService).set({
+      title: 'Recherche',
+      description: 'Recherche full-text dans la documentation Angular, React et Vue.',
+      path: '/search',
+    });
+  }
 
   protected onInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
