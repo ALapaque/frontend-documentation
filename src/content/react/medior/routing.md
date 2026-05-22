@@ -5,13 +5,109 @@ framework: "react"
 level: "medior"
 order: 7
 duration: 16
-prerequisites: []
+prerequisites: ["server-state", "suspense-basics"]
 updated: 2026-05-22
 seoTitle: "Routing — react"
-seoDescription: "TanStack Router vs React Router v7."
+seoDescription: "TanStack Router (routes type-safe, loaders, search params validés) vs React Router v7 : params, chargement de données et frontières au niveau de la route."
 ogVariant: "gold"
-stub: true
-related: []
+related:
+  - framework: "vue"
+    slug: "router"
+  - framework: "angular"
+    slug: "routing-basics"
 ---
 
-À venir.
+Un routeur moderne ne fait pas que mapper une URL à un composant : il déclare où charger les données et où poser les frontières de chargement et d'erreur. Deux acteurs dominent l'écosystème React : TanStack Router, centré sur le type-safety, et React Router v7 (fusion avec Remix), centré sur les loaders et le data flow.
+
+## Loaders : charger avant de rendre
+
+L'idée commune : associer à chaque route une fonction qui charge les données *pendant* la navigation, pas dans un `useEffect` après le montage. On élimine le waterfall « rendu → effect → fetch → re-rendu ».
+
+```tsx
+// TanStack Router : route typée, loader, params validés
+const userRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/users/$userId",
+  loader: ({ params }) => queryClient.ensureQueryData(
+    userQuery(params.userId)
+  ),
+  component: UserPage,
+});
+
+function UserPage() {
+  const { userId } = userRoute.useParams(); // string, typé
+  const user = userRoute.useLoaderData();
+  return <h1>{user.name}</h1>;
+}
+```
+
+`useParams` et `useLoaderData` sont typés *par la définition de la route* : `userId` est connu, pas un `string | undefined` à caster. Le loader peut déléguer à un cache (TanStack Query) pour la déduplication et la revalidation.
+
+## Type-safety : compare
+
+:::compare
+::bad
+```tsx
+// React Router : params non typés, à valider à la main
+function UserPage() {
+  const { userId } = useParams(); // string | undefined
+  const id = userId!;             // assertion risquée
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    fetch(`/u/${id}`).then(r => r.json()).then(setUser);
+  }, [id]);
+  // navigate("/usrs/" + id)  // typo non détectée
+}
+```
+::
+::good
+```tsx
+// TanStack Router : tout est inféré de l'arbre de routes
+function UserPage() {
+  const { userId } = userRoute.useParams(); // string
+  const user = userRoute.useLoaderData();   // User
+  const nav = useNavigate();
+  // nav({ to: "/users/$userId", params: { userId } })
+  // chemin invalide ou param manquant = erreur de compilation
+}
+```
+::
+:::
+
+**Pourquoi** : dans React Router, `useParams` renvoie un `Record<string, string | undefined>` parce que le hook ne connaît pas la route depuis laquelle il est appelé — l'information vit au runtime. D'où les assertions `!`, les fetchs manuels et les liens écrits en chaînes brutes où une faute de frappe ne se voit qu'en production. TanStack Router construit un arbre de routes typé : `to`, `params` et `search` sont vérifiés contre cet arbre à la compilation, et `useLoaderData` connaît le type de retour du loader. Le mécanisme gagnant n'est pas le runtime mais l'inférence : l'URL devient une API typée, les navigations invalides cassent le build au lieu de l'app.
+
+## Search params : état dans l'URL
+
+TanStack Router traite les query params comme de l'état typé et validé (souvent via zod), pas comme des chaînes à parser. C'est l'endroit idéal pour des filtres, tris, pagination : partageables, persistants au refresh, dans l'historique.
+
+```tsx
+const listRoute = createRoute({
+  path: "/produits",
+  validateSearch: z.object({
+    page: z.number().catch(1),
+    tri: z.enum(["prix", "nom"]).catch("nom"),
+  }),
+});
+// listRoute.useSearch() => { page: number; tri: "prix" | "nom" }
+```
+
+## React Router v7
+
+React Router v7 absorbe Remix : loaders, `action` pour les mutations, et un mode framework avec SSR. Son data flow (loader/action) est mûr et son adoption massive. Le compromis face à TanStack : moins de garanties de types sur params et search, mais un modèle full-stack (form actions, progressive enhancement) plus intégré quand on vise le SSR de bout en bout.
+
+:::callout{type="tip"}
+SPA fortement typée, beaucoup de search params structurés : TanStack Router. App full-stack avec SSR, mutations par form actions, migration depuis Remix : React Router v7. Dans les deux cas, déléguez le cache de données à TanStack Query plutôt que de tout charger dans le loader.
+:::
+
+## À retenir
+
+:::cheatsheet
+- title: "Loader > useEffect"
+  desc: "Charger pendant la navigation supprime le waterfall rendu→effect→fetch."
+- title: "TanStack : type-safe"
+  desc: "params, search et to inférés de l'arbre de routes ; erreurs à la compilation."
+- title: "Search params typés"
+  desc: "validateSearch (zod) : filtres et pagination comme état d'URL validé."
+- title: "RR v7 = full-stack"
+  desc: "Loaders + actions + SSR, héritage Remix ; types de routes moins stricts."
+:::
