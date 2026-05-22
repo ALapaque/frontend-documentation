@@ -58,19 +58,26 @@ Pour un fetch dépendant d'un signal, `rxResource` expose `value`, `status` et
 
 ```ts
 readonly user = rxResource({
-  request: () => ({ id: this.userId() }),
-  loader: ({ request }) => this.api.getUser(request.id),
+  params: () => ({ id: this.userId() }),
+  stream: ({ params }) => this.api.getUser(params.id),
 });
-// user.value() | user.status() | user.error()
+// user.value() | user.status() | user.error() | user.isLoading()
 ```
+
+:::callout{type="warn"}
+L'API a évolué : `request` est devenu `params`, et le `loader` de `rxResource`
+s'appelle désormais `stream` (Angular 20+). Si `params` retourne `undefined`, la
+ressource reste *idle* — pratique pour ne déclencher le fetch qu'une fois l'`id`
+disponible.
+:::
 
 :::cheatsheet
 - title: "toSignal(obs$)"
   desc: "Observable → signal. Désabonnement auto, valeur initiale conseillée."
 - title: "toObservable(sig)"
   desc: "Signal → Observable, pour brancher des opérateurs RxJS."
-- title: "rxResource({ request, loader })"
-  desc: "État async réactif : value / status / error, re-fetch sur changement."
+- title: "rxResource({ params, stream })"
+  desc: "État async réactif : value / status / error, re-fetch sur changement de params."
 :::
 
 :::callout{type="warn"}

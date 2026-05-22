@@ -61,3 +61,31 @@ ngOnInit() {
 :::
 
 **Pourquoi** : le constructeur s'exécute à l'instanciation de la classe, avant qu'Angular n'ait résolu les `@Input()` — ils valent encore `undefined`. `ngOnInit` est le premier hook appelé *après* l'affectation des inputs, donc un fetch qui en dépend y part avec les bonnes valeurs. Réserve le constructeur à l'injection de dépendances.
+
+## Toucher le DOM : afterNextRender
+
+Les hooks `ngOnInit`/`ngAfterViewInit` s'exécutent pendant la détection de
+changement, et le DOM n'y est pas garanti peint. Pour mesurer une taille, donner
+le focus ou brancher une lib qui manipule le DOM, utilise `afterNextRender`
+(une fois) ou `afterRender` (à chaque rendu).
+
+```ts
+import { Component, ElementRef, afterNextRender, inject } from '@angular/core';
+
+@Component({ selector: 'app-chart', template: '<canvas #c></canvas>' })
+export class Chart {
+  private host = inject(ElementRef);
+  constructor() {
+    afterNextRender(() => {
+      // DOM prêt et peint : sûr pour mesurer ou initialiser une lib tierce
+      const w = this.host.nativeElement.offsetWidth;
+    });
+  }
+}
+```
+
+:::callout{type="tip"}
+`afterNextRender` ne s'exécute que dans le navigateur, jamais côté serveur (SSR).
+C'est l'endroit idéal pour tout code qui touche `window`/`document` sans casser
+l'hydratation.
+:::

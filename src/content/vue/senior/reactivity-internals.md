@@ -57,6 +57,15 @@ préparé, remplacer un tableau par index sur du non-réactif, ou déstructurer
 (tu lis la valeur **une fois**, le lien est rompu). `toRefs` préserve le lien.
 :::
 
+:::callout{type="info"}
+Depuis Vue 3.5, le cœur réactif a été réécrit : les dépendances ne sont plus
+stockées dans des `Set` mais dans une **liste doublement chaînée** entre `Dep`
+et effets, avec un **compteur de version**. Un effet peut court-circuiter sa
+réexécution si aucune de ses deps n'a changé de version (early-bailout). Résultat :
+moins d'allocations GC, déclenchements plus rares, et une mémoire bien plus basse
+sur les graphes de dépendances larges. L'API publique, elle, n'a pas bougé.
+:::
+
 ## Code source
 
 `packages/reactivity` (notamment `effect.ts`, `baseHandlers.ts`) est compact et

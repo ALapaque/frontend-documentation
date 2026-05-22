@@ -68,8 +68,15 @@ const { total } = storeToRefs(useCart()); // reste réactif
 
 **Pourquoi** : le store est un objet réactif (même mécanique de Proxy que `reactive`) ; déstructurer directement extrait les valeurs hors du Proxy et coupe le lien réactif. `storeToRefs` convertit state et getters en `ref` qui réexposent chaque propriété, si bien que la déstructuration conserve la réactivité. À noter : les actions, elles, se déstructurent sans problème (ce sont des fonctions, pas du state).
 
+:::callout{type="warn"}
+En store **setup** (fonction), `$reset()` n'existe pas : Pinia ne connaît pas
+l'état initial. Expose ta propre action `reset()` qui réassigne les valeurs, ou
+passe en store **options** si tu veux `$reset()` gratuit.
+:::
+
 :::callout{type="tip"}
 Garde tes stores **petits et ciblés** (un par domaine). Un store géant
 redevient un god-object difficile à tester. La persistance se branche en plugin
-plutôt que codée dans chaque action.
+plutôt que codée dans chaque action. Pour plusieurs mutations groupées, `$patch`
+les applique en une seule passe réactive.
 :::

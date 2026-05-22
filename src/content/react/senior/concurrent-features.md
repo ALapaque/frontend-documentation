@@ -8,7 +8,7 @@ duration: 20
 prerequisites: ["rsc"]
 updated: 2026-05-22
 seoTitle: "React concurrent — transitions, useOptimistic"
-seoDescription: "Transitions, useDeferredValue et useOptimistic : prioriser le rendu pour une UI qui reste réactive."
+seoDescription: "Transitions, useDeferredValue, useOptimistic et Actions (useActionState/useFormStatus) : prioriser le rendu pour une UI réactive."
 ogVariant: "crimson"
 related:
   - { framework: "angular", slug: "zoneless" }
@@ -54,13 +54,57 @@ const [optimistic, addOptimistic] = useOptimistic(messages, (state, msg) => [
 ]);
 ```
 
+## Actions : la transition asynchrone
+
+Une **Action** est une fonction async passée à un `startTransition` (ou au prop
+`action` d'un `<form>`). React enveloppe l'attente dans une transition : `pending`,
+erreur et état final sont gérés sans automate manuel. `useActionState` relie
+l'Action à son résultat ; `useFormStatus` lit l'état du `<form>` parent depuis un
+enfant, sans prop drilling.
+
+```tsx
+function Inscription() {
+  const [state, formAction, isPending] = useActionState(
+    async (_prev, formData: FormData) => {
+      const res = await createUser(formData);
+      return res.error ?? null; // valeur retournée = nouvel état
+    },
+    null,
+  );
+  return (
+    <form action={formAction}>
+      <input name="email" />
+      {state && <p>{state}</p>}
+      <Submit />
+    </form>
+  );
+}
+
+function Submit() {
+  const { pending } = useFormStatus(); // lit le <form> parent
+  return <button disabled={pending}>Envoyer</button>;
+}
+```
+
+`useOptimistic` se branche naturellement ici : on affiche l'état attendu pendant
+que l'Action est `pending`, React rétablit l'état réel quand elle résout (ou
+échoue). C'est le triptyque React 19 des mutations côté client.
+
+:::callout{type="info"}
+Le prop `action` accepte une fonction client comme une **Server Action**
+(`'use server'`, voir `rsc`). En progressive enhancement, le `<form>` reste
+soumissible même avant l'hydratation : React intercepte une fois le JS chargé.
+:::
+
 :::cheatsheet
 - title: "useTransition"
-  desc: "Marque une mise à jour comme non urgente ; expose isPending."
+  desc: "Marque une mise à jour comme non urgente ; expose isPending. startTransition accepte une fonction async (Action)."
 - title: "useDeferredValue"
   desc: "Diffère une valeur dérivée coûteuse sans bloquer l'urgent."
 - title: "useOptimistic"
   desc: "État optimiste pendant qu'une action asynchrone se résout."
+- title: "useActionState / useFormStatus"
+  desc: "Relie une Action à son état (pending/erreur/résultat) ; useFormStatus lit le <form> parent."
 :::
 
 :::callout{type="warn"}
