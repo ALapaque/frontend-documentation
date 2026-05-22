@@ -1,0 +1,65 @@
+/* ============================================================
+   Design tokens — dark luxury palette
+   Single source of truth for color, radius, elevation, motion.
+   ============================================================ */
+
+:root {
+  /* Backgrounds */
+  --bg: #0a0a0c; /* base */
+  --bg-soft: #111114; /* sections */
+  --bg-card: #15151a; /* cartes */
+  --bg-elev: #1c1c22; /* élévations */
+
+  /* Borders */
+  --border: #26262e;
+  --border-soft: #1e1e25;
+
+  /* Text */
+  --text: #ede7db; /* primary */
+  --text-soft: #a39e92; /* secondary */
+  --text-dim: #5e5a52; /* tertiary, labels */
+
+  /* Accents */
+  --gold: #c9a876; /* accent principal, niveau Medior */
+  --gold-soft: #8a7758;
+  --sage: #8fa68e; /* niveau Junior, "tips" */
+  --rose: #d49b8a; /* "info" */
+  --crimson: #b86f6f; /* niveau Senior, warnings */
+  --sky: #7fa3b8; /* info secondaire */
+
+  /* Level → color mapping (consumed by chips, badges, OG variants) */
+  --level-junior: var(--sage);
+  --level-medior: var(--gold);
+  --level-senior: var(--crimson);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+
+  /* Layout */
+  --container: 1200px;
+  --gutter: 32px;
+  --section-gap: 100px;
+
+  /* Typography families */
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Inter Tight", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 240ms;
+
+  /* Focus ring (WCAG 2.2) */
+  --focus-ring: var(--gold);
+
+  color-scheme: dark;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --gutter: 16px;
+    --section-gap: 64px;
+  }
+}
