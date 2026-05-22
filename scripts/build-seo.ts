@@ -7,9 +7,10 @@
  *
  * Runs after build-content (see the `content` npm script).
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Resvg } from '@resvg/resvg-js';
 import { CATALOGUE } from '../src/content/generated/catalogue';
 import { COMPARE_LIST } from '../src/content/generated/compare-list';
 import { SITE_URL, SITE_NAME, SITE_TAGLINE } from '../src/app/core/site';
@@ -17,6 +18,11 @@ import { SITE_URL, SITE_NAME, SITE_TAGLINE } from '../src/app/core/site';
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..');
 const PUBLIC = join(ROOT, 'public');
 const OG_DIR = join(PUBLIC, 'og');
+
+const FONT_FILES = [
+  join(ROOT, 'node_modules/@expo-google-fonts/fraunces/400Regular/Fraunces_400Regular.ttf'),
+  join(ROOT, 'node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf'),
+];
 
 const FRAMEWORK_LABEL: Record<string, string> = { angular: 'Angular', react: 'React', vue: 'Vue' };
 const LEVEL_LABEL: Record<string, string> = { junior: 'Junior', medior: 'Medior', senior: 'Senior' };
@@ -93,13 +99,22 @@ function ogCard(opts: { eyebrow: string; title: string; color: string }): string
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#0A0A0C"/>
   <rect x="0" y="0" width="1200" height="6" fill="${opts.color}"/>
-  <text x="80" y="150" font-family="ui-monospace, monospace" font-size="26" letter-spacing="6" fill="${opts.color}">${xml(opts.eyebrow.toUpperCase())}</text>
-  <text x="80" y="290" font-family="Georgia, 'Times New Roman', serif" font-size="78" fill="#EDE7DB">${tspans}</text>
-  <text x="80" y="560" font-family="ui-monospace, monospace" font-size="24" letter-spacing="4" fill="#A39E92">${xml(SITE_NAME.toUpperCase())} · 2026</text>
+  <text x="80" y="150" font-family="JetBrains Mono" font-size="26" letter-spacing="6" fill="${opts.color}">${xml(opts.eyebrow.toUpperCase())}</text>
+  <text x="80" y="290" font-family="Fraunces" font-size="78" fill="#EDE7DB">${tspans}</text>
+  <text x="80" y="560" font-family="JetBrains Mono" font-size="24" letter-spacing="4" fill="#A39E92">${xml(SITE_NAME.toUpperCase())} · 2026</text>
 </svg>\n`;
 }
 
+function svgToPng(svg: string): Buffer {
+  const resvg = new Resvg(svg, {
+    font: { fontFiles: FONT_FILES, loadSystemFonts: false, defaultFontFamily: 'Fraunces' },
+    fitTo: { mode: 'width', value: 1200 },
+  });
+  return resvg.render().asPng();
+}
+
 function main(): void {
+  rmSync(OG_DIR, { recursive: true, force: true });
   mkdirSync(OG_DIR, { recursive: true });
 
   writeFileSync(join(PUBLIC, 'sitemap.xml'), sitemap());
@@ -107,8 +122,8 @@ function main(): void {
   writeFileSync(join(PUBLIC, 'robots.txt'), robots());
 
   writeFileSync(
-    join(OG_DIR, 'default.svg'),
-    ogCard({ eyebrow: 'Practical Docs', title: SITE_TAGLINE, color: OG_COLOR['gold'] }),
+    join(OG_DIR, 'default.png'),
+    svgToPng(ogCard({ eyebrow: 'Practical Docs', title: SITE_TAGLINE, color: OG_COLOR['gold'] })),
   );
   for (const m of CATALOGUE) {
     const svg = ogCard({
@@ -116,10 +131,10 @@ function main(): void {
       title: m.title,
       color: OG_COLOR[m.ogVariant] ?? OG_COLOR['gold'],
     });
-    writeFileSync(join(OG_DIR, `${m.framework}-${m.level}-${m.slug}.svg`), svg);
+    writeFileSync(join(OG_DIR, `${m.framework}-${m.level}-${m.slug}.png`), svgToPng(svg));
   }
 
-  console.log(`[seo] sitemap (${routes().length} urls), llms.txt, robots.txt, ${CATALOGUE.length + 1} OG cards.`);
+  console.log(`[seo] sitemap (${routes().length} urls), llms.txt, robots.txt, ${CATALOGUE.length + 1} OG cards (PNG).`);
 }
 
 main();

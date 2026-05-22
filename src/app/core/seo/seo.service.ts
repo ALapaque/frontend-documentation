@@ -27,7 +27,7 @@ export class SeoService {
   set(input: SeoInput): void {
     const fullTitle = `${input.title} — ${SITE_NAME}`;
     const url = `${SITE_URL}${input.path}`;
-    const image = input.image ? `${SITE_URL}${input.image}` : `${SITE_URL}/og/default.svg`;
+    const image = input.image ? `${SITE_URL}${input.image}` : `${SITE_URL}/og/default.png`;
     const type = input.type ?? 'website';
 
     this.title.setTitle(fullTitle);

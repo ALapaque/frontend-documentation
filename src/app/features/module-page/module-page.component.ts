@@ -297,7 +297,7 @@ export class ModulePageComponent {
         description: seoDescription,
         path,
         type: 'article',
-        image: `/og/${framework}-${level}-${slug}.svg`,
+        image: `/og/${framework}-${level}-${slug}.png`,
         jsonLd: {
           '@context': 'https://schema.org',
           '@type': 'TechArticle',

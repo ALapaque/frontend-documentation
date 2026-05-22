@@ -211,13 +211,15 @@ atterrissent donc dans le HTML prerendu. Les modules émettent un JSON-LD
 **OpenGraph SVG par module** (`og/{key}.svg`) + une carte par défaut. Tous
 gitignorés (générés).
 
-### OG en SVG, pas en PNG
+### OG en PNG, rasterisé au build
 
-Les cartes OG sont des **SVG** (légers, sans dépendance native, cohérents avec
-l'esthétique). Limite connue : certains crawlers sociaux (Twitter/Facebook)
-préfèrent PNG/JPEG. Rasterisation SVG→PNG (via `sharp`/`@resvg`) à prévoir comme
-étape de déploiement si le partage social riche est requis. Police OG : serif
-générique (Georgia) faute d'embarquer Fraunces dans le SVG.
+Les cartes OG sont générées en **PNG** (1200×630) : le SVG est construit puis
+rasterisé via `@resvg/resvg-js` avec les polices **Fraunces** et **JetBrains
+Mono** embarquées (TTF fournis par `@expo-google-fonts/*`, en devDependencies).
+Raison : la quasi-totalité des crawlers sociaux ne rendent pas le SVG en
+`og:image`. `@resvg/resvg-js` embarque des binaires précompilés (linux-x64-gnu),
+donc fonctionne tel quel dans le build Vercel. Rendu identique partout grâce aux
+polices embarquées (pas de dépendance aux polices système).
 
 ### `SITE_URL` à configurer au déploiement
 

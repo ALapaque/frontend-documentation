@@ -119,7 +119,8 @@ Générés au build dans `public/` (puis `dist/.../browser/`) :
 - `sitemap.xml` — toutes les routes prerendues
 - `llms.txt` — carte texte du contenu pour les LLMs crawleurs
 - `robots.txt` — allow-all + pointeur sitemap
-- `og/{framework}-{level}-{slug}.svg` — une carte OpenGraph par module
+- `og/{framework}-{level}-{slug}.png` — une carte OpenGraph (1200×630) par
+  module, rasterisée au build avec Fraunces + JetBrains Mono embarquées
 
 Chaque page pose son `<title>`, sa meta description, ses balises OpenGraph /
 Twitter, son `<link rel="canonical">` et (modules) un JSON-LD `TechArticle`,
@@ -137,9 +138,8 @@ via `SeoService` — le tout présent dans le HTML prerendu.
    dossier `browser/` en statique derrière un CDN (les routes sont prerendues).
 4. Vérifie : `npm run serve:ssr:frontend-documentation` puis `npm run smoke`.
 
-> **OG images** : générées en SVG. Pour un partage social riche (Twitter/FB),
-> rasterise-les en PNG (ex. `sharp`) en étape de déploiement — voir
-> `CONTENT_DECISIONS.md`.
+> **OG images** : générées en PNG (1200×630) au build via `@resvg/resvg-js`,
+> polices embarquées — prêtes pour le partage social.
 
 ## Accessibilité & perf
 
