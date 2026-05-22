@@ -218,13 +218,18 @@ interface RelatedView {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      padding: 18px;
+      padding: 18px 20px;
       border: 1px solid var(--border-soft);
       border-radius: var(--radius);
-      transition: border-color var(--dur) var(--ease);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-1);
+      transition: border-color var(--dur) var(--ease-out),
+        transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .page:hover {
-      border-color: var(--gold-soft);
+      border-color: color-mix(in oklab, var(--gold) 40%, var(--border));
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-2);
     }
     .page.next {
       text-align: right;
@@ -233,6 +238,10 @@ interface RelatedView {
       font-family: var(--font-display);
       font-size: 18px;
       color: var(--text);
+      transition: color var(--dur) var(--ease-out);
+    }
+    .page:hover .t {
+      color: var(--gold-bright);
     }
     .related .links {
       display: flex;
@@ -241,16 +250,18 @@ interface RelatedView {
       margin-top: 10px;
     }
     .rel {
-      padding: 7px 13px;
+      padding: 8px 14px;
       border: 1px solid var(--border);
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       font-size: 14px;
       color: var(--text-soft);
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      transition: color var(--dur) var(--ease-out),
+        border-color var(--dur) var(--ease-out), background var(--dur) var(--ease-out);
     }
     .rel:hover {
-      color: var(--gold);
+      color: var(--gold-bright);
       border-color: var(--gold-soft);
+      background: color-mix(in oklab, var(--gold) 7%, transparent);
     }
     .src {
       color: var(--text-dim);

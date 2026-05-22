@@ -56,18 +56,23 @@ const FEATURED: ReadonlyArray<[Framework, 'junior' | 'medior' | 'senior', string
     <app-ornament />
 
     <section class="container section">
-      <div class="cards">
-        @for (fw of frameworks; track fw) {
-          <app-framework-card [framework]="fw" [tagline]="tagline[fw]" [count]="count(fw)" />
+      <div class="cards stagger">
+        @for (fw of frameworks; track fw; let i = $index) {
+          <app-framework-card
+            [framework]="fw"
+            [tagline]="tagline[fw]"
+            [count]="count(fw)"
+            [style.--i]="i"
+          />
         }
       </div>
     </section>
 
     <section class="container section">
       <h2 class="section-h">À la <span class="accent">une</span></h2>
-      <div class="featured">
-        @for (m of featured(); track m.slug + m.framework; let first = $first) {
-          <div [class.lead-cell]="first">
+      <div class="featured stagger">
+        @for (m of featured(); track m.slug + m.framework; let first = $first; let i = $index) {
+          <div [class.lead-cell]="first" [style.--i]="i">
             <app-module-card [meta]="m" />
           </div>
         }
@@ -116,22 +121,35 @@ const FEATURED: ReadonlyArray<[Framework, 'junior' | 'medior' | 'senior', string
       margin-top: 8px;
     }
     .btn {
-      padding: 13px 22px;
-      border-radius: 999px;
+      padding: 14px 24px;
+      border-radius: var(--radius-pill);
       font-size: 15px;
-      transition: transform var(--dur) var(--ease);
+      font-weight: 500;
+      transition: transform var(--dur) var(--ease-spring),
+        box-shadow var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out),
+        background var(--dur) var(--ease-out);
     }
     .btn.primary {
-      background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+      background: var(--sheen-gold);
       color: #0a0a0c;
       font-weight: 600;
+      box-shadow: var(--glow-gold);
+    }
+    .btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow-gold), var(--shadow-2);
     }
     .btn.ghost {
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-strong);
       color: var(--text);
     }
-    .btn:hover {
+    .btn.ghost:hover {
       transform: translateY(-2px);
+      border-color: var(--gold-soft);
+      background: color-mix(in oklab, var(--gold) 6%, transparent);
+    }
+    .btn:active {
+      transform: translateY(0) scale(0.98);
     }
     .cards {
       display: grid;

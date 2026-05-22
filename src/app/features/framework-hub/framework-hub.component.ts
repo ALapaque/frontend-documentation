@@ -56,9 +56,9 @@ const TAGLINE: Record<Framework, string> = {
           </a>
         </div>
 
-        <div class="grid">
-          @for (m of filtered(); track m.slug + m.level) {
-            <app-module-card [meta]="m" />
+        <div class="grid stagger">
+          @for (m of filtered(); track m.slug + m.level; let i = $index) {
+            <app-module-card [meta]="m" [style.--i]="i % 9" />
           } @empty {
             <p class="dim">Aucun module pour ce niveau.</p>
           }
