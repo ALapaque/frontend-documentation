@@ -1,24 +1,38 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EyebrowComponent } from '../../ui/eyebrow.component';
 import { OrnamentComponent } from '../../ui/ornament.component';
-import { FRAMEWORKS, FRAMEWORK_LABEL, type Framework } from '../../core/levels';
+import { FrameworkCardComponent } from '../../ui/framework-card.component';
+import { ModuleCardComponent } from '../../ui/module-card.component';
+import { ContentService } from '../../content/content.service';
+import { FRAMEWORKS, type Framework } from '../../core/levels';
+import type { ModuleMeta } from '../../content/content.types';
 
-interface FrameworkCard {
-  readonly id: Framework;
-  readonly tagline: string;
-}
+const TAGLINE: Record<Framework, string> = {
+  angular: 'Signals, zoneless, SSR. La discipline structurée.',
+  react: 'RSC, compiler, concurrent. Le pragmatisme à grande échelle.',
+  vue: 'Reactivity, Vapor, Nuxt. La progressivité élégante.',
+};
 
-const CARDS: readonly FrameworkCard[] = [
-  { id: 'angular', tagline: 'Signals, zoneless, SSR. La discipline structurée.' },
-  { id: 'react', tagline: 'RSC, compiler, concurrent. Le pragmatisme à grande échelle.' },
-  { id: 'vue', tagline: 'Reactivity, Vapor, Nuxt. La progressivité élégante.' },
+const FEATURED: ReadonlyArray<[Framework, 'junior' | 'medior' | 'senior', string]> = [
+  ['angular', 'medior', 'signals'],
+  ['angular', 'junior', 'lifecycle'],
+  ['react', 'senior', 'rsc'],
+  ['vue', 'senior', 'vapor-mode'],
+  ['angular', 'senior', 'ssr-hydration'],
+  ['react', 'medior', 'server-state'],
 ];
 
 @Component({
   selector: 'app-landing',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, EyebrowComponent, OrnamentComponent],
+  imports: [
+    RouterLink,
+    EyebrowComponent,
+    OrnamentComponent,
+    FrameworkCardComponent,
+    ModuleCardComponent,
+  ],
   template: `
     <section class="hero container reveal">
       <app-eyebrow>Practical Docs · 2026</app-eyebrow>
@@ -34,21 +48,51 @@ const CARDS: readonly FrameworkCard[] = [
         <a routerLink="/angular" class="btn primary">Explorer Angular</a>
         <a routerLink="/compare/state-management" class="btn ghost">Voir les comparatifs</a>
       </div>
-      <p class="label-mono meta">3 frameworks · Junior → Senior</p>
+      <p class="label-mono meta">{{ total() }} modules · Junior → Senior</p>
     </section>
 
     <app-ornament />
 
     <section class="container section">
       <div class="cards">
-        @for (card of cards; track card.id) {
-          <a [routerLink]="['/', card.id]" class="card">
-            <span class="mark" [attr.data-fw]="card.id" aria-hidden="true"></span>
-            <h2 class="h3">{{ labels[card.id] }}</h2>
-            <p class="small dim">{{ card.tagline }}</p>
-            <span class="label-mono go">Ouvrir le hub →</span>
-          </a>
+        @for (fw of frameworks; track fw) {
+          <app-framework-card [framework]="fw" [tagline]="tagline[fw]" [count]="count(fw)" />
         }
+      </div>
+    </section>
+
+    <section class="container section">
+      <h2 class="section-h">À la <span class="accent">une</span></h2>
+      <div class="featured">
+        @for (m of featured(); track m.slug + m.framework; let first = $first) {
+          <div [class.lead-cell]="first">
+            <app-module-card [meta]="m" />
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="container section philosophy">
+      <div class="col">
+        <span class="label-mono">Clarté</span>
+        <p>
+          Un concept à la fois, nommé pour ce qu'il est. Pas de jargon gratuit,
+          pas de détour.
+        </p>
+      </div>
+      <div class="col">
+        <span class="label-mono">Profondeur</span>
+        <p>
+          Trois niveaux assumés. Le Senior creuse l'implémentation là où le
+          Junior pose les fondations.
+        </p>
+      </div>
+      <div class="col">
+        <span class="label-mono">Honnêteté</span>
+        <p>
+          Les pièges, les trade-offs, les idées reçues. On dit quand un outil ne
+          vaut pas son coût.
+        </p>
       </div>
     </section>
   `,
@@ -73,7 +117,7 @@ const CARDS: readonly FrameworkCard[] = [
       padding: 13px 22px;
       border-radius: 999px;
       font-size: 15px;
-      transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+      transition: transform var(--dur) var(--ease);
     }
     .btn.primary {
       background: linear-gradient(135deg, var(--gold), var(--gold-soft));
@@ -87,54 +131,66 @@ const CARDS: readonly FrameworkCard[] = [
     .btn:hover {
       transform: translateY(-2px);
     }
-    .meta {
-      margin-top: 8px;
-    }
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
     }
-    .card {
+    .section-h {
+      margin-bottom: 24px;
+    }
+    .featured {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .featured .lead-cell {
+      grid-column: span 1;
+      grid-row: span 2;
+    }
+    .featured .lead-cell ::ng-deep .card {
+      justify-content: flex-start;
+      gap: 16px;
+    }
+    .philosophy {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .philosophy .col {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      padding: 28px;
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-lg);
-      background: var(--bg-card);
-      transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
     }
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--gold-soft);
-    }
-    .mark {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: var(--gold);
-    }
-    .mark[data-fw='angular'] {
-      background: linear-gradient(135deg, #b86f6f, #d49b8a);
-    }
-    .mark[data-fw='react'] {
-      background: linear-gradient(135deg, #7fa3b8, #8fa68e);
-    }
-    .mark[data-fw='vue'] {
-      background: linear-gradient(135deg, #8fa68e, #c9a876);
-    }
-    .dim {
+    .philosophy p {
       color: var(--text-soft);
+      max-width: 36ch;
     }
-    .go {
-      margin-top: auto;
-      color: var(--gold);
+    @media (max-width: 860px) {
+      .featured,
+      .philosophy {
+        grid-template-columns: 1fr;
+      }
+      .featured .lead-cell {
+        grid-row: span 1;
+      }
     }
   `,
 })
 export class LandingComponent {
-  protected readonly cards = CARDS;
+  private readonly content = inject(ContentService);
   protected readonly frameworks = FRAMEWORKS;
-  protected readonly labels = FRAMEWORK_LABEL;
+  protected readonly tagline = TAGLINE;
+
+  protected readonly total = computed(() => this.content.catalogue.length);
+
+  protected count(fw: Framework): number {
+    return this.content.forFramework(fw).length;
+  }
+
+  protected readonly featured = computed<ModuleMeta[]>(() =>
+    FEATURED.map(([fw, lvl, slug]) => this.content.meta(fw, lvl, slug)).filter(
+      (m): m is ModuleMeta => m !== undefined,
+    ),
+  );
 }

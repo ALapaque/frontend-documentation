@@ -1,24 +1,38 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { EyebrowComponent } from '../../ui/eyebrow.component';
 import { LevelChipComponent } from '../../ui/level-chip.component';
 import { CalloutComponent } from '../../ui/callout.component';
 import { CodeBlockComponent } from '../../ui/code-block.component';
 import { TwoColCompareComponent } from '../../ui/two-col-compare.component';
 import { CheatGridComponent } from '../../ui/cheat-grid.component';
+import { BreadcrumbComponent, type Crumb } from '../../ui/breadcrumb.component';
+import { TocSidebarComponent } from '../../ui/toc-sidebar.component';
 import { SafeHtmlPipe } from '../../core/safe-html.pipe';
+import { ContentService } from '../../content/content.service';
 import { FRAMEWORK_LABEL, isFramework, type Framework } from '../../core/levels';
-import type { CompiledModule } from '../../content/content.types';
+import type { CompiledModule, ModuleMeta } from '../../content/content.types';
+
+const REPO = 'https://github.com/ALapaque/frontend-documentation/blob/main/src/content';
+
+interface RelatedView {
+  readonly label: string;
+  readonly link: string[];
+}
 
 @Component({
   selector: 'app-module-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    RouterLink,
     EyebrowComponent,
     LevelChipComponent,
     CalloutComponent,
     CodeBlockComponent,
     TwoColCompareComponent,
     CheatGridComponent,
+    BreadcrumbComponent,
+    TocSidebarComponent,
     SafeHtmlPipe,
   ],
   template: `
@@ -26,9 +40,7 @@ import type { CompiledModule } from '../../content/content.types';
     @if (mod && !mod.meta.stub) {
       <article class="container layout reveal">
         <header class="head">
-          <p class="label-mono crumb">
-            {{ frameworkLabel() }} · {{ mod.meta.level }} · {{ mod.meta.title }}
-          </p>
+          <app-breadcrumb [items]="crumbs(mod.meta)" />
           <app-eyebrow>Module {{ orderLabel(mod.meta.order) }}</app-eyebrow>
           <h1 class="display-l">{{ mod.meta.title }}</h1>
           <p class="lead">{{ mod.meta.seoDescription }}</p>
@@ -38,21 +50,14 @@ import type { CompiledModule } from '../../content/content.types';
               <span class="label-mono dim">{{ mod.meta.duration }} min</span>
             }
             @if (mod.meta.prerequisites.length) {
-              <span class="label-mono dim">
-                Prérequis : {{ mod.meta.prerequisites.join(' · ') }}
-              </span>
+              <span class="label-mono dim">Prérequis : {{ mod.meta.prerequisites.join(' · ') }}</span>
             }
           </div>
         </header>
 
         @if (mod.toc.length) {
-          <aside class="toc" aria-label="Sommaire">
-            <span class="label-mono">Sommaire</span>
-            <nav>
-              @for (entry of mod.toc; track entry.id) {
-                <a [href]="'#' + entry.id" [class.sub]="entry.depth === 3">{{ entry.text }}</a>
-              }
-            </nav>
+          <aside class="toc">
+            <app-toc-sidebar [toc]="mod.toc" />
           </aside>
         }
 
@@ -90,14 +95,49 @@ import type { CompiledModule } from '../../content/content.types';
               }
             }
           }
+
+          <footer class="end">
+            <nav class="pager" aria-label="Navigation des modules">
+              @if (prev(); as p) {
+                <a class="page prev" [routerLink]="['/', p.framework, p.level, p.slug]">
+                  <span class="label-mono dim">← Précédent</span>
+                  <span class="t">{{ p.title }}</span>
+                </a>
+              } @else {
+                <span></span>
+              }
+              @if (next(); as n) {
+                <a class="page next" [routerLink]="['/', n.framework, n.level, n.slug]">
+                  <span class="label-mono dim">Suivant →</span>
+                  <span class="t">{{ n.title }}</span>
+                </a>
+              }
+            </nav>
+
+            @if (related().length) {
+              <div class="related">
+                <span class="label-mono dim">Voir aussi</span>
+                <div class="links">
+                  @for (r of related(); track r.label) {
+                    <a [routerLink]="r.link" class="rel">{{ r.label }}</a>
+                  }
+                </div>
+              </div>
+            }
+
+            <a [href]="sourceUrl(mod.meta)" target="_blank" rel="noopener" class="src label-mono">
+              Voir la source ↗
+            </a>
+          </footer>
         </div>
       </article>
     } @else if (mod && mod.meta.stub) {
       <section class="container section reveal">
-        <p class="label-mono crumb">{{ frameworkLabel() }} · {{ mod.meta.level }}</p>
+        <app-breadcrumb [items]="crumbs(mod.meta)" />
         <app-eyebrow>À venir</app-eyebrow>
         <h1 class="display-l">{{ mod.meta.title }}</h1>
-        <p class="lead">Ce module est planifié mais pas encore rédigé.</p>
+        <p class="lead">{{ mod.meta.seoDescription }}</p>
+        <p class="dim">Ce module est planifié mais pas encore rédigé.</p>
       </section>
     } @else {
       <section class="container section reveal">
@@ -122,9 +162,6 @@ import type { CompiledModule } from '../../content/content.types';
       flex-direction: column;
       gap: 14px;
     }
-    .crumb {
-      color: var(--text-dim);
-    }
     .meta {
       display: flex;
       align-items: center;
@@ -134,24 +171,6 @@ import type { CompiledModule } from '../../content/content.types';
     }
     .dim {
       color: var(--text-dim);
-    }
-    .toc nav {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .toc a {
-      color: var(--text-soft);
-      font-size: 14px;
-      transition: color var(--dur) var(--ease);
-    }
-    .toc a:hover {
-      color: var(--gold);
-    }
-    .toc a.sub {
-      padding-left: 14px;
-      font-size: 13px;
     }
     .body {
       display: flex;
@@ -174,6 +193,64 @@ import type { CompiledModule } from '../../content/content.types';
     .body .h3.sub {
       margin-top: 12px;
       scroll-margin-top: 88px;
+    }
+    .end {
+      margin-top: 48px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .pager {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .page {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 18px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      transition: border-color var(--dur) var(--ease);
+    }
+    .page:hover {
+      border-color: var(--gold-soft);
+    }
+    .page.next {
+      text-align: right;
+    }
+    .page .t {
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--text);
+    }
+    .related .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .rel {
+      padding: 7px 13px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 14px;
+      color: var(--text-soft);
+      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    }
+    .rel:hover {
+      color: var(--gold);
+      border-color: var(--gold-soft);
+    }
+    .src {
+      color: var(--text-dim);
+      width: fit-content;
+    }
+    .src:hover {
+      color: var(--gold);
     }
 
     @media (min-width: 1040px) {
@@ -199,6 +276,8 @@ import type { CompiledModule } from '../../content/content.types';
   `,
 })
 export class ModulePageComponent {
+  private readonly content = inject(ContentService);
+
   readonly module = input<CompiledModule | null>(null);
   readonly framework = input<string>('');
   readonly level = input<string>('');
@@ -209,6 +288,53 @@ export class ModulePageComponent {
       ? FRAMEWORK_LABEL[this.framework() as Framework]
       : this.framework(),
   );
+
+  private readonly siblings = computed(() => {
+    const mod = this.module();
+    return mod ? this.content.siblings(mod.meta.framework, mod.meta.level) : [];
+  });
+
+  private readonly currentIndex = computed(() => {
+    const mod = this.module();
+    return mod ? this.siblings().findIndex((s) => s.slug === mod.meta.slug) : -1;
+  });
+
+  protected readonly prev = computed<ModuleMeta | null>(() => {
+    const i = this.currentIndex();
+    return i > 0 ? this.siblings()[i - 1] : null;
+  });
+
+  protected readonly next = computed<ModuleMeta | null>(() => {
+    const i = this.currentIndex();
+    return i >= 0 && i < this.siblings().length - 1 ? this.siblings()[i + 1] : null;
+  });
+
+  protected readonly related = computed<RelatedView[]>(() => {
+    const mod = this.module();
+    if (!mod) return [];
+    return mod.meta.related
+      .map((r) => {
+        const target = this.content.byFrameworkSlug(r.framework, r.slug);
+        if (!target) return null;
+        return {
+          label: `${FRAMEWORK_LABEL[target.framework]} · ${target.title}`,
+          link: ['/', target.framework, target.level, target.slug],
+        };
+      })
+      .filter((v): v is RelatedView => v !== null);
+  });
+
+  protected crumbs(meta: ModuleMeta): Crumb[] {
+    return [
+      { label: FRAMEWORK_LABEL[meta.framework], link: `/${meta.framework}` },
+      { label: meta.level },
+      { label: meta.title },
+    ];
+  }
+
+  protected sourceUrl(meta: ModuleMeta): string {
+    return `${REPO}/${meta.framework}/${meta.level}/${meta.slug}.md`;
+  }
 
   protected orderLabel(order: number): string {
     return order.toString().padStart(2, '0');

@@ -18,10 +18,13 @@ import { createHighlighter, type Highlighter } from 'shiki';
 import type {
   CheatItem,
   CodePiece,
+  CompareMeta,
+  CompiledCompare,
   CompiledModule,
   ContentBlock,
   ModuleMeta,
   OgVariant,
+  SearchDoc,
   TocEntry,
 } from '../src/app/content/content.types';
 
@@ -47,6 +50,25 @@ function slugify(text: string): string {
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&[a-z]+;/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Concatenated plain text of a module body, for full-text search. */
+function searchText(blocks: ContentBlock[]): string {
+  const parts: string[] = [];
+  for (const b of blocks) {
+    if (b.kind === 'prose' || b.kind === 'callout') parts.push(stripHtml(b.html));
+    else if (b.kind === 'heading') parts.push(b.text);
+    else if (b.kind === 'cheatsheet') parts.push(b.items.map((i) => `${i.title} ${i.desc}`).join(' '));
+  }
+  return stripHtml(parts.join(' '));
 }
 
 function listMarkdown(dir: string): string[] {
@@ -156,6 +178,15 @@ function parseBody(body: string, hl: Highlighter): ParseResult {
         blocks.push({ kind: 'compare', bad: extractPiece(inner, 'bad', hl), good: extractPiece(inner, 'good', hl) });
       } else if (name === 'cheatsheet') {
         blocks.push({ kind: 'cheatsheet', items: parseCheatItems(inner) });
+      } else if (name === 'tri') {
+        const title = /title="([^"]+)"/.exec(attrs)?.[1];
+        blocks.push({
+          kind: 'tricode',
+          title,
+          angular: extractMaybePiece(inner, 'angular', hl),
+          react: extractMaybePiece(inner, 'react', hl),
+          vue: extractMaybePiece(inner, 'vue', hl),
+        });
       } else {
         // Unknown container → render inner as prose so nothing is lost
         if (inner.trim()) blocks.push({ kind: 'prose', html: md.render(inner.trim()) });
@@ -173,6 +204,17 @@ function parseBody(body: string, hl: Highlighter): ParseResult {
 function extractPiece(inner: string, marker: 'bad' | 'good', hl: Highlighter): CodePiece {
   const re = new RegExp(`^::${marker}\\s*$([\\s\\S]*?)^::\\s*$`, 'm');
   const seg = re.exec(inner)?.[1] ?? '';
+  const fence = /```(.*)\n([\s\S]*?)```/m.exec(seg);
+  const lang = fence ? parseFence(fence[1]).lang : 'text';
+  const code = fence ? fence[2].replace(/\n$/, '') : seg.trim();
+  return { code, lang, html: highlight(hl, code, lang) };
+}
+
+/** Like extractPiece but returns undefined if the marker is absent. */
+function extractMaybePiece(inner: string, marker: string, hl: Highlighter): CodePiece | undefined {
+  const re = new RegExp(`^::${marker}\\s*$([\\s\\S]*?)^::\\s*$`, 'm');
+  const seg = re.exec(inner)?.[1];
+  if (seg === undefined) return undefined;
   const fence = /```(.*)\n([\s\S]*?)```/m.exec(seg);
   const lang = fence ? parseFence(fence[1]).lang : 'text';
   const code = fence ? fence[2].replace(/\n$/, '') : seg.trim();
@@ -207,9 +249,11 @@ async function main(): Promise<void> {
   const files = listMarkdown(CONTENT_DIR).sort();
   const metas: ModuleMeta[] = [];
   const keys: string[] = [];
+  const searchDocs: SearchDoc[] = [];
 
   for (const file of files) {
     const parts = relative(CONTENT_DIR, file).split(sep);
+    if (parts[0] === 'compare') continue; // handled separately below
     if (parts.length !== 3) {
       console.warn(`[content] skip (expected {fw}/{lvl}/{slug}.md): ${parts.join('/')}`);
       continue;
@@ -233,6 +277,16 @@ async function main(): Promise<void> {
     writeFileSync(join(MODULES_DIR, `${key}.json`), JSON.stringify(compiled));
     metas.push(meta);
     keys.push(key);
+    searchDocs.push({
+      id: key,
+      framework: meta.framework,
+      level: meta.level,
+      slug: meta.slug,
+      title: meta.title,
+      desc: meta.seoDescription,
+      text: searchText(blocks),
+      stub: meta.stub,
+    });
   }
 
   metas.sort((a, b) =>
@@ -263,7 +317,65 @@ async function main(): Promise<void> {
       `export const MODULE_LOADERS: Record<string, () => Promise<{ default: CompiledModule }>> = {\n${entries}\n};\n`,
   );
 
-  console.log(`[content] compiled ${metas.length} module(s).`);
+  searchDocs.sort((a, b) => a.id.localeCompare(b.id));
+  writeFileSync(
+    join(OUT_DIR, 'search.ts'),
+    banner +
+      `import type { SearchDoc } from '../../app/content/content.types';\n` +
+      `export const SEARCH_DOCS: SearchDoc[] = ${JSON.stringify(searchDocs)};\n`,
+  );
+
+  // ---- Compare docs (src/content/compare/*.md) ----
+  const compareDir = join(CONTENT_DIR, 'compare');
+  const compareMetas: CompareMeta[] = [];
+  const compareTopics: string[] = [];
+  for (const file of files) {
+    const parts = relative(CONTENT_DIR, file).split(sep);
+    if (parts[0] !== 'compare' || parts.length !== 2) continue;
+    const topic = parts[1].replace(/\.md$/, '');
+    const { data, content } = matter(readFileSync(file, 'utf8'));
+    const d = data as Record<string, unknown>;
+    const { blocks, toc } = parseBody(content, hl);
+    const title = String(d['title'] ?? topic);
+    const meta: CompareMeta = {
+      topic,
+      title,
+      lead: String(d['lead'] ?? ''),
+      updated: String(d['updated'] ?? ''),
+      seoTitle: String(d['seoTitle'] ?? title),
+      seoDescription: String(d['seoDescription'] ?? ''),
+      related: Array.isArray(d['related']) ? (d['related'] as CompareMeta['related']) : [],
+    };
+    const compiled: CompiledCompare = { meta, blocks, toc };
+    mkdirSync(join(OUT_DIR, 'compare'), { recursive: true });
+    writeFileSync(join(OUT_DIR, 'compare', `${topic}.json`), JSON.stringify(compiled));
+    compareMetas.push(meta);
+    compareTopics.push(topic);
+  }
+  void compareDir;
+
+  compareMetas.sort((a, b) => a.topic.localeCompare(b.topic));
+  writeFileSync(
+    join(OUT_DIR, 'compare-list.ts'),
+    banner +
+      `import type { CompareMeta } from '../../app/content/content.types';\n` +
+      `export const COMPARE_LIST: CompareMeta[] = ${JSON.stringify(compareMetas, null, 2)};\n`,
+  );
+  const compareEntries = compareTopics
+    .sort()
+    .map(
+      (t) =>
+        `  '${t}': () => import('./compare/${t}.json') as unknown as Promise<{ default: CompiledCompare }>,`,
+    )
+    .join('\n');
+  writeFileSync(
+    join(OUT_DIR, 'compare-loaders.ts'),
+    banner +
+      `import type { CompiledCompare } from '../../app/content/content.types';\n` +
+      `export const COMPARE_LOADERS: Record<string, () => Promise<{ default: CompiledCompare }>> = {\n${compareEntries}\n};\n`,
+  );
+
+  console.log(`[content] compiled ${metas.length} module(s), ${compareMetas.length} compare doc(s).`);
 }
 
 main().catch((err) => {

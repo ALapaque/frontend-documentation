@@ -112,3 +112,49 @@ Implémentés : `prose`, `heading`, `code`, `callout` (info/tip/warn),
 `compare`, `cheatsheet`. Reportés (Phase 3, au besoin du contenu) :
 `metaphor` (encadré SVG) et `recap-table` dédiée — les tableaux passent pour
 l'instant par la prose markdown standard.
+
+## 2026-05-22 — Phase 3 (Pages)
+
+### Catalogue complet scaffolé en stubs
+
+`scripts/catalog.ts` liste les 60 modules du brief (§5) ; `scaffold-stubs.ts`
+(`npm run scaffold:stubs`) écrit un `.md` stub (front-matter + « À venir »)
+pour chaque entrée **manquante** — jamais d'écrasement. Les hubs, la landing
+et la recherche sont ainsi pilotés par de vraies données. Le scaffolder n'est
+**pas** dans les hooks `pre*` (outil ponctuel, lancé à la main). 2 modules
+rédigés (signals, lifecycle), le reste en stub à compléter en Phase 4.
+
+### Recherche : docs générés au build + MiniSearch client lazy
+
+Le build émet `generated/search.ts` (titre + desc + texte aplati par module).
+Côté client, MiniSearch **et** ces documents sont chargés par import dynamique
+au premier usage (browser only), donc absents du bundle initial. L'index est
+assemblé en mémoire (instantané pour 60 docs) et exposé via un signal de
+disponibilité pour que `search()` redevienne réactif une fois prêt. La palette
+Cmd+K vit dans le shell ; l'écouteur clavier global est browser-only.
+
+### Pages comparatives : pipeline étendu
+
+Le compilateur traite aussi `src/content/compare/*.md` → `CompiledCompare`
+(`generated/compare/*.json` + loaders + liste). Nouveau bloc `:::tri` avec
+marqueurs `::angular` / `::react` / `::vue` → composant `tri-code` (3 colonnes,
+coloration Shiki). Tables comparatives = tableaux markdown standard. 3 docs
+rédigés (state-management, reactivity, ssr-hydration).
+
+### Filtre niveau : clé localStorage globale
+
+Persistance via une seule clé `pd:level-filter` (préférence globale, pas par
+framework) — un dev a tendance à rester sur un niveau quel que soit le
+framework. À reconsidérer si le besoin per-framework émerge.
+
+### « Les 5 réflexes » du pied de module : reporté
+
+Cette section dépend du contenu rédigé ; elle sera écrite comme section
+markdown dédiée en Phase 4 plutôt que codée en dur.
+
+### Test navigateur non effectué
+
+L'environnement d'exécution n'a pas de navigateur : Cmd+K, scroll-spy du TOC et
+persistance du filtre sont implémentés et SSR-safe (gardes `isPlatformBrowser`
+/ `afterNextRender`), mais n'ont pas été validés visuellement. À vérifier en
+Phase 5 (audit Lighthouse + test manuel).

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { moduleResolver } from './content/content.resolver';
+import { compareResolver, moduleResolver } from './content/content.resolver';
 
 /**
  * Every page type is code-split via `loadComponent`. Per-module markdown is
@@ -33,6 +33,7 @@ export const routes: Routes = [
       import('./features/compare-page/compare-page.component').then(
         (m) => m.ComparePageComponent,
       ),
+    resolve: { doc: compareResolver },
   },
   {
     path: ':framework',

@@ -1,32 +1,67 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { EyebrowComponent } from '../../ui/eyebrow.component';
-import { LevelChipComponent } from '../../ui/level-chip.component';
 import {
-  FRAMEWORK_LABEL,
-  isFramework,
-  LEVELS,
-  type Framework,
-} from '../../core/levels';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { EyebrowComponent } from '../../ui/eyebrow.component';
+import { OrnamentComponent } from '../../ui/ornament.component';
+import { ModuleCardComponent } from '../../ui/module-card.component';
+import { LevelFilterComponent, type LevelFilter } from '../../ui/level-filter.component';
+import { ContentService } from '../../content/content.service';
+import { FRAMEWORK_LABEL, isFramework, type Framework } from '../../core/levels';
+
+const FILTER_KEY = 'pd:level-filter';
+const TAGLINE: Record<Framework, string> = {
+  angular: 'Signals, zoneless, SSR. La discipline structurée.',
+  react: 'RSC, compiler, concurrent. Le pragmatisme à grande échelle.',
+  vue: 'Reactivity, Vapor, Nuxt. La progressivité élégante.',
+};
 
 @Component({
   selector: 'app-framework-hub',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [EyebrowComponent, LevelChipComponent],
+  imports: [
+    RouterLink,
+    EyebrowComponent,
+    OrnamentComponent,
+    ModuleCardComponent,
+    LevelFilterComponent,
+  ],
   template: `
-    @if (valid()) {
-      <section class="container section reveal">
+    @if (fw(); as framework) {
+      <section class="container head reveal">
         <app-eyebrow>Framework · {{ label()!.toUpperCase() }}</app-eyebrow>
         <h1 class="display-l">{{ label() }}</h1>
-        <p class="lead">
-          Le hub {{ label() }} — modules par niveau. Catalogue et filtre niveau
-          arrivent en Phase 3.
+        <p class="lead">{{ tagline() }}</p>
+        <p class="label-mono dim">
+          {{ modules().length }} modules · 3 niveaux · MAJ {{ updated() }}
         </p>
-        <div class="levels">
-          @for (lvl of levels; track lvl) {
-            <app-level-chip [level]="lvl" />
+      </section>
+
+      <app-ornament />
+
+      <section class="container section">
+        <div class="bar">
+          <app-level-filter [(selected)]="filter" />
+          <a routerLink="/compare/state-management" class="label-mono compare">
+            Comparatifs cross-framework →
+          </a>
+        </div>
+
+        <div class="grid">
+          @for (m of filtered(); track m.slug + m.level) {
+            <app-module-card [meta]="m" />
+          } @empty {
+            <p class="dim">Aucun module pour ce niveau.</p>
           }
         </div>
-        <p class="label-mono dim">Grille de modules · à venir</p>
       </section>
     } @else {
       <section class="container section">
@@ -36,21 +71,69 @@ import {
     }
   `,
   styles: `
-    .levels {
+    .head {
+      padding-top: clamp(48px, 9vw, 96px);
       display: flex;
-      gap: 10px;
-      margin: 8px 0 24px;
+      flex-direction: column;
+      gap: 14px;
+      align-items: flex-start;
     }
     .dim {
       color: var(--text-dim);
     }
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .compare {
+      color: var(--gold);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
   `,
 })
 export class FrameworkHubComponent {
+  private readonly content = inject(ContentService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   readonly framework = input.required<string>();
-  protected readonly levels = LEVELS;
-  protected readonly valid = computed(() => isFramework(this.framework()));
-  protected readonly label = computed(() =>
-    isFramework(this.framework()) ? FRAMEWORK_LABEL[this.framework() as Framework] : null,
+  protected readonly filter = signal<LevelFilter>('all');
+
+  protected readonly fw = computed<Framework | null>(() =>
+    isFramework(this.framework()) ? (this.framework() as Framework) : null,
   );
+  protected readonly label = computed(() => (this.fw() ? FRAMEWORK_LABEL[this.fw()!] : null));
+  protected readonly tagline = computed(() => (this.fw() ? TAGLINE[this.fw()!] : ''));
+
+  protected readonly modules = computed(() => {
+    const fw = this.fw();
+    return fw ? [...this.content.forFramework(fw)].sort((a, b) => a.order - b.order) : [];
+  });
+
+  protected readonly filtered = computed(() => {
+    const f = this.filter();
+    return f === 'all' ? this.modules() : this.modules().filter((m) => m.level === f);
+  });
+
+  protected readonly updated = computed(() => {
+    const dates = this.modules().map((m) => m.updated).filter(Boolean).sort();
+    return dates.at(-1) ?? '—';
+  });
+
+  constructor() {
+    if (this.isBrowser) {
+      const stored = localStorage.getItem(FILTER_KEY) as LevelFilter | null;
+      if (stored) this.filter.set(stored);
+      effect(() => {
+        localStorage.setItem(FILTER_KEY, this.filter());
+      });
+    }
+  }
 }
