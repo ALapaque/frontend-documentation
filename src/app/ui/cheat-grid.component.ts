@@ -24,31 +24,33 @@ import type { CheatItem } from '../content/content.types';
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1px;
-      background: var(--border-soft);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      overflow: hidden;
+      gap: 14px;
     }
     .cell {
       background: var(--bg-card);
-      padding: 16px 18px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-1);
+      padding: 18px 20px;
     }
     .title {
       font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--gold);
-      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
     }
     .desc {
       font-size: 14px;
       color: var(--text-soft);
-      line-height: 1.5;
+      line-height: 1.55;
     }
     .desc ::ng-deep code {
       font-family: var(--font-mono);
       font-size: 12px;
-      color: var(--gold);
+      color: var(--accent);
     }
   `,
 })

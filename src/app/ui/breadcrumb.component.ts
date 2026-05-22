@@ -34,13 +34,17 @@ export interface Crumb {
     }
     a {
       color: var(--text-dim);
-      transition: color var(--dur) var(--ease);
+      transition: color var(--dur) var(--ease-out);
     }
     a:hover {
-      color: var(--gold);
+      color: var(--accent);
+    }
+    .sep {
+      color: var(--border-strong);
     }
     .current {
-      color: var(--text-soft);
+      color: var(--ink);
+      font-weight: 700;
     }
   `,
 })

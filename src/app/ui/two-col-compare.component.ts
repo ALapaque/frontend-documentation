@@ -39,13 +39,40 @@ import type { CodePiece } from '../content/content.types';
     .col {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-2);
+    }
+    .bad {
+      background: color-mix(in oklab, var(--accent-2) 8%, var(--bg-card));
+    }
+    .good {
+      background: color-mix(in oklab, var(--level-junior) 8%, var(--bg-card));
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      color: #fff;
+      border-radius: var(--radius-pill);
+      padding: 4px 12px;
+      width: fit-content;
+    }
+    .tag::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
     }
     .bad .tag {
-      color: var(--crimson);
+      background: var(--accent-2);
     }
     .good .tag {
-      color: var(--sage);
+      background: var(--level-junior);
     }
     @media (max-width: 720px) {
       .grid {

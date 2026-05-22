@@ -36,28 +36,29 @@ import type { TocEntry } from '../content/content.types';
       flex-direction: column;
       gap: 8px;
       margin-top: 12px;
-      border-left: 1px solid var(--border);
+      border-left: 2px solid var(--border-strong);
       padding-left: 14px;
     }
     a {
       color: var(--text-soft);
       font-size: 14px;
       line-height: 1.4;
-      border-left: 2px solid transparent;
+      border-left: 3px solid transparent;
       margin-left: -16px;
-      padding-left: 14px;
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      padding-left: 13px;
+      transition: color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
     }
     a:hover {
-      color: var(--text);
+      color: var(--ink);
     }
     a.sub {
-      padding-left: 28px;
+      padding-left: 27px;
       font-size: 13px;
     }
     a.active {
-      color: var(--gold);
-      border-left-color: var(--gold);
+      color: var(--accent);
+      font-weight: 700;
+      border-left-color: var(--accent);
     }
   `,
 })

@@ -41,35 +41,44 @@ export type LevelFilter = Level | 'all';
       gap: 8px;
     }
     .chip {
-      --chip: var(--text-soft);
+      --chip: var(--ink);
       display: inline-flex;
       align-items: center;
       gap: 0.5em;
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 500;
+      font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--text-soft);
-      border: 1px solid var(--border);
-      border-radius: 999px;
+      color: var(--ink);
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-pill);
       padding: 6px 14px;
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
-        background var(--dur) var(--ease);
+      box-shadow: var(--shadow-1);
+      transition: color var(--dur) var(--ease-out), background var(--dur) var(--ease-out),
+        transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .chip:hover {
-      color: var(--text);
+      transform: translate(-1px, -1px);
+      box-shadow: var(--shadow-2);
     }
     .chip.active {
-      color: var(--chip);
-      border-color: color-mix(in oklab, var(--chip) 50%, transparent);
-      background: color-mix(in oklab, var(--chip) 10%, transparent);
+      color: #fff;
+      background: var(--chip);
+      box-shadow: var(--shadow-1);
+    }
+    .chip.active:hover {
+      box-shadow: var(--shadow-2);
     }
     .dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background: var(--chip);
+    }
+    .chip.active .dot {
+      background: #fff;
     }
   `,
 })

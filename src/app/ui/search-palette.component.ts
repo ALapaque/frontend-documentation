@@ -85,7 +85,7 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       justify-content: center;
       align-items: flex-start;
       padding-top: 12vh;
-      background: color-mix(in oklab, #000 65%, transparent);
+      background: color-mix(in oklab, var(--ink) 72%, transparent);
       backdrop-filter: blur(4px);
     }
     .palette {
@@ -93,18 +93,33 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       max-height: 70vh;
       display: flex;
       flex-direction: column;
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border-strong);
       border-radius: var(--radius-lg);
-      background: var(--bg-elev);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-3);
       overflow: hidden;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .palette {
+        animation: palette-in var(--dur-slow) var(--ease-spring) both;
+      }
+      @keyframes palette-in {
+        from {
+          opacity: 0;
+          transform: translateY(-12px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
     }
     .field {
       display: flex;
       align-items: center;
       gap: 10px;
       padding: 16px 18px;
-      border-bottom: 1px solid var(--border-soft);
+      border-bottom: 1.5px solid var(--border-strong);
     }
     input {
       flex: 1;
@@ -118,9 +133,10 @@ import { FRAMEWORK_LABEL } from '../core/levels';
     kbd {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-      border-radius: 4px;
+      color: var(--text-soft);
+      background: var(--bg-soft);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-xs);
       padding: 2px 6px;
     }
     .results {
@@ -133,11 +149,13 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       gap: 16px;
       padding: 12px 18px;
       cursor: pointer;
-      border-left: 2px solid transparent;
+      border-left: 4px solid transparent;
+      transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
     }
     .row.active {
-      background: var(--bg-card);
-      border-left-color: var(--gold);
+      background: var(--accent);
+      color: #fff;
+      border-left-color: var(--border-strong);
     }
     .main {
       display: flex;
@@ -147,6 +165,11 @@ import { FRAMEWORK_LABEL } from '../core/levels';
     }
     .title {
       color: var(--text);
+    }
+    .row.active .title,
+    .row.active .desc,
+    .row.active .fw {
+      color: #fff;
     }
     .desc {
       color: var(--text-dim);
