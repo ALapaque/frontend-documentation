@@ -40,8 +40,8 @@ const md = new MarkdownIt({ html: true, linkify: true, typographer: true });
 const mdInline = new MarkdownIt({ html: true, linkify: true, typographer: true });
 
 const FRAMEWORKS = new Set(['angular', 'react', 'vue']);
-const LEVELS = new Set(['junior', 'medior', 'senior']);
-const OG_BY_LEVEL: Record<string, OgVariant> = { junior: 'sage', medior: 'gold', senior: 'crimson' };
+const LEVELS = new Set(['junior', 'medior', 'senior', 'next']);
+const OG_BY_LEVEL: Record<string, OgVariant> = { junior: 'sage', medior: 'gold', senior: 'crimson', next: 'iris' };
 
 function slugify(text: string): string {
   return text

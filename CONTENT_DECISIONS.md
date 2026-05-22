@@ -271,3 +271,30 @@ Mêmes standards que le reste (sections, code 2026, `:::compare` + **Pourquoi**,
 promesse de niveau, `:::tri` pour les comparatifs). Numéros d'`order` poursuivis
 dans chaque groupe (medior 8-10, senior 8). Le catalogue, le sitemap, les cartes
 OG et l'index de recherche s'étendent automatiquement à ces slugs au build.
+
+## 2026-05-22 — Niveau « Next » (prochaine version majeure)
+
+Ajout d'un **4ᵉ niveau** `next` (en plus de junior/medior/senior), une section
+par framework couvrant la prochaine version majeure. Couleur dédiée
+`--level-next` (iris `#9D92C7`), variante OG `iris`, label « Next », promesse
+« Ce qui arrive dans la prochaine version majeure ».
+
+Impacts structurels (cascade automatique) : `core/levels.ts` (type `Level`,
+`LEVELS`, `LEVEL_META`), `tokens.css` (`--iris`/`--level-next`), `OgVariant`
+(+`iris`), `build-content` (`LEVELS`, `OG_BY_LEVEL`), `build-seo` (`OG_COLOR`),
+`scaffold-stubs` (OG). Le filtre de niveau, les chips, le prerender, le sitemap
+et les cartes OG intègrent `next` sans autre changement. Label hub « 3 niveaux »
+→ « 4 niveaux ».
+
+Contenu (vérifié contre sources de version réelles, mai 2026, avec gardes
+RC/beta/expérimental) :
+- `angular/next/angular-22` — Signal Forms stable, composants selectorless
+  (exp.), OnPush par défaut, Vitest par défaut, zoneless consolidé, TS 5.9.
+  **Angular 22 en RC.**
+- `react/next/react-labs` — `<Activity>` + `useEffectEvent` + Performance Tracks
+  (stables en 19.2), `<ViewTransition>` (expérimental), Compiler. Pas de « v20 »
+  annoncée : la roadmap avance par primitives 19.x + React Labs.
+- `vue/next/vue-3-6` — Vapor mode (parité VDOM sauf Suspense), réécriture du
+  cœur réactif sur alien-signals, intégration Vite. **Vue 3.6 en beta.**
+
+Ces sujets sont volatils : à re-vérifier à chaque sortie majeure.

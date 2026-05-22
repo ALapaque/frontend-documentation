@@ -1,6 +1,6 @@
 import type { Framework, Level } from '../core/levels';
 
-export type OgVariant = 'gold' | 'sage' | 'crimson';
+export type OgVariant = 'gold' | 'sage' | 'crimson' | 'iris';
 
 export interface RelatedLink {
   readonly framework: Framework;

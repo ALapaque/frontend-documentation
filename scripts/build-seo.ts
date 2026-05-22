@@ -26,7 +26,7 @@ const FONT_FILES = [
 
 const FRAMEWORK_LABEL: Record<string, string> = { angular: 'Angular', react: 'React', vue: 'Vue' };
 const LEVEL_LABEL: Record<string, string> = { junior: 'Junior', medior: 'Medior', senior: 'Senior' };
-const OG_COLOR: Record<string, string> = { gold: '#C9A876', sage: '#8FA68E', crimson: '#B86F6F' };
+const OG_COLOR: Record<string, string> = { gold: '#C9A876', sage: '#8FA68E', crimson: '#B86F6F', iris: '#9D92C7' };
 
 const xml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
