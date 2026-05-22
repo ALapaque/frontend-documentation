@@ -38,10 +38,12 @@ interface RelatedView {
   template: `
     @let d = doc();
     @if (d) {
-      <section class="container head reveal">
-        <app-eyebrow>Cross-framework</app-eyebrow>
-        <h1 class="display-l">{{ d.meta.title }}</h1>
-        <p class="lead">{{ d.meta.lead }}</p>
+      <section class="container head scroll-reveal">
+        <div class="head-card glass">
+          <app-eyebrow>Cross-framework</app-eyebrow>
+          <h1 class="display-l">{{ d.meta.title }}</h1>
+          <p class="lead">{{ d.meta.lead }}</p>
+        </div>
       </section>
 
       <app-ornament />
@@ -100,10 +102,21 @@ interface RelatedView {
   styles: `
     .head {
       padding-top: clamp(48px, 9vw, 96px);
+    }
+    .head-card {
       display: flex;
       flex-direction: column;
       gap: 14px;
       align-items: flex-start;
+      padding: clamp(24px, 4vw, 40px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      background: var(--glass);
+      backdrop-filter: blur(22px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    }
+    .head-card h1 {
+      margin: 0;
     }
     .lead {
       max-width: 640px;
@@ -119,11 +132,11 @@ interface RelatedView {
       font-weight: 400;
       font-size: 28px;
       margin-top: 24px;
-      scroll-margin-top: 88px;
+      scroll-margin-top: calc(var(--header-h) + 24px);
     }
     .body .sec::before {
       content: '§ ';
-      color: var(--gold);
+      color: var(--accent);
     }
     .prose.wide {
       max-width: none;
@@ -142,14 +155,19 @@ interface RelatedView {
     .rel {
       padding: 7px 13px;
       border: 1px solid var(--border);
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       font-size: 14px;
       color: var(--text-soft);
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: color var(--dur) var(--ease-out),
+        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .rel:hover {
-      color: var(--gold);
-      border-color: var(--gold-soft);
+      color: var(--accent-2);
+      border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+      box-shadow: var(--glow);
     }
     .dim {
       color: var(--text-dim);

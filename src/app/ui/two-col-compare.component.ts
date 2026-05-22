@@ -43,11 +43,32 @@ import type { CodePiece } from '../content/content.types';
       gap: 8px;
       min-width: 0;
     }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      width: fit-content;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+    }
+    .tag::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 8px 1px currentColor;
+    }
     .bad .tag {
-      color: var(--crimson);
+      color: var(--level-senior);
+      border-color: color-mix(in oklab, var(--level-senior) 45%, transparent);
+      background: color-mix(in oklab, var(--level-senior) 12%, transparent);
     }
     .good .tag {
-      color: var(--sage);
+      color: var(--level-junior);
+      border-color: color-mix(in oklab, var(--level-junior) 45%, transparent);
+      background: color-mix(in oklab, var(--level-junior) 12%, transparent);
     }
     @media (max-width: 720px) {
       .grid {

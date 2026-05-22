@@ -56,8 +56,8 @@ import type { TocEntry } from '../content/content.types';
       font-size: 13px;
     }
     a.active {
-      color: var(--gold);
-      border-left-color: var(--gold);
+      color: var(--accent);
+      border-left-color: var(--accent);
     }
   `,
 })

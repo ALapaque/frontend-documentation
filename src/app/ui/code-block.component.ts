@@ -43,7 +43,7 @@ import { SafeHtmlPipe } from '../core/safe-html.pipe';
     .block {
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      background: var(--bg-card);
+      background: var(--bg-inset);
       overflow: hidden;
       min-width: 0;
     }
@@ -53,10 +53,23 @@ import { SafeHtmlPipe } from '../core/safe-html.pipe';
       justify-content: space-between;
       padding: 8px 14px;
       border-bottom: 1px solid var(--border-soft);
-      background: var(--bg-soft);
+      background: var(--glass);
+      backdrop-filter: blur(20px) saturate(1.3);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3);
     }
     .lang {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       color: var(--text-dim);
+    }
+    .lang::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 8px 1px color-mix(in oklab, var(--accent-2) 70%, transparent);
     }
     .copy {
       font-family: var(--font-mono);
@@ -67,11 +80,13 @@ import { SafeHtmlPipe } from '../core/safe-html.pipe';
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 3px 9px;
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+        box-shadow var(--dur) var(--ease);
     }
     .copy:hover {
-      color: var(--gold);
-      border-color: var(--gold-soft);
+      color: var(--accent);
+      border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+      box-shadow: var(--glow);
     }
     .pre {
       margin: 0;

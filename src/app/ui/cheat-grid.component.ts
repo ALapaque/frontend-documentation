@@ -25,19 +25,25 @@ import type { CheatItem } from '../content/content.types';
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1px;
-      background: var(--border-soft);
-      border: 1px solid var(--border-soft);
+      background: var(--border);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
     }
     .cell {
-      background: var(--bg-card);
+      background: var(--glass);
+      backdrop-filter: blur(20px) saturate(1.3);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3);
       padding: 16px 18px;
+      transition: background var(--dur) var(--ease);
+    }
+    .cell:hover {
+      background: color-mix(in oklab, var(--accent) 8%, var(--glass));
     }
     .title {
       font-family: var(--font-mono);
       font-size: 13px;
-      color: var(--gold);
+      color: var(--accent);
       margin-bottom: 6px;
     }
     .desc {
@@ -48,7 +54,7 @@ import type { CheatItem } from '../content/content.types';
     .desc ::ng-deep code {
       font-family: var(--font-mono);
       font-size: 12px;
-      color: var(--gold);
+      color: var(--accent);
     }
   `,
 })

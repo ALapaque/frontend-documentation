@@ -168,6 +168,12 @@ interface RelatedView {
       display: flex;
       flex-direction: column;
       gap: 14px;
+      padding: clamp(20px, 3vw, 32px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      background: var(--glass);
+      backdrop-filter: blur(22px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
     }
     .meta {
       display: flex;
@@ -191,15 +197,15 @@ interface RelatedView {
       font-size: 28px;
       letter-spacing: -0.01em;
       margin-top: 28px;
-      scroll-margin-top: 88px;
+      scroll-margin-top: calc(var(--header-h) + 24px);
     }
     .body .sec::before {
       content: '§ ';
-      color: var(--gold);
+      color: var(--accent);
     }
     .body .h3.sub {
       margin-top: 12px;
-      scroll-margin-top: 88px;
+      scroll-margin-top: calc(var(--header-h) + 24px);
     }
     .end {
       margin-top: 48px;
@@ -219,12 +225,18 @@ interface RelatedView {
       flex-direction: column;
       gap: 6px;
       padding: 18px;
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      transition: border-color var(--dur) var(--ease);
+      background: var(--glass);
+      backdrop-filter: blur(18px) saturate(1.3);
+      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      transition: transform var(--dur) var(--ease-spring),
+        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .page:hover {
-      border-color: var(--gold-soft);
+      transform: translateY(-4px);
+      border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+      box-shadow: var(--glow);
     }
     .page.next {
       text-align: right;
@@ -243,21 +255,27 @@ interface RelatedView {
     .rel {
       padding: 7px 13px;
       border: 1px solid var(--border);
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       font-size: 14px;
       color: var(--text-soft);
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: color var(--dur) var(--ease-out),
+        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .rel:hover {
-      color: var(--gold);
-      border-color: var(--gold-soft);
+      color: var(--accent-2);
+      border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+      box-shadow: var(--glow);
     }
     .src {
       color: var(--text-dim);
       width: fit-content;
+      transition: color var(--dur) var(--ease-out);
     }
     .src:hover {
-      color: var(--gold);
+      color: var(--accent);
     }
 
     @media (min-width: 1040px) {
@@ -277,7 +295,7 @@ interface RelatedView {
       .toc {
         grid-area: toc;
         position: sticky;
-        top: 88px;
+        top: calc(var(--header-h) + 24px);
       }
     }
   `,
