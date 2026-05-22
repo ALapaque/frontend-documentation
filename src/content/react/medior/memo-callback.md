@@ -50,6 +50,8 @@ const onSelect = useCallback(() => select(id), [id]);
 ::
 :::
 
+**Pourquoi** : `memo` compare les props par **identité référentielle** (`Object.is`). Une fonction inline est recréée à chaque rendu du parent, donc `onSelect` est toujours une nouvelle référence : la comparaison échoue et `Row` re-rend malgré tout. `useCallback([id])` conserve la même référence tant qu'`id` ne change pas, ce qui laisse `memo` faire son travail.
+
 ### Idée reçue : « mémoïser partout accélère »
 
 Non. Chaque `useMemo`/`useCallback` a un coût (comparaison de deps, mémoire).

@@ -57,6 +57,8 @@ Comme partout, le rendu de liste a besoin d'une identité stable via `:key`.
 ::
 :::
 
+**Pourquoi** : sans `:key`, Vue réutilise les éléments du DOM par position (sa stratégie « in-place patch »). Quand la liste change (insertion, tri, suppression), il patche le mauvais nœud — d'où état décalé, animations cassées ou inputs qui gardent une valeur étrangère. Une `:key` stable et unique donne à chaque item une identité, et Vue déplace le nœud existant au lieu de le réécrire.
+
 :::callout{type="tip"}
 `:src` est le raccourci de `v-bind:src`, et `@click` celui de `v-on:click`. Ces
 formes courtes sont la convention — utilise-les.

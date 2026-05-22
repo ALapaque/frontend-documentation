@@ -38,6 +38,8 @@ const onClick = () => select(id);
 ::
 :::
 
+**Pourquoi** : la mémoïsation manuelle est faillible — un tableau de dépendances incomplet sert une valeur périmée, un tableau trop large annule le gain. Le compilateur analyse le flux de données réel au build et insère la mémoïsation avec des dépendances exactes, sans verbosité ni risque de désynchronisation entre le calcul et ses `deps`.
+
 ## Ce qu'il faut encore respecter
 
 Le compilateur **suppose** que ton code suit les règles de React : composants

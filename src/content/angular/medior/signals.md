@@ -64,6 +64,8 @@ user.update((u) => ({ ...u, name: 'Grace' }));
 ::
 :::
 
+**Pourquoi** : un signal détecte un changement en comparant l'ancienne et la nouvelle valeur par référence (`===`). Réassigner `user().name` mute l'objet en place : la référence stockée ne change pas, donc aucun consommateur (computed, effect, vue) n'est notifié. `update` renvoie un nouvel objet via le spread — nouvelle référence — ce qui déclenche la propagation réactive.
+
 :::callout{type="tip"}
 Quand tu hésites entre `set` et `update` : `set` pour une valeur indépendante de
 l'ancienne, `update` quand la nouvelle valeur dérive de l'actuelle.

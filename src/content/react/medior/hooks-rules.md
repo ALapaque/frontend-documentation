@@ -40,6 +40,8 @@ if (open) {
 ::
 :::
 
+**Pourquoi** : React stocke l'état des hooks dans une liste interne indexée par l'**ordre d'appel**, pas par un nom. Un `useState` derrière un `if` est appelé certains rendus et pas d'autres : l'index glisse, et React associe ton état à un autre hook — valeurs corrompues ou crash. L'appel inconditionnel au top level garantit le même ordre à chaque rendu.
+
 ## Custom hooks : factoriser la logique, pas le rendu
 
 Un custom hook est juste une fonction qui appelle des hooks. Il extrait de la

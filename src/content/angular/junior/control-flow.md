@@ -55,6 +55,8 @@ Angular comment identifier une ligne pour ne re-rendre que ce qui change.
 ::
 :::
 
+**Pourquoi** : sans `track`, Angular ne sait pas relier un élément du DOM à une donnée d'un rendu à l'autre — il détruit et recrée toutes les lignes à chaque changement de la collection. Avec `track u.id`, il identifie chaque ligne par sa clé et ne touche que les nœuds réellement ajoutés, supprimés ou déplacés. Gain de perf direct et préservation de l'état du DOM (focus, scroll, animations).
+
 :::callout{type="warn"}
 Ne `track`e pas par `$index` si la liste est réordonnable : tu perds le bénéfice
 du suivi (Angular croit que chaque position est une entité stable). `track` par

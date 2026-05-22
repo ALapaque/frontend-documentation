@@ -71,6 +71,8 @@ this.user = { ...this.user, tags: [...this.user.tags, 'vip'] };
 ::
 :::
 
+**Pourquoi** : `OnPush` ne déclenche une vérification que si la *référence* d'un `@Input` change. Un `.push()` mute le tableau existant sans créer de nouvel objet — la référence reste identique, donc la comparaison `===` interne d'Angular conclut « rien n'a changé » et la vue ne bouge pas. Le spread produit un nouvel objet, donc une nouvelle référence, qui réveille le composant.
+
 ### Idée reçue : « OnPush, c'est risqué »
 
 Au contraire. Combiné aux signals et à l'immutabilité, `OnPush` rend les re-renders

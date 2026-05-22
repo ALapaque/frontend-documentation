@@ -55,6 +55,8 @@ function useCount() {
 ::
 :::
 
+**Pourquoi** : `count.value` lit la primitive contenue à l'instant T et la copie hors de la `ref` — l'appelant reçoit un nombre figé, sans aucun lien avec les mutations futures. Retourner la `ref` elle-même transmet le conteneur réactif : Vue continue de pister les lectures de `.value` et de redéclencher les effets quand elle change.
+
 :::cheatsheet
 - title: "Nomme useX"
   desc: "Convention reconnue par l'écosystème et les outils."

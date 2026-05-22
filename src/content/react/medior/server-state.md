@@ -40,6 +40,8 @@ const { data, isPending, error } = useQuery({
 ::
 :::
 
+**Pourquoi** : la version `useEffect` réimplémente à la main, et mal, un cache : chaque montage refait le fetch, deux composants déclenchent deux requêtes identiques, et il n'y a ni état de chargement/erreur ni retry ni revalidation. `useQuery` indexe le résultat par `queryKey` dans un cache partagé : appels dédoublonnés, états dérivés (`isPending`, `error`) fournis, et invalidation/refetch gérés pour toi.
+
 ## La clé de requête est le cache
 
 `queryKey` identifie une donnée. Deux composants avec la même clé partagent une

@@ -47,6 +47,8 @@ setCount((c) => c + 1); // +2
 ::
 :::
 
+**Pourquoi** : dans un même cycle, les deux appels lisent la **même** valeur figée de `count` (closure du rendu courant), donc le second écrase le premier — résultat +1. La forme fonction `c => c + 1` reçoit la valeur la plus à jour de la file de mises à jour, d'où +2.
+
 ## useReducer : quand l'état a une logique
 
 Dès que les transitions deviennent nombreuses, `useReducer` centralise la
