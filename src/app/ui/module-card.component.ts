@@ -8,9 +8,9 @@ import type { ModuleMeta } from '../content/content.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, LevelChipComponent],
   template: `
-    <a class="card" [routerLink]="['/', meta().framework, meta().level, meta().slug]">
+    <a class="card tile tile-press" [routerLink]="['/', meta().framework, meta().level, meta().slug]">
       <div class="top">
-        <span class="num label-mono">{{ order() }}</span>
+        <span class="num label-mono tnum">{{ order() }}</span>
         @if (meta().stub) {
           <span class="label-mono soon">À venir</span>
         }
@@ -20,7 +20,7 @@ import type { ModuleMeta } from '../content/content.types';
       <div class="foot">
         <app-level-chip [level]="meta().level" />
         @if (meta().duration) {
-          <span class="label-mono dur">{{ meta().duration }} min</span>
+          <span class="label-mono dur tnum">{{ meta().duration }} min</span>
         }
       </div>
     </a>
@@ -35,14 +35,6 @@ import type { ModuleMeta } from '../content/content.types';
       gap: 10px;
       height: 100%;
       padding: 22px;
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-lg);
-      background: var(--bg-card);
-      transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: var(--gold-soft);
     }
     .top {
       display: flex;
@@ -50,13 +42,19 @@ import type { ModuleMeta } from '../content/content.types';
       align-items: center;
     }
     .num {
-      color: var(--text-dim);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 13px;
     }
     .soon {
-      color: var(--gold-soft);
+      color: #fff;
+      background: var(--accent-2);
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.1em;
     }
     .title {
-      color: var(--text);
+      color: var(--ink);
     }
     .desc {
       color: var(--text-soft);
@@ -66,6 +64,7 @@ import type { ModuleMeta } from '../content/content.types';
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
       margin-top: 4px;
     }
     .dur {

@@ -21,19 +21,19 @@ import { LEVEL_META, type Level } from '../core/levels';
       gap: 0.5em;
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--chip);
-      border: 1px solid color-mix(in oklab, var(--chip) 40%, transparent);
-      background: color-mix(in oklab, var(--chip) 8%, transparent);
-      border-radius: 999px;
+      border: 1.5px solid var(--chip);
+      background: color-mix(in oklab, var(--chip) 12%, #fff);
+      border-radius: var(--radius-pill);
       padding: 4px 10px;
       white-space: nowrap;
     }
     .dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--chip);
     }

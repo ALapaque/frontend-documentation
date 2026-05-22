@@ -8,9 +8,9 @@ interface CalloutStyle {
 }
 
 const STYLES: Record<CalloutType, CalloutStyle> = {
-  info: { colorVar: 'var(--sky)', label: 'Info' },
-  tip: { colorVar: 'var(--sage)', label: 'Astuce' },
-  warn: { colorVar: 'var(--crimson)', label: 'Attention' },
+  info: { colorVar: 'var(--accent)', label: 'Info' },
+  tip: { colorVar: 'var(--level-junior)', label: 'Astuce' },
+  warn: { colorVar: 'var(--accent-2)', label: 'Attention' },
 };
 
 /** Editorial aside. Usage: <app-callout type="tip">…</app-callout> */
@@ -28,19 +28,41 @@ const STYLES: Record<CalloutType, CalloutStyle> = {
       display: block;
     }
     .callout {
-      border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--border));
-      border-left: 2px solid var(--accent);
-      background: color-mix(in oklab, var(--accent) 5%, var(--bg-card));
+      position: relative;
+      border: 1.5px solid var(--border-strong);
+      background: color-mix(in oklab, var(--accent) 8%, #fff);
       border-radius: var(--radius);
-      padding: 16px 18px;
+      padding: 16px 18px 16px 20px;
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
+    }
+    .callout::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: var(--accent);
     }
     .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       color: var(--accent);
+      font-weight: 700;
       margin-bottom: 8px;
     }
+    .tag::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
     .body {
-      color: var(--text);
-      line-height: 1.6;
+      color: var(--text-soft);
+      line-height: 1.65;
     }
     .body ::ng-deep > *:first-child {
       margin-top: 0;

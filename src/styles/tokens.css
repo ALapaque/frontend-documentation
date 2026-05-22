@@ -1,60 +1,112 @@
 /* ============================================================
-   Design tokens — dark luxury palette
-   Single source of truth for color, radius, elevation, motion.
+   Design tokens — BENTO EDITORIAL BOLD.
+   Warm-paper light canvas · high-contrast ink · bold grotesk type ·
+   hard offset (neo-editorial) shadows · cobalt + vermillion accents.
    ============================================================ */
 
 :root {
-  /* Backgrounds */
-  --bg: #0a0a0c; /* base */
-  --bg-soft: #111114; /* sections */
-  --bg-card: #15151a; /* cartes */
-  --bg-elev: #1c1c22; /* élévations */
+  /* ---- Surfaces ---- */
+  --bg: #f1f0e9; /* warm paper base */
+  --bg-soft: #e9e7dc; /* recessed sections */
+  --bg-card: #ffffff; /* white bento tiles */
+  --bg-elev: #ffffff; /* popovers, palette */
+  --bg-inset: #16151c; /* dark code wells / contrast blocks */
+  --bg-ink: #16151c; /* full dark contrast tile */
 
-  /* Borders */
-  --border: #26262e;
-  --border-soft: #1e1e25;
+  /* ---- Ink / text ---- */
+  --ink: #16151c;
+  --text: #16151c; /* primary on light */
+  --text-soft: #56544c; /* secondary */
+  --text-dim: #6e6c62; /* labels (AA on paper) */
+  --on-ink: #f1f0e9; /* text on dark tiles */
+  --on-ink-soft: #b9b6ab;
 
-  /* Text */
-  --text: #ede7db; /* primary */
-  --text-soft: #a39e92; /* secondary */
-  --text-dim: #8a8478; /* tertiary, labels — raised from #5E5A52 for WCAG AA */
+  /* ---- Borders (editorial, strong) ---- */
+  --border: rgba(22, 21, 28, 0.16);
+  --border-soft: rgba(22, 21, 28, 0.09);
+  --border-strong: #16151c;
 
-  /* Accents */
-  --gold: #c9a876; /* accent principal, niveau Medior */
-  --gold-soft: #8a7758;
-  --sage: #8fa68e; /* niveau Junior, "tips" */
-  --rose: #d49b8a; /* "info" */
-  --crimson: #b86f6f; /* niveau Senior, warnings */
-  --sky: #7fa3b8; /* info secondaire */
+  /* ---- Accents (1 primary + 1 secondary, franc) ---- */
+  --accent: #3a36ff; /* cobalt — primary */
+  --accent-ink: #2a27cc;
+  --accent-2: #ff4d24; /* vermillion — secondary */
+  --accent-3: #d8f25b; /* lime — reserved highlight */
 
-  /* Level → color mapping (consumed by chips, badges, OG variants) */
-  --level-junior: var(--sage);
-  --level-medior: var(--gold);
-  --level-senior: var(--crimson);
+  /* Level colors — bold and distinct */
+  --level-junior: #1f9d57; /* green */
+  --level-medior: #3a36ff; /* cobalt (primary) */
+  --level-senior: #ff4d24; /* vermillion */
 
-  /* Radii */
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 16px;
+  /* Legacy "gold/*" aliases → repointed to cobalt so older
+     components adopt the new accent without edits. */
+  --gold: var(--accent);
+  --gold-bright: #5a57ff;
+  --gold-soft: var(--accent-ink);
+  --sage: var(--level-junior);
+  --rose: #ff4d24;
+  --crimson: var(--level-senior);
+  --sky: var(--accent);
 
-  /* Layout */
+  /* ---- Surface treatments ---- */
+  --sheen-gold: var(--accent); /* solid accent fill */
+  --hairline-top: linear-gradient(
+    180deg,
+    rgba(22, 21, 28, 0.04),
+    transparent 60%
+  );
+
+  /* ---- Radii (chunky bento) ---- */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 30px;
+  --radius-pill: 999px;
+
+  /* ---- Spacing (4px rhythm) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* ---- Layout ---- */
   --container: 1200px;
-  --gutter: 32px;
-  --section-gap: 100px;
+  --container-wide: 1340px;
+  --gutter: 28px;
+  --section-gap: 104px;
+  --header-h: 68px;
 
-  /* Typography families */
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body: "Inter Tight", system-ui, -apple-system, sans-serif;
+  /* ---- Elevation: HARD offset shadows (editorial signature) ---- */
+  --shadow-1: 2px 2px 0 var(--border-strong);
+  --shadow-2: 4px 4px 0 var(--border-strong);
+  --shadow-3: 7px 7px 0 var(--border-strong);
+  --shadow-soft: 0 10px 30px -12px rgba(22, 21, 28, 0.25);
+  --glow-gold: var(--shadow-2);
+
+  /* ---- Type families ---- */
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  /* Motion */
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --dur: 240ms;
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 340ms;
+  --ease: var(--ease-out);
 
-  /* Focus ring (WCAG 2.2) */
-  --focus-ring: var(--gold);
+  /* ---- Focus ---- */
+  --focus-ring: var(--accent);
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 @media (max-width: 720px) {
