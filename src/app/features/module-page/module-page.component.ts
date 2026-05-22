@@ -171,6 +171,21 @@ interface RelatedView {
       flex-direction: column;
       gap: 14px;
     }
+    .head-tile {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: clamp(24px, 3.5vw, 40px);
+    }
+    .head-tile .hl {
+      color: var(--on-ink);
+    }
+    .head-tile .lead {
+      color: var(--on-ink-soft);
+    }
+    .head-tile .meta .dim {
+      color: var(--on-ink-soft);
+    }
     .meta {
       display: flex;
       align-items: center;
@@ -189,19 +204,19 @@ interface RelatedView {
     }
     .body .sec {
       font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 28px;
-      letter-spacing: -0.01em;
+      font-weight: 700;
+      font-size: 30px;
+      letter-spacing: -0.02em;
       margin-top: 28px;
-      scroll-margin-top: 88px;
+      scroll-margin-top: calc(var(--header-h) + 24px);
     }
     .body .sec::before {
       content: '§ ';
-      color: var(--gold);
+      color: var(--accent);
     }
     .body .h3.sub {
       margin-top: 12px;
-      scroll-margin-top: 88px;
+      scroll-margin-top: calc(var(--header-h) + 24px);
     }
     .end {
       margin-top: 48px;
@@ -220,21 +235,17 @@ interface RelatedView {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      padding: 18px;
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      transition: border-color var(--dur) var(--ease);
-    }
-    .page:hover {
-      border-color: var(--gold-soft);
+      padding: 20px;
     }
     .page.next {
       text-align: right;
     }
     .page .t {
       font-family: var(--font-display);
+      font-weight: 700;
       font-size: 18px;
-      color: var(--text);
+      letter-spacing: -0.01em;
+      color: var(--ink);
     }
     .related .links {
       display: flex;
@@ -244,22 +255,28 @@ interface RelatedView {
     }
     .rel {
       padding: 7px 13px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-pill);
+      background: var(--bg-card);
       font-size: 14px;
-      color: var(--text-soft);
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      font-weight: 500;
+      color: var(--ink);
+      box-shadow: var(--shadow-1);
+      transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out),
+        background var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
     }
     .rel:hover {
-      color: var(--gold);
-      border-color: var(--gold-soft);
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-2);
+      background: var(--accent);
+      color: #fff;
     }
     .src {
       color: var(--text-dim);
       width: fit-content;
     }
     .src:hover {
-      color: var(--gold);
+      color: var(--accent);
     }
 
     @media (min-width: 1040px) {
@@ -279,7 +296,7 @@ interface RelatedView {
       .toc {
         grid-area: toc;
         position: sticky;
-        top: 88px;
+        top: calc(var(--header-h) + 24px);
       }
     }
   `,
