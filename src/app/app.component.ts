@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './layout/header.component';
 import { FooterComponent } from './layout/footer.component';
@@ -18,4 +24,26 @@ import { SearchPaletteComponent } from './ui/search-palette.component';
     <app-search-palette />
   `,
 })
-export class App {}
+export class App {
+  constructor() {
+    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      let lenis: { raf: (t: number) => void; destroy: () => void } | null = null;
+      let frame = 0;
+      // Lazy-load Lenis so it never touches the SSR/initial path.
+      void import('lenis').then(({ default: Lenis }) => {
+        lenis = new Lenis({ lerp: 0.12, smoothWheel: true });
+        const loop = (time: number) => {
+          lenis?.raf(time);
+          frame = requestAnimationFrame(loop);
+        };
+        frame = requestAnimationFrame(loop);
+      });
+      destroyRef.onDestroy(() => {
+        cancelAnimationFrame(frame);
+        lenis?.destroy();
+      });
+    });
+  }
+}
