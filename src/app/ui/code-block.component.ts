@@ -42,19 +42,31 @@ import { SafeHtmlPipe } from '../core/safe-html.pipe';
     .block {
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      background: var(--bg-card);
+      background: var(--bg-inset);
+      box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, 0.03);
       overflow: hidden;
     }
     .bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 14px;
+      padding: 9px 12px 9px 16px;
       border-bottom: 1px solid var(--border-soft);
-      background: var(--bg-soft);
+      background: color-mix(in oklab, #fff 2%, transparent);
     }
     .lang {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       color: var(--text-dim);
+    }
+    .lang::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold-metallic);
+      box-shadow: 0 0 8px -1px color-mix(in oklab, var(--gold) 60%, transparent);
     }
     .copy {
       font-family: var(--font-mono);
@@ -64,20 +76,23 @@ import { SafeHtmlPipe } from '../core/safe-html.pipe';
       color: var(--text-soft);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 3px 9px;
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      padding: 4px 10px;
+      transition: color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out),
+        background var(--dur) var(--ease-out);
     }
     .copy:hover {
-      color: var(--gold);
-      border-color: var(--gold-soft);
+      color: var(--gold-bright);
+      border-color: var(--hairline-gold);
+      background: color-mix(in oklab, var(--gold) 8%, transparent);
     }
     .pre {
       margin: 0;
-      padding: 16px 18px;
+      padding: 18px 20px;
       overflow-x: auto;
       font-family: var(--font-mono);
       font-size: 13.5px;
-      line-height: 1.6;
+      line-height: 1.65;
+      tab-size: 2;
     }
     .pre ::ng-deep pre {
       margin: 0;

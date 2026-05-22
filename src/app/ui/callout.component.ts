@@ -28,19 +28,45 @@ const STYLES: Record<CalloutType, CalloutStyle> = {
       display: block;
     }
     .callout {
-      border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--border));
-      border-left: 2px solid var(--accent);
-      background: color-mix(in oklab, var(--accent) 5%, var(--bg-card));
+      position: relative;
+      border: 1px solid color-mix(in oklab, var(--accent) 22%, var(--border));
+      background: linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--accent) 7%, var(--bg-card)),
+        var(--bg-card)
+      );
       border-radius: var(--radius);
-      padding: 16px 18px;
+      padding: 16px 18px 16px 20px;
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
+    }
+    .callout::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 18px 0 var(--accent);
     }
     .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       color: var(--accent);
       margin-bottom: 8px;
     }
+    .tag::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
     .body {
-      color: var(--text);
-      line-height: 1.6;
+      color: var(--text-soft);
+      line-height: 1.65;
     }
     .body ::ng-deep > *:first-child {
       margin-top: 0;

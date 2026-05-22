@@ -1,65 +1,119 @@
 /* ============================================================
-   Design tokens — dark luxury palette
-   Single source of truth for color, radius, elevation, motion.
+   Design tokens — CHAMPAGNE / OBSIDIAN, luxury dark.
+   Layered warm-black · metallic champagne gold · glass · soft glow.
+   The craft (depth, hairlines, glow, air) is what reads "luxury".
    ============================================================ */
 
 :root {
-  /* Backgrounds */
-  --bg: #0a0a0c; /* base */
-  --bg-soft: #111114; /* sections */
-  --bg-card: #15151a; /* cartes */
-  --bg-elev: #1c1c22; /* élévations */
+  /* ---- Surfaces (warm obsidian, finely layered) ---- */
+  --bg: #0a0908; /* deep warm black */
+  --bg-soft: #0f0e0c; /* sections */
+  --bg-card: #161412; /* warm charcoal card */
+  --bg-elev: #1d1a16; /* popovers / palette */
+  --bg-inset: #060504; /* code wells */
 
-  /* Borders */
-  --border: #26262e;
-  --border-soft: #1e1e25;
+  /* glass card fill (used with backdrop-blur) */
+  --card: color-mix(in oklab, #1a1713 78%, transparent);
+  --glass: color-mix(in oklab, #14110d 64%, transparent);
 
-  /* Text */
-  --text: #ede7db; /* primary */
-  --text-soft: #a39e92; /* secondary */
-  --text-dim: #8a8478; /* tertiary, labels — raised from #5E5A52 for WCAG AA */
+  /* ---- Text ---- */
+  --text: #efe7d7; /* warm ivory primary */
+  --text-soft: #b2a896; /* secondary */
+  --text-dim: #8c8474; /* tertiary / labels (AA on --bg) */
 
-  /* Accents */
-  --gold: #c9a876; /* accent principal, niveau Medior */
-  --gold-soft: #8a7758;
-  --sage: #8fa68e; /* niveau Junior, "tips" */
-  --rose: #d49b8a; /* "info" */
-  --crimson: #b86f6f; /* niveau Senior, warnings */
-  --sky: #7fa3b8; /* info secondaire */
+  /* ---- Champagne gold ---- */
+  --gold: #cba974;
+  --gold-bright: #e7d2a0; /* highlight / hover */
+  --gold-soft: #8c7549;
+  --gold-deep: #6f5b37;
+  /* metallic sheen for marks, CTAs, rules */
+  --gold-metallic: linear-gradient(135deg, #f0dcab 0%, #cba974 42%, #9a7f4e 100%);
+  --gold-line: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--gold) 65%, transparent) 30%,
+    color-mix(in oklab, var(--gold) 80%, transparent) 50%,
+    color-mix(in oklab, var(--gold) 65%, transparent) 70%,
+    transparent
+  );
 
-  /* Level → color mapping (consumed by chips, badges, OG variants) */
+  /* secondary accents (kept subtle, jewel-muted) */
+  --sage: #93a98f; /* junior / tips */
+  --rose: #d3a08c; /* info */
+  --crimson: #c2807c; /* senior / warn */
+  --sky: #88a6bc; /* info secondary */
+
   --level-junior: var(--sage);
   --level-medior: var(--gold);
   --level-senior: var(--crimson);
 
-  /* Radii */
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 16px;
+  /* ---- Borders / hairlines (fine, light) ---- */
+  --border: rgba(239, 231, 215, 0.1);
+  --border-soft: rgba(239, 231, 215, 0.06);
+  --border-strong: rgba(239, 231, 215, 0.16);
+  --hairline-gold: color-mix(in oklab, var(--gold) 32%, transparent);
+  --hairline-top: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.07),
+    transparent 55%
+  );
 
-  /* Layout */
-  --container: 1200px;
+  /* ---- Radii ---- */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* ---- Spacing (4px rhythm) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* ---- Layout ---- */
+  --container: 1180px;
+  --container-wide: 1320px;
   --gutter: 32px;
-  --section-gap: 100px;
+  --section-gap: 120px;
+  --header-h: 72px;
 
-  /* Typography families */
+  /* ---- Elevation: soft, diffuse (never hard) ---- */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-2: 0 18px 44px -16px rgba(0, 0, 0, 0.66);
+  --shadow-3: 0 36px 90px -24px rgba(0, 0, 0, 0.78);
+  --glow-gold: 0 0 0 1px var(--hairline-gold),
+    0 20px 60px -22px color-mix(in oklab, var(--gold) 42%, transparent);
+
+  /* ---- Type ---- */
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
   --font-body: "Inter Tight", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  /* Motion */
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --dur: 240ms;
+  /* ---- Motion (feutré) ---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.6, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast: 160ms;
+  --dur: 300ms;
+  --dur-slow: 520ms;
+  --ease: var(--ease-out);
 
-  /* Focus ring (WCAG 2.2) */
-  --focus-ring: var(--gold);
+  --focus-ring: var(--gold-bright);
 
   color-scheme: dark;
 }
 
 @media (max-width: 720px) {
   :root {
-    --gutter: 16px;
-    --section-gap: 64px;
+    --gutter: 18px;
+    --section-gap: 76px;
   }
 }

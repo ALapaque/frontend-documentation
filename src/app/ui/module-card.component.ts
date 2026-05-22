@@ -8,19 +8,23 @@ import type { ModuleMeta } from '../content/content.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, LevelChipComponent],
   template: `
-    <a class="card" [routerLink]="['/', meta().framework, meta().level, meta().slug]">
+    <a
+      class="card lux-card lux-press"
+      [routerLink]="['/', meta().framework, meta().level, meta().slug]"
+    >
       <div class="top">
-        <span class="num label-mono">{{ order() }}</span>
+        <span class="num">{{ order() }}</span>
         @if (meta().stub) {
           <span class="label-mono soon">À venir</span>
         }
       </div>
       <h3 class="h3 title">{{ meta().title }}</h3>
       <p class="desc small">{{ meta().seoDescription }}</p>
+      <hr class="rule" aria-hidden="true" />
       <div class="foot">
         <app-level-chip [level]="meta().level" />
         @if (meta().duration) {
-          <span class="label-mono dur">{{ meta().duration }} min</span>
+          <span class="label-mono dur tnum">{{ meta().duration }} min</span>
         }
       </div>
     </a>
@@ -32,17 +36,9 @@ import type { ModuleMeta } from '../content/content.types';
     .card {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       height: 100%;
-      padding: 22px;
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-lg);
-      background: var(--bg-card);
-      transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: var(--gold-soft);
+      padding: 24px;
     }
     .top {
       display: flex;
@@ -50,23 +46,42 @@ import type { ModuleMeta } from '../content/content.types';
       align-items: center;
     }
     .num {
-      color: var(--text-dim);
+      font-family: var(--font-display);
+      font-size: 26px;
+      line-height: 1;
+      background: var(--gold-metallic);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .soon {
-      color: var(--gold-soft);
+      color: var(--gold);
+      border: 1px solid var(--hairline-gold);
+      border-radius: var(--radius-pill);
+      padding: 3px 9px;
     }
     .title {
       color: var(--text);
+      transition: color var(--dur) var(--ease-out);
+    }
+    .card:hover .title {
+      color: var(--gold-bright);
     }
     .desc {
       color: var(--text-soft);
       flex: 1;
     }
+    .rule {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 2px 0;
+    }
     .foot {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 4px;
+      gap: 12px;
     }
     .dur {
       color: var(--text-dim);
