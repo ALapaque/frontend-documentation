@@ -23,27 +23,57 @@ import { FrameworkLogoComponent } from './framework-logo.component';
       display: block;
     }
     .card {
+      position: relative;
       display: flex;
       flex-direction: column;
       gap: 12px;
       height: 100%;
       padding: 28px;
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      background: var(--bg-card);
-      transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      background: var(--glass);
+      backdrop-filter: blur(22px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      overflow: hidden;
+      transition: transform var(--dur) var(--ease-spring),
+        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+    }
+    /* aurora wash that blooms on hover */
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(
+        70% 60% at 50% 0%,
+        color-mix(in oklab, var(--accent) 22%, transparent),
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity var(--dur) var(--ease-out);
+      pointer-events: none;
     }
     .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--gold-soft);
+      transform: translateY(-6px);
+      border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+      box-shadow: var(--glow);
+    }
+    .card:hover::before {
+      opacity: 1;
+    }
+    .card:hover .go {
+      transform: translateX(5px);
     }
     .mark {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 4px 16px color-mix(in oklab, var(--accent) 40%, transparent));
     }
     .name {
       font-family: var(--font-display);
-      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-size: 27px;
     }
     .tagline {
       color: var(--text-soft);
@@ -58,7 +88,8 @@ import { FrameworkLogoComponent } from './framework-logo.component';
       color: var(--text-dim);
     }
     .go {
-      color: var(--gold);
+      color: var(--accent-2);
+      transition: transform var(--dur) var(--ease-out);
     }
   `,
 })
