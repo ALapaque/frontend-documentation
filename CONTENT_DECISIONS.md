@@ -158,3 +158,32 @@ L'environnement d'exécution n'a pas de navigateur : Cmd+K, scroll-spy du TOC et
 persistance du filtre sont implémentés et SSR-safe (gardes `isPlatformBrowser`
 / `afterNextRender`), mais n'ont pas été validés visuellement. À vérifier en
 Phase 5 (audit Lighthouse + test manuel).
+
+## 2026-05-22 — Phase 4 (Contenu)
+
+### 27 modules rédigés intégralement (3 par framework × niveau)
+
+Conformément à la DoD : 3 modules complets par couple framework/niveau, le
+reste (33) en stub « À venir » avec front-matter complet. Les modules rédigés
+suivent la promesse pédagogique du niveau : métaphores + `:::compare` au Junior,
+section « Idée reçue » au Medior, section « Code source » (pointeur vers les
+internes) au Senior.
+
+### `dependency-injection` rédigé depuis zéro
+
+Le « guide DI existant » référencé par le brief étant absent du dépôt (cf.
+Phase 1), le module `angular/medior/dependency-injection` a été écrit comme
+module phare : `inject()`, hiérarchie des injecteurs, `InjectionToken`, idée
+reçue sur `providedIn: 'root'`.
+
+### Pages comparatives
+
+Les 3 comparatifs (state-management, reactivity, ssr-hydration) ont été rédigés
+en Phase 3 lors de la mise en place du pipeline `:::tri`. Ils sont complets
+(table + code parallèle + verdict + liens).
+
+### « Les 5 réflexes » : intégré comme cheatsheet
+
+Plutôt qu'une section codée en dur dans le composant, le récapitulatif de fin de
+module passe par un bloc `:::cheatsheet` au sein du markdown, à la main de
+l'auteur — cohérent avec le reste du pipeline de contenu.
