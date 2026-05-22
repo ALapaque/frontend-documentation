@@ -32,12 +32,17 @@ import type { CheatItem } from '../content/content.types';
     }
     .cell {
       background: var(--bg-card);
-      padding: 16px 18px;
+      padding: 18px 20px;
+      transition: background var(--dur) var(--ease-out);
+    }
+    .cell:hover {
+      background: color-mix(in oklab, var(--gold) 6%, var(--bg-card));
     }
     .title {
       font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--gold);
+      font-size: 12.5px;
+      letter-spacing: 0.02em;
+      color: var(--gold-bright);
       margin-bottom: 6px;
     }
     .desc {
