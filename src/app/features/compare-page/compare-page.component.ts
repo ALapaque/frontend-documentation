@@ -39,9 +39,11 @@ interface RelatedView {
     @let d = doc();
     @if (d) {
       <section class="container head reveal">
-        <app-eyebrow>Cross-framework</app-eyebrow>
-        <h1 class="display-l">{{ d.meta.title }}</h1>
-        <p class="lead">{{ d.meta.lead }}</p>
+        <div class="head-tile tile tile-ink">
+          <app-eyebrow>Cross-framework</app-eyebrow>
+          <h1 class="display-l hl">{{ d.meta.title }}</h1>
+          <p class="lead">{{ d.meta.lead }}</p>
+        </div>
       </section>
 
       <app-ornament />
@@ -100,12 +102,19 @@ interface RelatedView {
   styles: `
     .head {
       padding-top: clamp(48px, 9vw, 96px);
+    }
+    .head-tile {
       display: flex;
       flex-direction: column;
-      gap: 14px;
       align-items: flex-start;
+      gap: 14px;
+      padding: clamp(28px, 4vw, 48px);
     }
-    .lead {
+    .head-tile .hl {
+      color: var(--on-ink);
+    }
+    .head-tile .lead {
+      color: var(--on-ink-soft);
       max-width: 640px;
     }
     .body {
@@ -116,14 +125,15 @@ interface RelatedView {
     }
     .body .sec {
       font-family: var(--font-display);
-      font-weight: 400;
-      font-size: 28px;
+      font-weight: 700;
+      font-size: 30px;
+      letter-spacing: -0.02em;
       margin-top: 24px;
-      scroll-margin-top: 88px;
+      scroll-margin-top: calc(var(--header-h) + 24px);
     }
     .body .sec::before {
       content: '§ ';
-      color: var(--gold);
+      color: var(--accent);
     }
     .prose.wide {
       max-width: none;
@@ -131,7 +141,7 @@ interface RelatedView {
     .end {
       margin-top: 32px;
       padding-top: 28px;
-      border-top: 1px solid var(--border);
+      border-top: 2px solid var(--border-strong);
     }
     .links {
       display: flex;
@@ -141,15 +151,21 @@ interface RelatedView {
     }
     .rel {
       padding: 7px 13px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-pill);
+      background: var(--bg-card);
       font-size: 14px;
-      color: var(--text-soft);
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      font-weight: 500;
+      color: var(--ink);
+      box-shadow: var(--shadow-1);
+      transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out),
+        background var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
     }
     .rel:hover {
-      color: var(--gold);
-      border-color: var(--gold-soft);
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-2);
+      background: var(--accent);
+      color: #fff;
     }
     .dim {
       color: var(--text-dim);

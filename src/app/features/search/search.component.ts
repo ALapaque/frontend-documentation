@@ -21,7 +21,7 @@ interface Group {
       <app-eyebrow>Recherche</app-eyebrow>
       <h1 class="display-l">Chercher dans la <span class="accent">doc</span></h1>
 
-      <div class="field">
+      <div class="field tile tile-ink">
         <input
           type="text"
           placeholder="signals, suspense, pinia…"
@@ -41,7 +41,7 @@ interface Group {
               <span class="label-mono fw">{{ g.label }}</span>
               <div class="rows">
                 @for (r of g.results; track r.id) {
-                  <a class="row" [routerLink]="['/', r.framework, r.level, r.slug]">
+                  <a class="row tile tile-press" [routerLink]="['/', r.framework, r.level, r.slug]">
                     <div class="main">
                       <span class="title">{{ r.title }}</span>
                       <span class="desc small">{{ r.desc }}</span>
@@ -67,60 +67,58 @@ interface Group {
     .field {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin: 28px 0 36px;
-      padding: 14px 18px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--bg-card);
-      max-width: 620px;
+      gap: 14px;
+      margin: 28px 0 40px;
+      padding: 18px 22px;
+      max-width: 680px;
     }
     input {
       flex: 1;
       background: none;
       border: none;
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 18px;
+      color: var(--on-ink);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(20px, 3vw, 28px);
+      letter-spacing: -0.02em;
       outline: none;
+    }
+    input::placeholder {
+      color: var(--on-ink-soft);
+      font-weight: 700;
     }
     kbd {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 2px 6px;
+      color: var(--on-ink-soft);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-xs);
+      padding: 3px 7px;
     }
     .inlinekbd {
       padding: 1px 5px;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
     }
     .group {
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
     .fw {
       color: var(--text-dim);
       display: block;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .rows {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
     }
     .row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 14px 18px;
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      background: var(--bg-card);
-      transition: border-color var(--dur) var(--ease);
-    }
-    .row:hover {
-      border-color: var(--gold-soft);
+      padding: 16px 20px;
     }
     .main {
       display: flex;
@@ -129,7 +127,10 @@ interface Group {
       min-width: 0;
     }
     .title {
-      color: var(--text);
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
     }
     .desc {
       color: var(--text-dim);
