@@ -66,6 +66,28 @@ function useCount() {
   desc: "Utilise toValue/unref pour accepter aussi bien valeurs que refs."
 :::
 
+## Accepter des entrées flexibles
+
+Un bon composable accepte aussi bien une valeur brute qu'une `ref` ou un getter.
+La convention 3.x : typer l'argument `MaybeRefOrGetter<T>` et le lire via
+`toValue()`, qui déballe ref *et* getter de façon uniforme.
+
+```js
+import { toValue, watchEffect } from 'vue';
+export function useFetch(url /* MaybeRefOrGetter<string> */) {
+  const data = ref(null);
+  watchEffect(() => { fetch(toValue(url)).then(r => data.value = r); });
+  return { data };
+}
+// useFetch(() => `/api/${id.value}`) refetch quand id change
+```
+
+:::callout{type="warn"}
+État défini **hors** de la fonction (au niveau module) = singleton partagé. En
+SSR, ce singleton fuit entre les requêtes de différents utilisateurs. Garde
+l'état réactif **dans** le composable, sauf store global volontaire (Pinia).
+:::
+
 :::callout{type="tip"}
 VueUse est une bibliothèque de composables prêts à l'emploi (`useFetch`,
 `useEventListener`, `useLocalStorage`). Étudie son code source : c'est un manuel

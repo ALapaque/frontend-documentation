@@ -42,6 +42,42 @@ export default defineNuxtConfig({
   desc: "Sert le cache, revalide en arrière-plan."
 :::
 
+## Data fetching sans double requête
+
+Le piège SSR par excellence : fetcher dans `onMounted` ou un simple `$fetch` au
+top-level refait l'appel au client après l'avoir fait au serveur. `useAsyncData`
+/ `useFetch` exécutent la requête côté serveur, **sérialisent le résultat dans
+le payload**, puis l'hydratent côté client sans refetch.
+
+:::compare
+::bad
+```vue
+<script setup>
+// double appel : serveur ET client, état non transféré
+const data = ref(null)
+onMounted(async () => { data.value = await $fetch('/api/stats') })
+</script>
+```
+::
+::good
+```vue
+<script setup>
+// fetch une fois côté serveur, hydraté via le payload
+const { data, pending, error } = await useFetch('/api/stats')
+</script>
+```
+::
+:::
+
+**Pourquoi** : `$fetch` brut n'est rattaché à aucun cache de payload — le serveur rend, puis le client remonte et refait l'appel, doublant la charge et risquant un flash. `useFetch` enregistre le résultat sous une `key` dans `nuxtApp.payload` ; à l'hydratation, le client lit le payload au lieu de refetcher. Donne une `key` stable pour les requêtes paramétrées, et `useAsyncData` quand la logique de fetch est custom.
+
+:::callout{type="warn"}
+Toute donnée non déterministe lue pendant le rendu (`Date.now()`, `Math.random()`,
+`window`) provoque un **hydration mismatch** : le HTML serveur diffère du rendu
+client, Vue jette l'arbre et re-rend. Isole ces valeurs derrière `import.meta.client`
+ou `<ClientOnly>`.
+:::
+
 ## Server routes
 
 Nuxt embarque un serveur (Nitro). Une fonction dans `server/api/` devient un

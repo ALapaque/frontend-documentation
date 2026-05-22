@@ -60,9 +60,9 @@ C'est le hook le plus utilisé. Le composant est dans la page, les `ref` de temp
 
 ```vue
 <script setup>
-import { ref, onMounted } from 'vue'
+import { useTemplateRef, onMounted } from 'vue'
 
-const champ = ref(null)
+const champ = useTemplateRef('champ')
 
 onMounted(() => {
   champ.value.focus() // l'élément existe enfin
@@ -75,6 +75,10 @@ onMounted(() => {
 ```
 
 C'est aussi le bon endroit pour lancer un appel réseau, démarrer un timer, ou s'abonner à un évènement global.
+
+:::callout{type="tip"}
+`useTemplateRef('champ')` (Vue 3.5+) lie la ref au `ref="champ"` du template par son nom : c'est l'API recommandée, plus claire que l'ancien `const champ = ref(null)` qui reposait sur une correspondance de variable implicite. La ref reste `null` jusqu'à `onMounted`.
+:::
 
 ## onUnmounted : nettoyer ses ressources
 

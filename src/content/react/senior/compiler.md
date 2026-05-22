@@ -62,7 +62,9 @@ de dépendance exige toujours de savoir *pourquoi* un composant re-rend. L'outil
 automatise l'application, pas la compréhension.
 
 :::callout{type="tip"}
-Active le compilateur progressivement, fichier par fichier, et garde le lint
-dédié. Le code qu'il refuse d'optimiser est souvent du code qui viole
-discrètement les règles de React — un bon signal.
+Stable depuis 2025 et activé par défaut dans les chaînes d'outils récentes, il
+s'adopte fichier par fichier sur l'existant. Garde le lint dédié : le code qu'il
+refuse d'optimiser viole souvent discrètement les règles de React — un bon
+signal. Pour exclure ponctuellement un composant, la directive `'use no memo'`
+en tête de fonction sert d'échappatoire (temporaire, le temps de corriger).
 :::

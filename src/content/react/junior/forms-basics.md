@@ -66,6 +66,10 @@ function Inscription() {
 
 Aucun re-rendu à la frappe : React ignore le contenu jusqu'au submit. C'est plus léger, mais on perd la réactivité par caractère.
 
+:::callout{type="info"}
+React 19 ajoute une troisième voie pour la soumission : le prop `action` du `<form>` reçoit une fonction qui prend un `FormData`, sans gérer `value`/`onChange` à la main. C'est le sujet des modules avancés (Actions, `useActionState`) ; retenez juste qu'elle existe.
+:::
+
 ## Contrôlé vs non contrôlé
 
 :::compare

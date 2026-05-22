@@ -26,6 +26,23 @@ mettre à jour que les parties liées à un état réactif.
 Tu écris le même `<script setup>`. C'est la sortie du compilateur qui diffère :
 pas de v-nodes, pas de diff, des effets ciblés branchés directement sur le DOM.
 
+```vue
+<!-- opt-in par composant via l'attribut vapor -->
+<script setup vapor>
+import { ref } from 'vue'
+const count = ref(0)
+</script>
+
+<template>
+  <button @click="count++">{{ count }}</button>
+</template>
+```
+
+Stabilisé avec Vue 3.6, Vapor s'active par composant (`<script setup vapor>`) et
+exige le runtime Vapor au montage. Un composant Vapor et un composant v-node
+peuvent cohabiter, mais le franchissement de frontière a un coût d'interop — d'où
+le déploiement par îlots.
+
 :::cheatsheet
 - title: "Pas de virtual DOM"
   desc: "Le template devient des opérations DOM impératives générées au build."
