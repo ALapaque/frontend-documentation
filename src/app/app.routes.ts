@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { moduleResolver } from './content/content.resolver';
 
 /**
  * Every page type is code-split via `loadComponent`. Per-module markdown is
@@ -46,6 +47,7 @@ export const routes: Routes = [
       import('./features/module-page/module-page.component').then(
         (m) => m.ModulePageComponent,
       ),
+    resolve: { module: moduleResolver },
   },
   {
     path: '**',

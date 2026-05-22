@@ -61,11 +61,45 @@ src/
 └── index.html       polices + meta
 ```
 
-## Ajouter un module (à partir de la Phase 2)
+## Ajouter un module
 
-> Le pipeline de contenu markdown est livré en Phase 2. La procédure définitive
-> (front-matter, blocs custom `:::callout` / `:::compare`, index de recherche)
-> sera documentée ici à ce moment-là.
+1. Crée `src/content/{framework}/{level}/{slug}.md` (ex.
+   `src/content/angular/medior/signals.md`). L'arborescence
+   `{framework}/{level}/` est obligatoire — l'URL en découle.
+2. Renseigne le front-matter :
+
+   ```yaml
+   ---
+   title: "Signals"
+   slug: "signals"
+   framework: "angular"
+   level: "medior"        # junior | medior | senior
+   order: 1               # ordre dans le niveau
+   duration: 18           # minutes
+   prerequisites: ["data-binding"]
+   updated: 2026-05-22
+   seoTitle: "..."
+   seoDescription: "..."
+   ogVariant: "gold"      # gold | sage | crimson (déduit du niveau si absent)
+   related:
+     - { framework: "react", slug: "state-basics" }
+   stub: true             # optionnel — page "À venir"
+   ---
+   ```
+
+3. Rédige le corps. Markdown standard + blocs custom :
+
+   - `## Titre` / `### Sous-titre` → sections (alimentent le TOC)
+   - ` ```ts ` … ` ``` ` → bloc de code (coloré par Shiki, bouton copier)
+   - `:::callout{type="tip"}` … `:::` → encadré (`info` | `tip` | `warn`)
+   - `:::compare` avec `::bad` / `::good` (chacun un bloc de code) → comparatif
+   - `:::cheatsheet` (liste `- title:` / `desc:`) → grille de récap
+
+4. `npm run content` régénère le contenu compilé (lancé automatiquement avant
+   `build`/`dev`/`start`). En dev, redémarre `ng serve` après un changement de
+   `.md`.
+
+Voir `src/content/angular/medior/signals.md` pour un exemple complet.
 
 ## Niveaux
 

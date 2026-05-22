@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { SafeHtmlPipe } from '../core/safe-html.pipe';
 
 /**
  * Code presentation block.
@@ -18,6 +19,7 @@ import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-code-block',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [SafeHtmlPipe],
   template: `
     <figure class="block">
       <figcaption class="bar">
@@ -27,7 +29,7 @@ import { isPlatformBrowser } from '@angular/common';
         </button>
       </figcaption>
       @if (highlightedHtml()) {
-        <div class="pre" [innerHTML]="highlightedHtml()"></div>
+        <div class="pre" [innerHTML]="highlightedHtml() | safeHtml"></div>
       } @else {
         <pre class="pre"><code>{{ code() }}</code></pre>
       }

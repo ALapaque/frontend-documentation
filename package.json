@@ -3,8 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "content": "tsx scripts/build-content.ts",
+    "prestart": "npm run content",
     "start": "ng serve",
+    "predev": "npm run content",
     "dev": "ng serve",
+    "prebuild": "npm run content",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -30,9 +34,14 @@
     "@angular/cli": "^21.2.12",
     "@angular/compiler-cli": "^21.2.0",
     "@types/express": "^5.0.1",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.17.19",
+    "gray-matter": "^4.0.3",
     "jsdom": "^28.0.0",
+    "markdown-it": "^14.1.1",
     "prettier": "^3.8.1",
+    "shiki": "^4.1.0",
+    "tsx": "^4.22.3",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
   }

@@ -61,3 +61,54 @@ Tokens dans `src/styles/tokens.css`, importés en tête de `src/styles.css`.
 Bundle initial ~80 Ko gzip = socle Angular 21 (core + router + hydration +
 zoneless). La cible « < 80 Ko pour la home » sera ajustée en Phase 5
 (tree-shaking Shiki côté client, audit des imports).
+
+## 2026-05-22 — Phase 2 (Pipeline contenu)
+
+### Compilation du markdown au build, pas au runtime
+
+`scripts/build-content.ts` (lancé par les hooks `pre*` npm) lit chaque
+`.md`, parse le front-matter (gray-matter) et le corps en **blocs typés**,
+puis émet du JSON. Avantages : SSR-safe par construction, compatible
+prerender, et **aucune lib markdown/Shiki dans le bundle client**. Le runtime
+ne fait que charger du JSON déjà compilé.
+
+### Parser de blocs maison plutôt que markdown-it-container
+
+La syntaxe custom (`::bad`/`::good` imbriqués dans `:::compare`, liste
+YAML-ish dans `:::cheatsheet`) se prête mal aux plugins markdown-it-container.
+Un scanner ligne à ligne reconnaît 4 constructions de premier niveau :
+titres (`##`/`###`), fences ` ``` `, conteneurs `:::`, et prose. La prose est
+rendue par markdown-it (`html: true`, contenu de confiance) ; le reste devient
+des composants Angular. Les titres sont **extraits en blocs** pour alimenter le
+TOC et servir d'ancres ; le `§` doré est injecté en CSS.
+
+### Shiki au build + `SafeHtmlPipe`
+
+Thème `vesper` (dark, chaud, cohérent avec l'or). La coloration se fait au
+build. Le HTML Shiki porte ses couleurs en **styles inline**, que le sanitizer
+Angular supprime sur `[innerHTML]`. D'où `core/safe-html.pipe.ts`
+(`bypassSecurityTrustHtml`) — réservé au contenu de confiance généré au build,
+jamais à de l'HTML utilisateur.
+
+### Lazy par module via map de loaders générée
+
+`generated/loaders.ts` mappe `${fw}-${lvl}-${slug}` → `() => import(JSON)`.
+esbuild code-split donc **un chunk par module** (vérifié :
+`angular-medior-signals-json` etc.). Le `ContentService` charge à la demande,
+le resolver de route hydrate la page côté serveur. Le catalogue
+(`generated/catalogue.ts`, front-matter seul) est en revanche bundlé
+eagerement car les hubs/landing/recherche en ont besoin.
+
+### Fichiers générés gitignorés
+
+`src/content/generated/` est produit par `npm run content` (hooks
+`prebuild`/`predev`/`prestart`). **Limite connue** : `ng serve` ne surveille
+pas les `.md` ; modifier du contenu en cours de dev nécessite un redémarrage
+(ou `npm run content` à la main). Un watcher chokidar pourra être ajouté.
+
+### Blocs livrés vs prévus
+
+Implémentés : `prose`, `heading`, `code`, `callout` (info/tip/warn),
+`compare`, `cheatsheet`. Reportés (Phase 3, au besoin du contenu) :
+`metaphor` (encadré SVG) et `recap-table` dédiée — les tableaux passent pour
+l'instant par la prose markdown standard.
