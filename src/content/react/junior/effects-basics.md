@@ -65,6 +65,8 @@ useEffect(() => {
 ::
 :::
 
+**Pourquoi** : React rejoue l'effet à chaque changement de dépendance (et le Strict Mode le monte/démonte deux fois en dev) sans jamais défaire le précédent si tu ne retournes pas de cleanup. Sans le `socket.off`, chaque exécution empile un nouvel abonnement sur le même `onMsg` : le callback finit appelé en double, triple, et le handler survit même après le démontage du composant — fuite mémoire.
+
 :::callout{type="warn"}
 N'utilise pas un effet pour **dériver** un état d'un autre (calcule-le pendant
 le rendu) ni pour réagir à un clic (mets la logique dans le handler). L'effet

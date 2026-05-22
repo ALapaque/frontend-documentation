@@ -69,3 +69,5 @@ Les accolades `{ }` insèrent une **expression** JavaScript, pas une instruction
 ```
 ::
 :::
+
+**Pourquoi** : JSX n'est pas du HTML, c'est du JavaScript. `class` est un mot réservé du langage et les attributs deviennent des clés d'objet passées à `createElement`, suivant le DOM (`className`, `htmlFor`) en camelCase. La forme de gauche ne plante pas toujours mais le handler `onclick` (minuscule) n'est pas reconnu par le système d'événements synthétiques de React : le clic ne déclenche rien.

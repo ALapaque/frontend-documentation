@@ -63,6 +63,8 @@ Une erreur classique : confondre attribut HTML et propriété DOM. `[src]` lie u
 ::
 :::
 
+**Pourquoi** : `colspan` n'existe pas comme propriété DOM sur l'élément `<td>` — c'est uniquement un attribut HTML. `[colspan]` cherche donc une propriété inexistante et échoue ; `[attr.colspan]` écrit bien dans l'attribut. La règle : `[prop]` pour les propriétés du DOM, `[attr.]` pour ce qui n'existe que dans le HTML (aria, data-, colspan).
+
 :::callout{type="tip"}
 La banane dans la boîte `[()]` n'est pas magique : c'est juste un property
 binding **et** un event binding sur la même ligne. Tout composant qui expose

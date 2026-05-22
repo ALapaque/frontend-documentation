@@ -52,6 +52,8 @@ state.count++;            // OK : on garde l'accès via l'objet
 ::
 :::
 
+**Pourquoi** : `reactive` repose sur un Proxy qui intercepte les accès via l'objet. Déstructurer copie la valeur primitive **hors** du Proxy : tu perds le lien réactif, et muter la copie ne déclenche plus rien. Garder l'accès via `state` (ou passer par `toRefs`) préserve l'interception.
+
 :::cheatsheet
 - title: "ref(value)"
   desc: "Tout type. Accès via .value en script. Le choix par défaut."

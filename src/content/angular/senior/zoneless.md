@@ -68,6 +68,8 @@ ngOnInit() {
 ::
 :::
 
+**Pourquoi** : sans zone.js, plus rien ne patche `setTimeout` pour réveiller Angular — muter `this.loaded` ne notifie personne et aucun cycle de détection n'est planifié. Un `signal.set()` notifie directement le `ChangeDetectionScheduler`, qui planifie le tick. C'est ce mécanisme explicite qui remplace le réveil global et automatique qu'offrait zone.js.
+
 :::callout{type="warn"}
 Migrer vers zoneless, c'est surtout migrer ton état mutable vers des signals.
 Active d'abord `OnPush` partout, convertis les champs liés à la vue en signals,

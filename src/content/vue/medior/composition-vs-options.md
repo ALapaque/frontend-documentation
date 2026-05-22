@@ -41,6 +41,8 @@ function inc() { count.value++; }
 ::
 :::
 
+**Pourquoi** : en Options API, une même fonctionnalité est découpée entre `data`, `computed` et `methods` ; suivre une feature force des allers-retours entre des sections imposées. La Composition API n'a pas cette contrainte de structure : tu colocalises l'état, le dérivé et les fonctions d'une feature au même endroit, ce qui les rend plus faciles à lire, déplacer et extraire dans un composable.
+
 ## Le vrai gain : la réutilisation
 
 L'Options API réutilise via les mixins — au prix de collisions de noms et d'une

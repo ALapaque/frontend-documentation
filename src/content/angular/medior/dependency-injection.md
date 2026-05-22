@@ -39,6 +39,8 @@ export class OrderList {
 ::
 :::
 
+**Pourquoi** : `new OrderApi(...)` code en dur la construction de la dépendance et de ses propres dépendances — le composant est soudé à une implémentation concrète, impossible à remplacer par un mock en test. `inject(OrderApi)` délègue à l'injecteur, qui fournit l'instance configurée (souvent un singleton partagé) et que tu peux substituer via les providers. C'est l'inversion de contrôle qui rend le code testable et découplé.
+
 ## `inject()` plutôt que le constructeur
 
 La fonction `inject()` remplace l'injection par constructeur. Elle marche dans

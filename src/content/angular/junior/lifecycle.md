@@ -59,3 +59,5 @@ ngOnInit() {
 ```
 ::
 :::
+
+**Pourquoi** : le constructeur s'exécute à l'instanciation de la classe, avant qu'Angular n'ait résolu les `@Input()` — ils valent encore `undefined`. `ngOnInit` est le premier hook appelé *après* l'affectation des inputs, donc un fetch qui en dépend y part avec les bonnes valeurs. Réserve le constructeur à l'injection de dépendances.
