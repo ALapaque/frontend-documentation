@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
+import { FrameworkLogoComponent } from './framework-logo.component';
 
 @Component({
   selector: 'app-framework-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink, FrameworkLogoComponent],
   template: `
     <a [routerLink]="['/', framework()]" class="card">
-      <span class="mark" [attr.data-fw]="framework()" aria-hidden="true"></span>
+      <app-framework-logo class="mark" [framework]="framework()" />
       <h3 class="name">{{ label() }}</h3>
       <p class="small tagline">{{ tagline() }}</p>
       <div class="foot">
@@ -37,18 +38,8 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
       border-color: var(--gold-soft);
     }
     .mark {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-    }
-    .mark[data-fw='angular'] {
-      background: linear-gradient(135deg, #b86f6f, #d49b8a);
-    }
-    .mark[data-fw='react'] {
-      background: linear-gradient(135deg, #7fa3b8, #8fa68e);
-    }
-    .mark[data-fw='vue'] {
-      background: linear-gradient(135deg, #8fa68e, #c9a876);
+      width: 38px;
+      height: 38px;
     }
     .name {
       font-family: var(--font-display);
