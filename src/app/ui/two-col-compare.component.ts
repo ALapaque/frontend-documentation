@@ -35,11 +35,13 @@ import type { CodePiece } from '../content/content.types';
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
+      min-width: 0;
     }
     .col {
       display: flex;
       flex-direction: column;
       gap: 8px;
+      min-width: 0;
     }
     .bad .tag {
       color: var(--crimson);

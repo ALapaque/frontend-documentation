@@ -38,12 +38,14 @@ import { SafeHtmlPipe } from '../core/safe-html.pipe';
   styles: `
     :host {
       display: block;
+      min-width: 0;
     }
     .block {
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background: var(--bg-card);
       overflow: hidden;
+      min-width: 0;
     }
     .bar {
       display: flex;
