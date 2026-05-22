@@ -12,7 +12,7 @@ export type LevelFilter = Level | 'all';
     <div class="filter" role="group" aria-label="Filtrer par niveau">
       <button
         type="button"
-        class="chip"
+        class="chip all"
         [class.active]="selected() === 'all'"
         [attr.aria-pressed]="selected() === 'all'"
         (click)="selected.set('all')"
@@ -52,24 +52,37 @@ export type LevelFilter = Level | 'all';
       text-transform: uppercase;
       color: var(--text-soft);
       border: 1px solid var(--border);
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       padding: 6px 14px;
+      background: var(--glass);
+      backdrop-filter: blur(16px) saturate(1.3);
+      -webkit-backdrop-filter: blur(16px) saturate(1.3);
       transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
-        background var(--dur) var(--ease);
+        background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
     }
     .chip:hover {
       color: var(--text);
+      border-color: color-mix(in oklab, var(--accent) 40%, transparent);
     }
     .chip.active {
-      color: var(--chip);
-      border-color: color-mix(in oklab, var(--chip) 50%, transparent);
-      background: color-mix(in oklab, var(--chip) 10%, transparent);
+      color: #08070c;
+      border-color: transparent;
+      background: var(--chip);
+      box-shadow: 0 0 0 1px var(--chip),
+        0 6px 24px -8px color-mix(in oklab, var(--chip) 70%, transparent);
+    }
+    .chip.all.active {
+      --chip: var(--accent);
+      background: var(--accent);
     }
     .dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background: var(--chip);
+    }
+    .chip.active .dot {
+      background: #08070c;
     }
   `,
 })

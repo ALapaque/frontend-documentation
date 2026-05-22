@@ -8,14 +8,42 @@ import { SeoService } from '../../core/seo/seo.service';
   imports: [EyebrowComponent],
   template: `
     <section class="container section reveal">
-      <app-eyebrow>Colophon</app-eyebrow>
-      <h1 class="display-l">À <span class="accent">propos</span></h1>
-      <p class="lead">
-        Practical Docs — documentation pédagogique multi-framework. Angular 21,
-        SSR avec hydration, zoneless. Construit en CSS natif, typographie
-        Fraunces · Inter Tight · JetBrains Mono.
-      </p>
+      <div class="panel glass">
+        <app-eyebrow>Colophon</app-eyebrow>
+        <h1 class="display-l">À <span class="accent">propos</span></h1>
+        <p class="lead">
+          Practical Docs — documentation pédagogique multi-framework. Angular 21,
+          SSR avec hydration, zoneless. Construit en CSS natif, typographie
+          Fraunces · Inter Tight · JetBrains Mono.
+        </p>
+      </div>
     </section>
+  `,
+  styles: `
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+      padding: clamp(28px, 5vw, 56px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      background: var(--glass);
+      backdrop-filter: blur(22px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    }
+    .panel h1 {
+      margin: 0;
+    }
+    .panel .accent {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .panel .lead {
+      max-width: 60ch;
+    }
   `,
 })
 export class AboutComponent {

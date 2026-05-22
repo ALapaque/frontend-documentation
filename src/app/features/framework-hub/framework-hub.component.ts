@@ -37,9 +37,9 @@ const TAGLINE: Record<Framework, string> = {
   ],
   template: `
     @if (fw(); as framework) {
-      <section class="container head reveal">
+      <section class="container head scroll-reveal">
         <app-eyebrow>Framework · {{ label()!.toUpperCase() }}</app-eyebrow>
-        <h1 class="display-l">{{ label() }}</h1>
+        <h1 class="display-l headline"><span class="accent">{{ label() }}</span></h1>
         <p class="lead">{{ tagline() }}</p>
         <p class="label-mono dim">
           {{ modules().length }} modules · 4 niveaux · MAJ {{ updated() }}
@@ -51,14 +51,14 @@ const TAGLINE: Record<Framework, string> = {
       <section class="container section">
         <div class="bar">
           <app-level-filter [(selected)]="filter" />
-          <a routerLink="/compare/state-management" class="label-mono compare">
+          <a routerLink="/compare/state-management" class="compare label-mono">
             Comparatifs cross-framework →
           </a>
         </div>
 
-        <div class="grid">
-          @for (m of filtered(); track m.slug + m.level) {
-            <app-module-card [meta]="m" />
+        <div class="grid stagger">
+          @for (m of filtered(); track m.slug + m.level; let i = $index) {
+            <app-module-card [meta]="m" [style.--i]="i" />
           } @empty {
             <p class="dim">Aucun module pour ce niveau.</p>
           }
@@ -79,6 +79,15 @@ const TAGLINE: Record<Framework, string> = {
       gap: 14px;
       align-items: flex-start;
     }
+    .headline {
+      margin: 0;
+    }
+    .headline .accent {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
     .dim {
       color: var(--text-dim);
     }
@@ -87,11 +96,21 @@ const TAGLINE: Record<Framework, string> = {
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 28px;
+      gap: 14px 24px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-soft);
     }
     .compare {
-      color: var(--gold);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      transition: color var(--dur) var(--ease-out), gap var(--dur) var(--ease-out);
+    }
+    .compare:hover {
+      color: var(--accent-2);
+      gap: 10px;
     }
     .grid {
       display: grid;

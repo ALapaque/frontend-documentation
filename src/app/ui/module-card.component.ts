@@ -44,14 +44,21 @@ import type { ModuleMeta } from '../content/content.types';
       gap: 10px;
       height: 100%;
       padding: 22px;
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      background: var(--bg-card);
-      transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      background: var(--glass);
+      backdrop-filter: blur(18px) saturate(1.3);
+      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      transition: transform var(--dur) var(--ease-spring),
+        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .card:hover {
-      transform: translateY(-3px);
-      border-color: var(--gold-soft);
+      transform: translateY(-4px);
+      border-color: color-mix(in oklab, var(--accent) 42%, transparent);
+      box-shadow: var(--glow);
+    }
+    .card:hover .title {
+      color: var(--text);
     }
     .top {
       display: flex;

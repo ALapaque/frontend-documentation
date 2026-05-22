@@ -51,14 +51,27 @@ interface Column {
       gap: 8px;
       min-width: 0;
     }
+    .fw {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .fw::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 8px 1px currentColor;
+    }
     .fw[data-fw='angular'] {
-      color: var(--crimson);
+      color: #ff6c8a;
     }
     .fw[data-fw='react'] {
-      color: var(--sky);
+      color: var(--accent);
     }
     .fw[data-fw='vue'] {
-      color: var(--sage);
+      color: var(--accent-2);
     }
     @media (max-width: 920px) {
       .grid {

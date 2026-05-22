@@ -36,6 +36,14 @@ import { RouterLink } from '@angular/router';
       margin-top: var(--section-gap);
       padding-bottom: 48px;
     }
+    .ornament-line {
+      height: 2px;
+      border: 0;
+      margin: 0;
+      background: var(--grad);
+      opacity: 0.85;
+      box-shadow: 0 0 24px -2px color-mix(in oklab, var(--accent) 60%, transparent);
+    }
     .grid {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr;
@@ -47,6 +55,9 @@ import { RouterLink } from '@angular/router';
       flex-direction: column;
       gap: 10px;
     }
+    .col .label-mono {
+      color: var(--text);
+    }
     .col a {
       color: var(--text-soft);
       font-size: 14px;
@@ -54,7 +65,7 @@ import { RouterLink } from '@angular/router';
       transition: color var(--dur) var(--ease);
     }
     .col a:hover {
-      color: var(--gold);
+      color: var(--accent);
     }
     .dim {
       color: var(--text-dim);

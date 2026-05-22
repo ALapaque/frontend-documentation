@@ -28,15 +28,30 @@ const STYLES: Record<CalloutType, CalloutStyle> = {
       display: block;
     }
     .callout {
-      border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--border));
-      border-left: 2px solid var(--accent);
-      background: color-mix(in oklab, var(--accent) 5%, var(--bg-card));
+      position: relative;
+      border: 1px solid color-mix(in oklab, var(--accent) 28%, var(--border));
+      border-left: 3px solid var(--accent);
+      background: color-mix(in oklab, var(--accent) 8%, var(--glass));
+      backdrop-filter: blur(20px) saturate(1.3);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3);
       border-radius: var(--radius);
       padding: 16px 18px;
+      box-shadow: -8px 0 24px -16px var(--accent);
     }
     .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       color: var(--accent);
       margin-bottom: 8px;
+    }
+    .tag::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px 1px var(--accent);
     }
     .body {
       color: var(--text);

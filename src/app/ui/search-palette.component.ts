@@ -85,19 +85,35 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       justify-content: center;
       align-items: flex-start;
       padding-top: 12vh;
-      background: color-mix(in oklab, #000 65%, transparent);
-      backdrop-filter: blur(4px);
+      background: color-mix(in oklab, #050409 72%, transparent);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
     .palette {
       width: min(620px, 92vw);
       max-height: 70vh;
       display: flex;
       flex-direction: column;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-strong);
       border-radius: var(--radius-lg);
-      background: var(--bg-elev);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+      background: var(--glass-strong);
+      backdrop-filter: blur(28px) saturate(1.4);
+      -webkit-backdrop-filter: blur(28px) saturate(1.4);
+      box-shadow: var(--shadow-3);
       overflow: hidden;
+      transform-origin: top center;
+      animation: palette-in var(--dur) var(--ease-spring) both;
+    }
+    @keyframes palette-in {
+      from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.97);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .palette {
+        animation: none;
+      }
     }
     .field {
       display: flex;
@@ -136,8 +152,11 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       border-left: 2px solid transparent;
     }
     .row.active {
-      background: var(--bg-card);
-      border-left-color: var(--gold);
+      background: color-mix(in oklab, var(--accent) 18%, transparent);
+      border-left-color: var(--accent);
+    }
+    .row.active .title {
+      color: #fff;
     }
     .main {
       display: flex;

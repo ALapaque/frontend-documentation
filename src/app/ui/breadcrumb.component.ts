@@ -37,10 +37,10 @@ export interface Crumb {
       transition: color var(--dur) var(--ease);
     }
     a:hover {
-      color: var(--gold);
+      color: var(--accent);
     }
     .current {
-      color: var(--text-soft);
+      color: var(--text);
     }
   `,
 })

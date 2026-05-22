@@ -69,20 +69,33 @@ interface Group {
       align-items: center;
       gap: 12px;
       margin: 28px 0 36px;
-      padding: 14px 18px;
+      padding: 20px 24px;
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      background: var(--glass);
+      backdrop-filter: blur(22px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
       max-width: 620px;
+      transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+    }
+    .field:focus-within {
+      border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+      box-shadow: var(--glow);
     }
     input {
       flex: 1;
       background: none;
       border: none;
       color: var(--text);
-      font-family: var(--font-body);
-      font-size: 18px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 22px;
+      letter-spacing: -0.01em;
       outline: none;
+    }
+    input::placeholder {
+      color: var(--text-dim);
+      font-weight: 500;
     }
     kbd {
       font-family: var(--font-mono);
@@ -114,13 +127,18 @@ interface Group {
       justify-content: space-between;
       gap: 16px;
       padding: 14px 18px;
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      background: var(--bg-card);
-      transition: border-color var(--dur) var(--ease);
+      background: var(--glass);
+      backdrop-filter: blur(18px) saturate(1.3);
+      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      transition: transform var(--dur) var(--ease-spring),
+        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .row:hover {
-      border-color: var(--gold-soft);
+      transform: translateY(-4px);
+      border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+      box-shadow: var(--glow);
     }
     .main {
       display: flex;
