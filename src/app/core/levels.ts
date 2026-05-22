@@ -1,4 +1,4 @@
-export type Level = 'junior' | 'medior' | 'senior';
+export type Level = 'junior' | 'medior' | 'senior' | 'next';
 export type Framework = 'angular' | 'react' | 'vue';
 
 export interface LevelMeta {
@@ -9,7 +9,7 @@ export interface LevelMeta {
   readonly promise: string;
 }
 
-export const LEVELS: readonly Level[] = ['junior', 'medior', 'senior'] as const;
+export const LEVELS: readonly Level[] = ['junior', 'medior', 'senior', 'next'] as const;
 
 export const LEVEL_META: Record<Level, LevelMeta> = {
   junior: {
@@ -29,6 +29,12 @@ export const LEVEL_META: Record<Level, LevelMeta> = {
     label: 'Senior',
     colorVar: 'var(--level-senior)',
     promise: 'Implémentation, architecture, trade-offs.',
+  },
+  next: {
+    id: 'next',
+    label: 'Next',
+    colorVar: 'var(--level-next)',
+    promise: 'Ce qui arrive dans la prochaine version majeure.',
   },
 };
 

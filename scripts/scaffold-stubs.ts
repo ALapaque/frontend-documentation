@@ -10,7 +10,7 @@ import { CATALOG } from './catalog';
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..');
 const CONTENT_DIR = join(ROOT, 'src', 'content');
-const OG: Record<string, string> = { junior: 'sage', medior: 'gold', senior: 'crimson' };
+const OG: Record<string, string> = { junior: 'sage', medior: 'gold', senior: 'crimson', next: 'iris' };
 
 const orderCounter: Record<string, number> = {};
 let created = 0;

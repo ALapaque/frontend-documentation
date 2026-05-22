@@ -42,7 +42,7 @@ const TAGLINE: Record<Framework, string> = {
         <h1 class="display-l">{{ label() }}</h1>
         <p class="lead">{{ tagline() }}</p>
         <p class="label-mono dim">
-          {{ modules().length }} modules · 3 niveaux · MAJ {{ updated() }}
+          {{ modules().length }} modules · 4 niveaux · MAJ {{ updated() }}
         </p>
       </section>
 

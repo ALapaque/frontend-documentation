@@ -26,11 +26,13 @@
   --rose: #d49b8a; /* "info" */
   --crimson: #b86f6f; /* niveau Senior, warnings */
   --sky: #7fa3b8; /* info secondaire */
+  --iris: #9d92c7; /* niveau Next — bleu-violet "futur" */
 
   /* Level → color mapping (consumed by chips, badges, OG variants) */
   --level-junior: var(--sage);
   --level-medior: var(--gold);
   --level-senior: var(--crimson);
+  --level-next: var(--iris);
 
   /* Radii */
   --radius-sm: 6px;
