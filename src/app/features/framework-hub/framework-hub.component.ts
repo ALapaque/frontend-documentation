@@ -37,9 +37,9 @@ const TAGLINE: Record<Framework, string> = {
   ],
   template: `
     @if (fw(); as framework) {
-      <section class="container head reveal">
+      <section class="container head scroll-reveal">
         <app-eyebrow>Framework · {{ label()!.toUpperCase() }}</app-eyebrow>
-        <h1 class="display-l">{{ label() }}</h1>
+        <h1 class="display-l headline"><span class="accent">{{ label() }}</span></h1>
         <p class="lead">{{ tagline() }}</p>
         <p class="label-mono dim">
           {{ modules().length }} modules · 4 niveaux · MAJ {{ updated() }}
@@ -49,16 +49,16 @@ const TAGLINE: Record<Framework, string> = {
       <app-ornament />
 
       <section class="container section">
-        <div class="bar">
+        <div class="bar glass">
           <app-level-filter [(selected)]="filter" />
           <a routerLink="/compare/state-management" class="label-mono compare">
             Comparatifs cross-framework →
           </a>
         </div>
 
-        <div class="grid">
-          @for (m of filtered(); track m.slug + m.level) {
-            <app-module-card [meta]="m" />
+        <div class="grid stagger">
+          @for (m of filtered(); track m.slug + m.level; let i = $index) {
+            <app-module-card [meta]="m" [style.--i]="i" />
           } @empty {
             <p class="dim">Aucun module pour ce niveau.</p>
           }
@@ -79,6 +79,15 @@ const TAGLINE: Record<Framework, string> = {
       gap: 14px;
       align-items: flex-start;
     }
+    .headline {
+      margin: 0;
+    }
+    .headline .accent {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
     .dim {
       color: var(--text-dim);
     }
@@ -89,9 +98,19 @@ const TAGLINE: Record<Framework, string> = {
       flex-wrap: wrap;
       gap: 16px;
       margin-bottom: 28px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      background: var(--glass);
+      backdrop-filter: blur(22px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
     }
     .compare {
-      color: var(--gold);
+      color: var(--accent);
+      transition: color var(--dur) var(--ease-out);
+    }
+    .compare:hover {
+      color: var(--accent-2);
     }
     .grid {
       display: grid;
