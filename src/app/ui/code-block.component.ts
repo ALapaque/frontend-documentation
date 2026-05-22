@@ -42,19 +42,32 @@ import { SafeHtmlPipe } from '../core/safe-html.pipe';
     .block {
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      background: var(--bg-card);
+      background: var(--bg-inset);
+      box-shadow: var(--shadow-1);
       overflow: hidden;
     }
     .bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 14px;
+      padding: 9px 12px 9px 16px;
       border-bottom: 1px solid var(--border-soft);
-      background: var(--bg-soft);
+      background: color-mix(in oklab, var(--bg-soft) 70%, transparent);
     }
     .lang {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       color: var(--text-dim);
+    }
+    /* faux traffic-light dot, gold */
+    .lang::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: color-mix(in oklab, var(--gold) 55%, transparent);
+      box-shadow: 0 0 8px -1px color-mix(in oklab, var(--gold) 60%, transparent);
     }
     .copy {
       font-family: var(--font-mono);
@@ -64,20 +77,23 @@ import { SafeHtmlPipe } from '../core/safe-html.pipe';
       color: var(--text-soft);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 3px 9px;
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      padding: 4px 10px;
+      transition: color var(--dur) var(--ease-out),
+        border-color var(--dur) var(--ease-out), background var(--dur) var(--ease-out);
     }
     .copy:hover {
-      color: var(--gold);
+      color: var(--gold-bright);
       border-color: var(--gold-soft);
+      background: color-mix(in oklab, var(--gold) 8%, transparent);
     }
     .pre {
       margin: 0;
-      padding: 16px 18px;
+      padding: 18px 20px;
       overflow-x: auto;
       font-family: var(--font-mono);
       font-size: 13.5px;
-      line-height: 1.6;
+      line-height: 1.65;
+      tab-size: 2;
     }
     .pre ::ng-deep pre {
       margin: 0;

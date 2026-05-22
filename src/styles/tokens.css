@@ -1,65 +1,107 @@
 /* ============================================================
-   Design tokens — dark luxury palette
-   Single source of truth for color, radius, elevation, motion.
+   Design tokens — dark luxury, elevated.
+   4px spacing rhythm · coherent elevation scale · motion tokens.
+   Identity preserved: Fraunces + champagne gold on deep black.
    ============================================================ */
 
 :root {
-  /* Backgrounds */
-  --bg: #0a0a0c; /* base */
-  --bg-soft: #111114; /* sections */
-  --bg-card: #15151a; /* cartes */
-  --bg-elev: #1c1c22; /* élévations */
+  /* ---- Backgrounds (deepened, tighter steps for cleaner layering) ---- */
+  --bg: #08080a; /* base — a touch deeper for more contrast */
+  --bg-soft: #0e0e11; /* sections */
+  --bg-card: #131317; /* cartes */
+  --bg-elev: #1a1a20; /* élévations (popovers, palette) */
+  --bg-inset: #050506; /* code wells, inputs */
 
-  /* Borders */
+  /* ---- Borders (hairlines + a brighter hover line) ---- */
   --border: #26262e;
-  --border-soft: #1e1e25;
+  --border-soft: #1c1c23;
+  --border-strong: #34343f;
 
-  /* Text */
-  --text: #ede7db; /* primary */
-  --text-soft: #a39e92; /* secondary */
-  --text-dim: #8a8478; /* tertiary, labels — raised from #5E5A52 for WCAG AA */
+  /* ---- Text ---- */
+  --text: #efe9dd; /* primary */
+  --text-soft: #a8a294; /* secondary */
+  --text-dim: #8a8478; /* tertiary, labels — WCAG AA on --bg */
 
-  /* Accents */
-  --gold: #c9a876; /* accent principal, niveau Medior */
+  /* ---- Accents ---- */
+  --gold: #cfae7a; /* accent principal, niveau Medior — slightly brighter */
+  --gold-bright: #e3c890; /* hover/active gold */
   --gold-soft: #8a7758;
-  --sage: #8fa68e; /* niveau Junior, "tips" */
+  --sage: #93a98f; /* niveau Junior, "tips" */
   --rose: #d49b8a; /* "info" */
-  --crimson: #b86f6f; /* niveau Senior, warnings */
-  --sky: #7fa3b8; /* info secondaire */
+  --crimson: #c07676; /* niveau Senior, warnings */
+  --sky: #84a7bc; /* info secondaire */
 
-  /* Level → color mapping (consumed by chips, badges, OG variants) */
+  /* Level → color mapping */
   --level-junior: var(--sage);
   --level-medior: var(--gold);
   --level-senior: var(--crimson);
 
-  /* Radii */
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 16px;
+  /* ---- Gradients / sheens (premium surface treatments) ---- */
+  --sheen-gold: linear-gradient(135deg, var(--gold-bright), var(--gold-soft));
+  --hairline-top: linear-gradient(
+    180deg,
+    color-mix(in oklab, #ffffff 7%, transparent),
+    transparent 60%
+  );
 
-  /* Layout */
-  --container: 1200px;
+  /* ---- Radii ---- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-pill: 999px;
+
+  /* ---- Spacing scale (4px rhythm) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* ---- Layout ---- */
+  --container: 1180px;
+  --container-wide: 1320px;
   --gutter: 32px;
-  --section-gap: 100px;
+  --section-gap: 112px;
+  --header-h: 68px;
 
-  /* Typography families */
+  /* ---- Elevation (subtle, dark-tuned) ---- */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 6px 20px -6px rgba(0, 0, 0, 0.55);
+  --shadow-3: 0 18px 50px -12px rgba(0, 0, 0, 0.7);
+  --glow-gold: 0 0 0 1px color-mix(in oklab, var(--gold) 35%, transparent),
+    0 8px 30px -10px color-mix(in oklab, var(--gold) 30%, transparent);
+
+  /* ---- Typography families ---- */
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
   --font-body: "Inter Tight", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  /* Motion */
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --dur: 240ms;
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 140ms;
+  --dur: 220ms;
+  --dur-slow: 360ms;
+  /* legacy aliases (kept so existing components don't break) */
+  --ease: var(--ease-out);
 
-  /* Focus ring (WCAG 2.2) */
-  --focus-ring: var(--gold);
+  /* ---- Focus ring ---- */
+  --focus-ring: var(--gold-bright);
 
   color-scheme: dark;
 }
 
 @media (max-width: 720px) {
   :root {
-    --gutter: 16px;
-    --section-gap: 64px;
+    --gutter: 18px;
+    --section-gap: 72px;
   }
 }

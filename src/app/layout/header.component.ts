@@ -37,70 +37,103 @@ import { FRAMEWORKS, FRAMEWORK_LABEL } from '../core/levels';
       top: 0;
       z-index: 100;
       border-bottom: 1px solid var(--border-soft);
-      background: color-mix(in oklab, var(--bg) 80%, transparent);
-      backdrop-filter: blur(12px);
+      background: color-mix(in oklab, var(--bg) 72%, transparent);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
     }
     .inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 64px;
+      height: var(--header-h);
     }
     .brand {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
       font-family: var(--font-display);
-      font-size: 18px;
+      font-size: 19px;
+      letter-spacing: -0.01em;
     }
     .mark {
-      width: 14px;
-      height: 14px;
-      border-radius: 3px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+      width: 16px;
+      height: 16px;
+      border-radius: 5px;
+      background: var(--sheen-gold);
+      box-shadow: 0 0 0 1px color-mix(in oklab, var(--gold) 30%, transparent),
+        0 2px 10px -2px color-mix(in oklab, var(--gold) 50%, transparent);
+      transition: transform var(--dur) var(--ease-spring);
+    }
+    .brand:hover .mark {
+      transform: rotate(-8deg) scale(1.08);
     }
     .nav {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 2px;
     }
     .link {
-      padding: 8px 12px;
+      position: relative;
+      padding: 8px 13px;
       border-radius: var(--radius-sm);
       color: var(--text-soft);
       font-size: 14px;
-      transition: color var(--dur) var(--ease);
+      transition: color var(--dur) var(--ease-out);
     }
-    .link:hover,
+    .link::after {
+      content: "";
+      position: absolute;
+      left: 13px;
+      right: 13px;
+      bottom: 2px;
+      height: 1.5px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--dur) var(--ease-out);
+    }
+    .link:hover {
+      color: var(--text);
+    }
     .link.active {
       color: var(--text);
+    }
+    .link.active::after {
+      transform: scaleX(1);
     }
     .search {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      margin-left: 8px;
-      padding: 7px 12px;
+      margin-left: 10px;
+      padding: 7px 8px 7px 14px;
       border: 1px solid var(--border);
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       color: var(--text-soft);
       font-size: 14px;
+      transition: border-color var(--dur) var(--ease-out),
+        color var(--dur) var(--ease-out), background var(--dur) var(--ease-out);
     }
     .search:hover {
       border-color: var(--gold-soft);
       color: var(--text);
+      background: color-mix(in oklab, var(--gold) 6%, transparent);
     }
     kbd {
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--text-dim);
+      background: var(--bg-inset);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1px 5px;
+      border-radius: var(--radius-xs);
+      padding: 2px 6px;
     }
     @media (max-width: 720px) {
       .link:not(.active) {
         display: none;
+      }
+      .search {
+        padding: 7px 12px;
       }
       .search kbd {
         display: none;

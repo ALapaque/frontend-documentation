@@ -30,6 +30,7 @@ import type { ModuleMeta } from '../content/content.types';
       display: block;
     }
     .card {
+      position: relative;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -38,11 +39,42 @@ import type { ModuleMeta } from '../content/content.types';
       border: 1px solid var(--border-soft);
       border-radius: var(--radius-lg);
       background: var(--bg-card);
-      transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
+      transition: transform var(--dur) var(--ease-out),
+        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: var(--hairline-top);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    /* gold wash that fades in on hover */
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(
+        80% 60% at 50% -10%,
+        color-mix(in oklab, var(--gold) 9%, transparent),
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity var(--dur) var(--ease-out);
+      pointer-events: none;
     }
     .card:hover {
-      transform: translateY(-3px);
-      border-color: var(--gold-soft);
+      transform: translateY(-4px);
+      border-color: color-mix(in oklab, var(--gold) 40%, var(--border));
+      box-shadow: var(--shadow-2);
+    }
+    .card:hover::after {
+      opacity: 1;
     }
     .top {
       display: flex;
@@ -57,6 +89,10 @@ import type { ModuleMeta } from '../content/content.types';
     }
     .title {
       color: var(--text);
+      transition: color var(--dur) var(--ease-out);
+    }
+    .card:hover .title {
+      color: var(--gold-bright);
     }
     .desc {
       color: var(--text-soft);

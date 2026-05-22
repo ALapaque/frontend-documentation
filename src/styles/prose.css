@@ -1,29 +1,27 @@
 /* ============================================================
-   Prose — styles for rendered markdown bodies.
-   Scoped under .prose so it never leaks into UI chrome.
-   (Custom blocks render as Angular components — see Phase 2.)
+   Prose — rendered markdown bodies. Scoped under .prose.
    ============================================================ */
 
 .prose {
-  max-width: 72ch;
+  max-width: 70ch;
   color: var(--text);
+  font-size: 16.5px;
 }
 
 .prose > * + * {
-  margin-top: 1.1em;
+  margin-top: 1.05em;
 }
 
 .prose h2 {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 28px;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  font-size: clamp(24px, 3vw, 30px);
+  line-height: 1.18;
+  letter-spacing: -0.012em;
   margin-top: 2.4em;
-  scroll-margin-top: 96px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
 }
 
-/* Numbered section marker — gold § */
 .prose h2::before {
   content: "§ ";
   color: var(--gold);
@@ -32,29 +30,41 @@
 .prose h3 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 22px;
+  font-size: 21px;
   margin-top: 1.8em;
-  scroll-margin-top: 96px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
 }
 
 .prose p,
 .prose li {
   color: var(--text);
-  line-height: 1.7;
+  line-height: 1.72;
+}
+
+.prose strong {
+  color: var(--text);
+  font-weight: 600;
 }
 
 .prose a {
-  color: var(--gold);
+  color: var(--gold-bright);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: var(--gold-soft);
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in oklab, var(--gold) 45%, transparent);
+  transition: text-decoration-color var(--dur) var(--ease-out);
+}
+.prose a:hover {
+  text-decoration-color: var(--gold-bright);
 }
 
 .prose ul,
 .prose ol {
-  padding-left: 1.4em;
+  padding-left: 1.3em;
 }
-
+.prose li::marker {
+  color: var(--gold-soft);
+}
 .prose li + li {
   margin-top: 0.4em;
 }
@@ -79,7 +89,7 @@
   padding: 18px 20px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  background: var(--bg-card);
+  background: var(--bg-inset);
   font-family: var(--font-mono);
   font-size: 13.5px;
   line-height: 1.6;
@@ -88,20 +98,30 @@
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 14.5px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .prose th,
 .prose td {
   text-align: left;
-  padding: 10px 14px;
+  padding: 11px 16px;
   border-bottom: 1px solid var(--border-soft);
+}
+.prose tr:last-child td {
+  border-bottom: none;
+}
+.prose tbody tr:hover {
+  background: color-mix(in oklab, var(--gold) 4%, transparent);
 }
 
 .prose th {
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
+  background: var(--bg-soft);
 }

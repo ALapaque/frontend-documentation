@@ -22,24 +22,46 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
       display: block;
     }
     .card {
+      position: relative;
       display: flex;
       flex-direction: column;
       gap: 12px;
       height: 100%;
-      padding: 28px;
+      padding: 30px;
       border: 1px solid var(--border-soft);
       border-radius: var(--radius-lg);
       background: var(--bg-card);
-      transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
+      transition: transform var(--dur) var(--ease-out),
+        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: var(--hairline-top);
+      opacity: 0.6;
+      pointer-events: none;
     }
     .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--gold-soft);
+      transform: translateY(-5px);
+      border-color: color-mix(in oklab, var(--gold) 38%, var(--border));
+      box-shadow: var(--shadow-2);
+    }
+    .card:hover .go {
+      transform: translateX(4px);
     }
     .mark {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      box-shadow: var(--shadow-1);
+      transition: transform var(--dur) var(--ease-spring);
+    }
+    .card:hover .mark {
+      transform: scale(1.1) rotate(-6deg);
     }
     .mark[data-fw='angular'] {
       background: linear-gradient(135deg, #b86f6f, #d49b8a);
@@ -68,6 +90,7 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
     }
     .go {
       color: var(--gold);
+      transition: transform var(--dur) var(--ease-out);
     }
   `,
 })
