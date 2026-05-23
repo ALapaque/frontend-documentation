@@ -6,85 +6,137 @@ level: "next"
 order: 1
 duration: 14
 prerequisites: ["signals", "signal-forms", "zoneless"]
-updated: 2026-05-22
-seoTitle: "Angular 22 — ce qui arrive (RC)"
-seoDescription: "Angular 22 : Signal Forms stable, composants selectorless, OnPush par défaut, Vitest par défaut, zoneless consolidé. En RC."
+updated: 2026-05-23
+seoTitle: "Angular 22 — ce qui a été livré + horizon v23"
+seoDescription: "Angular 22 (mai 2026) : Signal Forms stable, zoneless par défaut, Vitest comme runner par défaut, OnPush-leaning, selectorless en route. Et ce qui vient en v23."
 ogVariant: "iris"
 related:
   - { framework: "react", slug: "react-labs" }
   - { framework: "vue", slug: "vue-3-6" }
 ---
 
-:::callout{type="warn"}
-Angular 22 est en **release candidate** (la dernière version stable est 21).
-Le contenu ci-dessous reflète la RC et peut encore bouger d'ici la sortie
-finale. Ne migre pas une app de prod sur une RC.
+:::callout{type="info"}
+Angular 22 est **sorti** (~mai 2026). Ce qui était « à venir » dans la 21 est
+maintenant stable. Ce module fait le bilan de ce que la 22 a réellement livré,
+puis regarde l'horizon v23. Tu peux migrer une app de prod, en suivant le
+guide `ng update`.
 :::
 
-## L'ère « signal-first » se confirme
+## L'ère « signal-first » est actée
 
-La 22 ne révolutionne pas : elle **stabilise** la direction prise depuis la 17.
-Le fil rouge reste les signals, et plusieurs API quittent leur statut
-expérimental.
+La 22 ne révolutionne rien : elle **entérine** la direction prise depuis la 17.
+Le fil rouge reste les signals, et la plupart des API qui étaient en preview ou
+expérimentales en 21 ont franchi le cap. Concrètement, le « modèle mental
+Angular par défaut » de mi-2026 est : signals partout, détection sans Zone,
+composants OnPush, tests sur Vitest.
 
-## Signal Forms passent stable
+## Signal Forms : stable
 
-Entrées en developer preview en 21, les **Signal Forms** visent la stabilité en
-22 : un modèle de formulaire adossé aux signals, avec validation fine et mises à
-jour ciblées (changer un champ ne re-évalue pas tout l'arbre du formulaire).
+Entrées en developer preview en 21, les **Signal Forms** sont **stables** en 22.
+Le modèle de formulaire est adossé aux signals : la valeur, l'état de validité
+et les erreurs sont des signals dérivés. Changer un champ ne re-évalue pas tout
+l'arbre du formulaire — seuls les dérivés qui dépendent de ce champ recalculent.
 
 ```ts
-import { form, required } from '@angular/forms/signals';
+import { form, required, minLength } from '@angular/forms/signals';
 
 const login = form({ email: '', password: '' }, (f) => {
   required(f.email);
   required(f.password);
+  minLength(f.password, 8);
 });
-// login.email().valid() · login().value()
+// login.email().valid()  ·  login().value()  ·  login().errors()
 ```
 
-## Composants selectorless
+**Pourquoi** ça compte : les Reactive Forms classiques reposaient sur des
+`Observable` (`valueChanges`) et un cycle de validation global. Les Signal Forms
+remplacent ce flux par de la réactivité fine et synchrone — la validation
+devient un `computed`, pas un abonnement RxJS à gérer/désabonner.
 
-Tu peux désormais **importer un composant directement dans le template**, sans
-lui donner de sélecteur string ni le déclarer dans `imports`.
+## Zoneless par défaut
+
+Le chemin **zoneless**, recommandé depuis la 21, est désormais le **défaut** des
+nouvelles apps. `zone.js` n'est plus chargé par `ng new`. La détection de
+changement est déclenchée par les signals (et par les API de scheduling
+explicites), plus par le monkey-patching des API navigateur de Zone.
 
 :::compare
 ::bad
 ```ts
-@Component({ selector: 'app-avatar', /* … */ })
-export class Avatar {}
-// + l'ajouter aux imports du composant hôte, l'utiliser via <app-avatar>
+// Pré-zoneless : Zone patche setTimeout/Promise/events et déclenche un tick
+// global à chaque tâche async — détection large, coût difficile à tracer.
+bootstrapApplication(App); // zone.js chargé implicitement
 ```
 ::
 ::good
 ```ts
-// selectorless : importé et utilisé directement (expérimental en 22)
-import { Avatar } from './avatar';
-// template: <Avatar [user]="u" />
+// Angular 22 : zoneless par défaut
+bootstrapApplication(App, {
+  providers: [provideZonelessChangeDetection()],
+});
+// Le rendu se déclenche sur écriture de signal, pas sur chaque tâche async.
 ```
 ::
 :::
 
-**Pourquoi** : le sélecteur string et la liste `imports` sont une indirection
-historique héritée des NgModules. Le selectorless relie l'usage à l'import TS
-réel — meilleure navigation IDE, tree-shaking évident, moins de boilerplate.
-C'est **expérimental** en 22.
+**Pourquoi.** Zone.js déclenchait un tick global après *toute* tâche
+asynchrone, qu'elle touche l'UI ou non — d'où des cycles de détection inutiles
+et difficiles à profiler. En zoneless, c'est l'écriture d'un signal qui marque
+les composants concernés comme à re-rendre : la détection devient ciblée et
+prévisible, et le bundle perd ~quelques dizaines de Ko (le poids de Zone).
 
-## Les autres changements notables
+## Vitest par défaut, Karma retiré
+
+Le CLI génère les nouvelles apps avec **Vitest** comme runner par défaut.
+**Karma est retiré** du flux par défaut. Vitest tourne sur Vite : démarrage
+quasi instantané, mode watch réactif, exécution des tests dans un environnement
+proche du build réel.
+
+**Pourquoi.** Karma pilotait un vrai navigateur via WebDriver — lent, fragile en
+CI, et désaligné du pipeline de build moderne (esbuild/Vite). Vitest réutilise
+la transformation Vite déjà en place, partage la config, et offre un feedback
+en millisecondes.
+
+## OnPush-leaning
+
+Les nouveaux composants penchent vers `OnPush` : avec les signals + zoneless, la
+détection « par défaut » (CheckAlways) perd son intérêt, car les signals
+notifient déjà précisément quoi re-rendre. Le générateur et les schematics
+poussent dans cette direction.
+
+## Selectorless : encore en route
+
+Le **selectorless** (importer un composant dans le template via son import TS,
+sans sélecteur string ni liste `imports`) progresse mais reste **expérimental**
+en 22 — il n'a pas atteint le stable. À surveiller pour la v23.
+
+## Le reste
 
 :::cheatsheet
-- title: "OnPush par défaut"
-  desc: "Les nouveaux composants générés naissent en OnPush — la détection fine devient la norme."
-- title: "Vitest par défaut"
-  desc: "Le CLI bascule le test runner par défaut sur Vitest (Karma définitivement derrière)."
-- title: "Zoneless consolidé"
-  desc: "Le chemin zoneless est solidifié et poussé comme défaut recommandé."
-- title: "TypeScript 5.9"
-  desc: "Support de TS 5.9."
+- title: "Signal Forms — STABLE"
+  desc: "Modèle de formulaire sur signals, validation = computed. Plus de valueChanges RxJS."
+- title: "Zoneless — défaut"
+  desc: "zone.js retiré de ng new. Détection déclenchée par les signals."
+- title: "Vitest — runner par défaut"
+  desc: "Karma retiré du flux par défaut. Tests sur le pipeline Vite."
+- title: "OnPush-leaning"
+  desc: "Les nouveaux composants penchent OnPush ; CheckAlways devient l'exception."
+- title: "Selectorless — exp."
+  desc: "Toujours expérimental en 22. Cible probable v23."
+- title: "TypeScript récent"
+  desc: "Aligné sur la dernière TS supportée du moment."
 :::
 
+## Horizon v23
+
+La v23 (~fin 2026) devrait viser la **stabilisation du selectorless**, le
+nettoyage des reliquats Zone restants dans l'écosystème, et l'extension des
+primitives signal (ressources async, formulaires plus riches). Le sens de
+l'histoire ne change pas : moins de RxJS imposé, plus de signals.
+
 :::callout{type="tip"}
-Pour te préparer : adopte les signals et `OnPush` partout, migre tes
-formulaires mentaux vers le modèle Signal Forms, et passe tes tests sur Vitest
-dès la 21 — la 22 ne fera qu'entériner ces choix.
+Pour migrer sereinement : passe en zoneless **avant** de toucher au reste (c'est
+le changement le plus structurant), bascule tes tests sur Vitest, puis migre tes
+Reactive Forms vers Signal Forms champ par champ. `ng update` gère l'essentiel
+des codemods.
 :::
