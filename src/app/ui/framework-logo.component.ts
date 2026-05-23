@@ -39,6 +39,27 @@ import type { Framework } from '../core/levels';
           />
         </svg>
       }
+      @case ('css') {
+        <svg viewBox="0 0 256 361" role="img" aria-hidden="true">
+          <path fill="#264de4" d="M127 0l116 26-19 211-97 27-97-27L11 26z" />
+          <path fill="#2965f1" d="M128 33v296l78-21 16-180z" />
+          <path
+            fill="#ebebeb"
+            d="M75 152l-3-31h56v-30H38l9 91h81v-30zm6 60l-1 1 12 4 1-1z"
+          />
+          <path
+            fill="#fff"
+            d="M127 152v30h27l-3 28-24 7v31l45-13 9-83zm0-61v30h63l1-7 2-23z"
+          />
+        </svg>
+      }
+      @case ('web') {
+        <svg viewBox="0 0 24 24" role="img" aria-hidden="true" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="#00E5C0" stroke-width="1.6" />
+          <ellipse cx="12" cy="12" rx="4.2" ry="10" stroke="#7C6CFF" stroke-width="1.6" />
+          <path d="M2.4 9h19.2M2.4 15h19.2" stroke="#00E5C0" stroke-width="1.6" />
+        </svg>
+      }
     }
   `,
   styles: `

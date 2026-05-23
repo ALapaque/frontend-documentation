@@ -24,16 +24,28 @@ const FONT_FILES = [
   join(ROOT, 'node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf'),
 ];
 
-const FRAMEWORK_LABEL: Record<string, string> = { angular: 'Angular', react: 'React', vue: 'Vue' };
-const LEVEL_LABEL: Record<string, string> = { junior: 'Junior', medior: 'Medior', senior: 'Senior' };
+const FRAMEWORK_LABEL: Record<string, string> = {
+  angular: 'Angular',
+  react: 'React',
+  vue: 'Vue',
+  web: 'Web',
+  css: 'CSS',
+};
+const SECTIONS = ['angular', 'react', 'vue', 'web', 'css'];
+const LEVEL_LABEL: Record<string, string> = {
+  junior: 'Junior',
+  medior: 'Medior',
+  senior: 'Senior',
+  next: 'Next',
+};
 const OG_COLOR: Record<string, string> = { gold: '#C9A876', sage: '#8FA68E', crimson: '#B86F6F', iris: '#9D92C7' };
 
 const xml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 function routes(): string[] {
-  const r = ['/', '/search', '/about'];
-  for (const fw of ['angular', 'react', 'vue']) r.push(`/${fw}`);
+  const r = ['/', '/search', '/about', '/compare'];
+  for (const fw of SECTIONS) r.push(`/${fw}`);
   for (const c of COMPARE_LIST) r.push(`/compare/${c.topic}`);
   for (const m of CATALOGUE) r.push(`/${m.framework}/${m.level}/${m.slug}`);
   return r;
@@ -54,7 +66,7 @@ function llms(): string {
     `> ${SITE_TAGLINE} — documentation pédagogique Angular, React et Vue, du Junior au Senior.`,
     '',
   ];
-  for (const fw of ['angular', 'react', 'vue']) {
+  for (const fw of SECTIONS) {
     lines.push(`## ${FRAMEWORK_LABEL[fw]}`, '');
     for (const m of CATALOGUE.filter((x) => x.framework === fw)) {
       const tag = m.stub ? ' (à venir)' : '';

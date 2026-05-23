@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { FRAMEWORKS, FRAMEWORK_LABEL } from '../core/levels';
+import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +18,12 @@ import { FRAMEWORKS, FRAMEWORK_LABEL } from '../core/levels';
           @for (fw of frameworks; track fw) {
             <a [routerLink]="['/', fw]" routerLinkActive="active" class="link">
               {{ labels[fw] }}
+            </a>
+          }
+          <span class="sep" aria-hidden="true"></span>
+          @for (fn of fundamentals; track fn) {
+            <a [routerLink]="['/', fn]" routerLinkActive="active" class="link">
+              {{ labels[fn] }}
             </a>
           }
           <a routerLink="/compare" routerLinkActive="active" class="link">
@@ -71,6 +77,12 @@ import { FRAMEWORKS, FRAMEWORK_LABEL } from '../core/levels';
       display: flex;
       align-items: center;
       gap: 2px;
+    }
+    .sep {
+      width: 1px;
+      height: 18px;
+      margin: 0 6px;
+      background: var(--border-strong);
     }
     .link {
       position: relative;
@@ -132,7 +144,8 @@ import { FRAMEWORKS, FRAMEWORK_LABEL } from '../core/levels';
       padding: 2px 6px;
     }
     @media (max-width: 720px) {
-      .link:not(.active) {
+      .link:not(.active),
+      .sep {
         display: none;
       }
       .search {
@@ -146,5 +159,6 @@ import { FRAMEWORKS, FRAMEWORK_LABEL } from '../core/levels';
 })
 export class HeaderComponent {
   protected readonly frameworks = FRAMEWORKS;
+  protected readonly fundamentals = FUNDAMENTALS;
   protected readonly labels = FRAMEWORK_LABEL;
 }

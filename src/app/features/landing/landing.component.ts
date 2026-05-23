@@ -13,13 +13,15 @@ import { ModuleCardComponent } from '../../ui/module-card.component';
 import { ContentService } from '../../content/content.service';
 import { SeoService } from '../../core/seo/seo.service';
 import { SITE_TAGLINE } from '../../core/site';
-import { FRAMEWORKS, type Framework, type Level } from '../../core/levels';
+import { FRAMEWORKS, FUNDAMENTALS, type Framework, type Level } from '../../core/levels';
 import type { ModuleMeta } from '../../content/content.types';
 
 const TAGLINE: Record<Framework, string> = {
   angular: 'Signals, zoneless, SSR. La discipline structurée.',
   react: 'RSC, compiler, concurrent. Le pragmatisme à grande échelle.',
   vue: 'Reactivity, Vapor, Nuxt. La progressivité élégante.',
+  web: 'HTML, fetch, événements, a11y. La plateforme sous les frameworks.',
+  css: 'Flexbox, grid, custom properties. En interactif.',
 };
 
 const FEATURED: ReadonlyArray<[Framework, Level, string]> = [
@@ -84,6 +86,24 @@ const FEATURED: ReadonlyArray<[Framework, Level, string]> = [
             [framework]="fw"
             [tagline]="tagline[fw]"
             [count]="count(fw)"
+            [style.--i]="i"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="container section">
+      <header class="sec-head scroll-reveal">
+        <span class="label-mono kicker">Fondamentaux</span>
+        <h2 class="section-h">Le <span class="accent">socle</span></h2>
+        <p class="sec-lead">Avant le framework, la plateforme. Le Web et le CSS — avec des démos interactives.</p>
+      </header>
+      <div class="cards stagger">
+        @for (fn of fundamentals; track fn; let i = $index) {
+          <app-framework-card
+            [framework]="fn"
+            [tagline]="tagline[fn]"
+            [count]="count(fn)"
             [style.--i]="i"
           />
         }
@@ -317,6 +337,10 @@ const FEATURED: ReadonlyArray<[Framework, Level, string]> = [
     .kicker {
       color: var(--accent-2);
     }
+    .sec-lead {
+      color: var(--text-soft);
+      max-width: 52ch;
+    }
     .featured {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -391,6 +415,7 @@ export class LandingComponent {
   private readonly content = inject(ContentService);
   private readonly host = inject(ElementRef);
   protected readonly frameworks = FRAMEWORKS;
+  protected readonly fundamentals = FUNDAMENTALS;
   protected readonly tagline = TAGLINE;
 
   constructor() {

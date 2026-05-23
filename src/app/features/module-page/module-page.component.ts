@@ -13,6 +13,7 @@ import { CalloutComponent } from '../../ui/callout.component';
 import { CodeBlockComponent } from '../../ui/code-block.component';
 import { TwoColCompareComponent } from '../../ui/two-col-compare.component';
 import { CheatGridComponent } from '../../ui/cheat-grid.component';
+import { CssDemoComponent } from '../../ui/css-demo.component';
 import { BreadcrumbComponent, type Crumb } from '../../ui/breadcrumb.component';
 import { TocSidebarComponent } from '../../ui/toc-sidebar.component';
 import { SafeHtmlPipe } from '../../core/safe-html.pipe';
@@ -38,6 +39,7 @@ interface RelatedView {
     CodeBlockComponent,
     TwoColCompareComponent,
     CheatGridComponent,
+    CssDemoComponent,
     BreadcrumbComponent,
     TocSidebarComponent,
     SafeHtmlPipe,
@@ -99,6 +101,9 @@ interface RelatedView {
               }
               @case ('cheatsheet') {
                 <app-cheat-grid [items]="block.items" />
+              }
+              @case ('demo') {
+                <app-css-demo [kind]="block.demo" />
               }
             }
           }
