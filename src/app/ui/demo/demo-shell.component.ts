@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 
 export type SelectControl = {
   readonly kind: 'select';
@@ -26,6 +33,12 @@ export type Control = SelectControl | RangeControl;
   selector: 'app-demo-shell',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    @if (unsupported()) {
+      <div class="compat" role="status">
+        <span class="compat-icon" aria-hidden="true">⚠</span>
+        <span>{{ compatLabel() }} La démo reste statique ; le CSS généré ci-dessous reste correct.</span>
+      </div>
+    }
     <div class="demo">
       <div class="panel">
         <span class="tag">{{ tag() }}</span>
@@ -74,6 +87,24 @@ export type Control = SelectControl | RangeControl;
   styles: `
     :host {
       display: block;
+    }
+    .compat {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text);
+      border: 1px solid color-mix(in oklab, var(--level-medior) 45%, transparent);
+      background: color-mix(in oklab, var(--level-medior) 12%, transparent);
+    }
+    .compat-icon {
+      color: var(--level-medior);
+      font-size: 15px;
+      line-height: 1.4;
     }
     .demo {
       display: grid;
@@ -199,7 +230,23 @@ export class DemoShellComponent {
   readonly controls = input.required<readonly Control[]>();
   readonly values = input.required<Record<string, string | number>>();
   readonly css = input<string>('');
+  /** A CSS declaration to feature-test, e.g. `animation-timeline: scroll()`. */
+  readonly compatTest = input<string>('');
+  /** Message shown when `compatTest` is unsupported by the current browser. */
+  readonly compatLabel = input<string>('');
 
   readonly set = output<{ prop: string; value: string | number }>();
   readonly reset = output<void>();
+
+  /** Stays false during SSR/hydration; set on the client to avoid flicker. */
+  protected readonly unsupported = signal(false);
+
+  constructor() {
+    afterNextRender(() => {
+      const test = this.compatTest();
+      if (test && typeof CSS !== 'undefined' && !CSS.supports(test)) {
+        this.unsupported.set(true);
+      }
+    });
+  }
 }

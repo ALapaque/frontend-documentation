@@ -22,6 +22,8 @@ const SNIPPET: Record<string, string> = {
       [controls]="controls"
       [values]="state()"
       [css]="css()"
+      compatTest="animation-timeline: scroll()"
+      compatLabel="Les scroll-driven animations nécessitent un navigateur Chromium 115+ (Chrome / Edge) ; Safari et Firefox stables ne les supportent pas encore."
       (set)="set($event)"
       (reset)="reset()"
     >
