@@ -12,6 +12,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: '', renderMode: RenderMode.Prerender },
   { path: 'search', renderMode: RenderMode.Prerender },
   { path: 'about', renderMode: RenderMode.Prerender },
+  { path: 'compare', renderMode: RenderMode.Prerender },
   {
     path: 'compare/:topic',
     renderMode: RenderMode.Prerender,

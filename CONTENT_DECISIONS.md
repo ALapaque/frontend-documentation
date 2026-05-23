@@ -298,3 +298,18 @@ RC/beta/expérimental) :
   cœur réactif sur alien-signals, intégration Vite. **Vue 3.6 en beta.**
 
 Ces sujets sont volatils : à re-vérifier à chaque sortie majeure.
+
+## 2026-05-22 — Section « Pièges & discipline » + index /compare
+
+Ajout de **7 guides cross-framework** (format compare/`:::tri`) sur les pièges et
+la discipline, transversaux aux 3 frameworks : `memory-leaks`, `avoiding-effects`,
+`race-conditions`, `derived-state`, `stale-closures`, `unmount-safety`,
+`over-optimization`. Chacun : symptôme par framework (table) → correctif (`:::tri`)
+→ verdict. Vérifiés contre les API 2026 (takeUntilDestroyed/DestroyRef,
+AbortController + cleanup useEffect, onUnmounted/effectScope, useEffectEvent, etc.).
+
+Nouvelle page **index `/compare`** (`CompareIndexComponent`) listant tous les
+comparatifs (lue depuis `ContentService.compareTopics`), prerendue. Les liens
+« Comparer » (header) et « Comparatifs cross-framework » (hub) pointent désormais
+vers `/compare` au lieu d'un topic en dur. Catalogue : 8 → **15 comparatifs**,
+85 → **93 routes**.

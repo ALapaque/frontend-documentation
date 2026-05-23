@@ -51,7 +51,7 @@ const TAGLINE: Record<Framework, string> = {
       <section class="container section">
         <div class="bar">
           <app-level-filter [(selected)]="filter" />
-          <a routerLink="/compare/state-management" class="compare label-mono">
+          <a routerLink="/compare" class="compare label-mono">
             Comparatifs cross-framework →
           </a>
         </div>

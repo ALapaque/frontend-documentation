@@ -28,6 +28,14 @@ export const routes: Routes = [
     title: 'À propos — Practical Docs',
   },
   {
+    path: 'compare',
+    loadComponent: () =>
+      import('./features/compare-index/compare-index.component').then(
+        (m) => m.CompareIndexComponent,
+      ),
+    title: 'Comparatifs cross-framework — Practical Docs',
+  },
+  {
     path: 'compare/:topic',
     loadComponent: () =>
       import('./features/compare-page/compare-page.component').then(

@@ -20,7 +20,7 @@ import { FRAMEWORKS, FRAMEWORK_LABEL } from '../core/levels';
               {{ labels[fw] }}
             </a>
           }
-          <a routerLink="/compare/state-management" routerLinkActive="active" class="link">
+          <a routerLink="/compare" routerLinkActive="active" class="link">
             Comparer
           </a>
           <a routerLink="/search" class="search" aria-label="Rechercher">
