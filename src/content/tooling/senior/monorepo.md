@@ -127,6 +127,65 @@ dois déclarer `outputs` et les `env` lues : un output non déclaré ne sera pas
 restauré, une env non déclarée crée des cache hits faux-positifs.
 :::
 
+## Nx vs Turborepo : deux philosophies
+
+Turborepo et Nx partagent le même socle — graphe de tâches + cache d'entrées —
+mais divergent sur la quantité d'abstraction. Turborepo est **minimal et
+transparent** : tu décris tes tâches dans `turbo.json`, il les ordonne et les
+cache, point. Nx est **intégré et opinionné** : il infère le graphe de projets
+en lisant tes imports, et ajoute une couche d'outillage par-dessus.
+
+Ce que Nx apporte en propre :
+
+- **Project graph inféré** — Nx analyse les `import`/`require` réels pour
+  déduire les dépendances entre projets, là où Turborepo s'appuie surtout sur
+  les dépendances déclarées dans les `package.json`. `nx graph` ouvre une vue
+  interactive du graphe.
+- **Executors & generators** — des tâches paramétrées (`@nx/vite:build`) et du
+  scaffolding (`nx g @nx/react:lib ui`) qui génèrent un projet déjà câblé
+  (config, lint, test). Turborepo ne scaffolde rien.
+- **Plugins** — `@nx/vite`, `@nx/react`, `@nx/eslint`… qui posent des
+  `targetDefaults` et l'inférence de cibles sans config manuelle par projet.
+- **Module boundaries** — une règle ESLint (`@nx/enforce-module-boundaries`)
+  qui interdit les imports interdits selon des **tags**.
+
+```json
+// nx.json — cibles par défaut + cache
+{
+  "targetDefaults": {
+    "build": { "dependsOn": ["^build"], "cache": true },
+    "test": { "cache": true }
+  }
+}
+```
+
+```jsonc
+// règle de frontière : une lib "feature" ne peut pas importer une "app",
+// et "ui" reste pur (pas d'import de "data-access")
+"@nx/enforce-module-boundaries": ["error", {
+  "depConstraints": [
+    { "sourceTag": "type:ui", "onlyDependOnLibsWithTags": ["type:ui", "type:util"] },
+    { "sourceTag": "scope:web", "onlyDependOnLibsWithTags": ["scope:web", "scope:shared"] }
+  ]
+}]
+```
+
+:::callout{type="tip"}
+La fonctionnalité qui justifie souvent Nx à grande échelle, c'est la
+**Distributed Task Execution (DTE)** via Nx Cloud : au lieu de cacher seulement,
+Nx répartit les tâches d'un même run sur plusieurs agents CI en parallèle, en
+respectant le graphe, puis recolle les résultats. Turborepo offre le cache
+distant (Remote Cache) mais pas la distribution native des tâches sur des agents.
+:::
+
+**Le trade-off.** Turborepo se glisse dans un repo existant en une après-midi et
+ne te cache rien : peu de magie, peu de lock-in. Nx demande d'adopter sa
+structure et son vocabulaire (projects, targets, tags, executors), mais te rend
+en échange l'inférence du graphe, le scaffolding cohérent, les frontières
+applicables et la distribution CI. Règle simple : **Turborepo** pour accélérer
+un monorepo dont tu gardes la main sur l'outillage ; **Nx** quand tu veux une
+plateforme de dev standardisée sur beaucoup d'équipes et de projets.
+
 ## Build affecté seulement
 
 En CI, ne reconstruis que ce que le diff touche, transitivement.
@@ -183,6 +242,10 @@ paquet à partir des intentions, pas à partir de messages de commit interprét�
   desc: "Ce que le cache doit sauver/restaurer ; non déclaré = perdu."
 - title: "...[origin/main]"
   desc: "Set affecté = paquets changés + dépendants transitifs."
+- title: "nx graph"
+  desc: "Visualise le project graph inféré depuis les imports réels."
+- title: "@nx/enforce-module-boundaries"
+  desc: "Règle ESLint : interdit les imports selon les tags des projets."
 - title: "changeset version"
   desc: "Applique les bumps et les propage aux consommateurs."
 :::
