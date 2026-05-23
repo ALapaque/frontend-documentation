@@ -22,11 +22,13 @@ const SNIPPET: Record<string, string> = {
       [controls]="controls"
       [values]="state()"
       [css]="css()"
+      compatTest="animation-timeline: scroll()"
+      compatLabel="Les scroll-driven animations nécessitent un navigateur Chromium 115+ (Chrome / Edge) ; Safari et Firefox stables ne les supportent pas encore."
       (set)="set($event)"
       (reset)="reset()"
     >
       <div preview class="preview">
-        <div class="scroller">
+        <div class="scroller" data-lenis-prevent>
           <div
             class="target"
             [class.fade]="effect() === 'fade'"
@@ -54,6 +56,7 @@ const SNIPPET: Record<string, string> = {
     .scroller {
       height: 220px;
       overflow-y: auto;
+      overscroll-behavior: contain;
       border-radius: var(--radius-sm);
       background: var(--bg-inset);
       scroll-timeline: --sc block;

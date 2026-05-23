@@ -20,6 +20,8 @@ const INIT: Record<string, string | number> = { l: 64, c: 19, h: 280, mix: 30 };
       [controls]="controls"
       [values]="state()"
       [css]="css()"
+      compatTest="color: oklch(0% 0 0)"
+      compatLabel="oklch() et color-mix() nécessitent Chrome 111+, Safari 16.4+ ou Firefox 113+."
       (set)="set($event)"
       (reset)="reset()"
     >
