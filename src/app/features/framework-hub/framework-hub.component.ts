@@ -25,6 +25,7 @@ const TAGLINE: Record<Framework, string> = {
   vue: 'Reactivity, Vapor, Nuxt. La progressivité élégante.',
   web: 'HTML, fetch, événements, a11y. La plateforme sous les frameworks.',
   css: 'Flexbox, grid, custom properties. La mise en page, en interactif.',
+  typescript: 'Types, génériques, inférence, utility types. Le langage qui tient le code à grande échelle.',
 };
 
 @Component({
