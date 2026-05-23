@@ -16,7 +16,7 @@ import { ModuleCardComponent } from '../../ui/module-card.component';
 import { LevelFilterComponent, type LevelFilter } from '../../ui/level-filter.component';
 import { ContentService } from '../../content/content.service';
 import { SeoService } from '../../core/seo/seo.service';
-import { FRAMEWORK_LABEL, isFramework, type Framework } from '../../core/levels';
+import { FRAMEWORK_LABEL, isFramework, LEVELS, type Framework } from '../../core/levels';
 
 const FILTER_KEY = 'pd:level-filter';
 const TAGLINE: Record<Framework, string> = {
@@ -134,7 +134,11 @@ export class FrameworkHubComponent {
 
   protected readonly modules = computed(() => {
     const fw = this.fw();
-    return fw ? [...this.content.forFramework(fw)].sort((a, b) => a.order - b.order) : [];
+    if (!fw) return [];
+    return [...this.content.forFramework(fw)].sort(
+      (a, b) =>
+        LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level) || a.order - b.order,
+    );
   });
 
   protected readonly filtered = computed(() => {
