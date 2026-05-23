@@ -256,4 +256,34 @@ button {
       transform: translateY(12px) scale(0.994);
     }
   }
+
+  /* ---- Shared-element morph: module card <-> article header ---- */
+  ::view-transition-group(module-hero) {
+    animation-duration: 0.5s;
+    animation-timing-function: var(--ease-spring, cubic-bezier(0.34, 1.3, 0.5, 1));
+  }
+  /* Cross-fade the captured pixels a touch faster than the box morphs, so the
+     size/position change reads as one continuous element rather than two. */
+  ::view-transition-old(module-hero),
+  ::view-transition-new(module-hero) {
+    height: 100%;
+    animation-duration: 0.4s;
+    animation-timing-function: var(--ease-out);
+  }
+  ::view-transition-old(module-hero) {
+    animation-name: vt-morph-old;
+  }
+  ::view-transition-new(module-hero) {
+    animation-name: vt-morph-new;
+  }
+  @keyframes vt-morph-old {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes vt-morph-new {
+    from {
+      opacity: 0;
+    }
+  }
 }
