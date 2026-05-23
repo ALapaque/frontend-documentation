@@ -1,14 +1,20 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
 import { FrameworkLogoComponent } from './framework-logo.component';
+import { MorphService } from '../core/morph.service';
 
 @Component({
   selector: 'app-framework-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, FrameworkLogoComponent],
   template: `
-    <a [routerLink]="['/', framework()]" class="card">
+    <a
+      [routerLink]="['/', framework()]"
+      class="card"
+      [style.view-transition-name]="morph.activeKey() === key() ? 'section-hero' : null"
+      (click)="morph.activeKey.set(key())"
+    >
       <app-framework-logo class="mark" [framework]="framework()" />
       <h3 class="name">{{ label() }}</h3>
       <p class="small tagline">{{ tagline() }}</p>
@@ -94,9 +100,11 @@ import { FrameworkLogoComponent } from './framework-logo.component';
   `,
 })
 export class FrameworkCardComponent {
+  protected readonly morph = inject(MorphService);
   readonly framework = input.required<Framework>();
   readonly tagline = input.required<string>();
   readonly count = input.required<number>();
+  protected readonly key = computed(() => `section-${this.framework()}`);
   protected label(): string {
     return FRAMEWORK_LABEL[this.framework()];
   }

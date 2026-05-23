@@ -39,7 +39,7 @@ interface RelatedView {
     @let d = doc();
     @if (d) {
       <section class="container head scroll-reveal">
-        <div class="head-card glass">
+        <div class="head-card glass" style="view-transition-name: compare-hero">
           <app-eyebrow>Cross-framework</app-eyebrow>
           <h1 class="display-l">{{ d.meta.title }}</h1>
           <p class="lead">{{ d.meta.lead }}</p>

@@ -262,23 +262,36 @@ button {
     }
   }
 
-  /* ---- Shared-element morph: module card <-> article header ---- */
-  ::view-transition-group(module-hero) {
+  /* ---- Shared-element morph: card <-> page header ----
+     module-hero  : hub/featured card  <-> article header
+     compare-hero : /compare card       <-> compare header
+     section-hero : framework card      <-> hub header */
+  ::view-transition-group(module-hero),
+  ::view-transition-group(compare-hero),
+  ::view-transition-group(section-hero) {
     animation-duration: 0.72s;
     animation-timing-function: var(--vt-ease);
   }
   /* Cross-fade spans most of the box morph so the size/position change reads
      as one continuous element rather than two snapping into place. */
   ::view-transition-old(module-hero),
-  ::view-transition-new(module-hero) {
+  ::view-transition-new(module-hero),
+  ::view-transition-old(compare-hero),
+  ::view-transition-new(compare-hero),
+  ::view-transition-old(section-hero),
+  ::view-transition-new(section-hero) {
     height: 100%;
     animation-duration: 0.72s;
     animation-timing-function: var(--vt-ease);
   }
-  ::view-transition-old(module-hero) {
+  ::view-transition-old(module-hero),
+  ::view-transition-old(compare-hero),
+  ::view-transition-old(section-hero) {
     animation-name: vt-morph-old;
   }
-  ::view-transition-new(module-hero) {
+  ::view-transition-new(module-hero),
+  ::view-transition-new(compare-hero),
+  ::view-transition-new(section-hero) {
     animation-name: vt-morph-new;
   }
   @keyframes vt-morph-old {

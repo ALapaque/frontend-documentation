@@ -41,7 +41,7 @@ const TAGLINE: Record<Framework, string> = {
   ],
   template: `
     @if (fw(); as framework) {
-      <section class="container head scroll-reveal">
+      <section class="container head scroll-reveal" style="view-transition-name: section-hero">
         <app-eyebrow>Framework · {{ label()!.toUpperCase() }}</app-eyebrow>
         <h1 class="display-l headline"><span class="accent">{{ label() }}</span></h1>
         <p class="lead">{{ tagline() }}</p>
