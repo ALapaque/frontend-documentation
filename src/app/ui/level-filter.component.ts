@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { LEVEL_META, LEVELS, type Level } from '../core/levels';
 
 export type LevelFilter = Level | 'all';
@@ -19,7 +19,7 @@ export type LevelFilter = Level | 'all';
       >
         Tous
       </button>
-      @for (lvl of levels; track lvl) {
+      @for (lvl of levels(); track lvl) {
         <button
           type="button"
           class="chip"
@@ -88,6 +88,6 @@ export type LevelFilter = Level | 'all';
 })
 export class LevelFilterComponent {
   readonly selected = model<LevelFilter>('all');
-  protected readonly levels = LEVELS;
+  readonly levels = input<readonly Level[]>(LEVELS);
   protected readonly meta = LEVEL_META;
 }

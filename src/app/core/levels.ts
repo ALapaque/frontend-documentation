@@ -1,5 +1,8 @@
 export type Level = 'junior' | 'medior' | 'senior' | 'next';
-export type Framework = 'angular' | 'react' | 'vue';
+export type JsFramework = 'angular' | 'react' | 'vue';
+export type Fundamental = 'web' | 'css';
+/** A content section: the three JS frameworks plus the platform fundamentals. */
+export type Framework = JsFramework | Fundamental;
 
 export interface LevelMeta {
   readonly id: Level;
@@ -38,12 +41,19 @@ export const LEVEL_META: Record<Level, LevelMeta> = {
   },
 };
 
-export const FRAMEWORKS: readonly Framework[] = ['angular', 'react', 'vue'] as const;
+/** The three JS frameworks, used for the main nav and landing cards. */
+export const FRAMEWORKS: readonly JsFramework[] = ['angular', 'react', 'vue'] as const;
+/** Platform fundamentals — top-level sections that share the level model. */
+export const FUNDAMENTALS: readonly Fundamental[] = ['web', 'css'] as const;
+/** Every content section (frameworks + fundamentals). */
+export const SECTIONS: readonly Framework[] = [...FRAMEWORKS, ...FUNDAMENTALS];
 
 export const FRAMEWORK_LABEL: Record<Framework, string> = {
   angular: 'Angular',
   react: 'React',
   vue: 'Vue',
+  web: 'Web',
+  css: 'CSS',
 };
 
 export function isLevel(value: string): value is Level {
@@ -51,5 +61,9 @@ export function isLevel(value: string): value is Level {
 }
 
 export function isFramework(value: string): value is Framework {
-  return (FRAMEWORKS as readonly string[]).includes(value);
+  return (SECTIONS as readonly string[]).includes(value);
+}
+
+export function isFundamental(value: string): value is Fundamental {
+  return (FUNDAMENTALS as readonly string[]).includes(value);
 }

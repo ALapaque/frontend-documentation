@@ -1,7 +1,7 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import { CATALOGUE } from '../content/generated/catalogue';
 import { COMPARE_LIST } from '../content/generated/compare-list';
-import { FRAMEWORKS } from './core/levels';
+import { SECTIONS } from './core/levels';
 
 /**
  * Every content route is statically prerendered at build from the catalogue,
@@ -21,7 +21,7 @@ export const serverRoutes: ServerRoute[] = [
   {
     path: ':framework',
     renderMode: RenderMode.Prerender,
-    getPrerenderParams: async () => FRAMEWORKS.map((framework) => ({ framework })),
+    getPrerenderParams: async () => SECTIONS.map((framework) => ({ framework })),
   },
   {
     path: ':framework/:level/:slug',

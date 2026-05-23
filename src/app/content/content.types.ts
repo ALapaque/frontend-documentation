@@ -51,6 +51,7 @@ export type ContentBlock =
   | { readonly kind: 'callout'; readonly variant: 'info' | 'tip' | 'warn'; readonly html: string }
   | { readonly kind: 'compare'; readonly bad: CodePiece; readonly good: CodePiece }
   | { readonly kind: 'cheatsheet'; readonly items: readonly CheatItem[] }
+  | { readonly kind: 'demo'; readonly demo: 'flexbox' | 'grid' }
   | ({ readonly kind: 'tricode'; readonly title?: string } & TriCode);
 
 export interface TocEntry {

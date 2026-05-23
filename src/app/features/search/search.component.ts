@@ -4,7 +4,7 @@ import { EyebrowComponent } from '../../ui/eyebrow.component';
 import { LevelChipComponent } from '../../ui/level-chip.component';
 import { SearchService, type SearchResult } from '../../core/search-index/search.service';
 import { SeoService } from '../../core/seo/seo.service';
-import { FRAMEWORKS, FRAMEWORK_LABEL, type Framework } from '../../core/levels';
+import { SECTIONS, FRAMEWORK_LABEL, type Framework } from '../../core/levels';
 
 interface Group {
   readonly framework: Framework;
@@ -165,7 +165,7 @@ export class SearchComponent {
 
   protected readonly groups = computed<Group[]>(() => {
     const results = this.search.search(this.debounced(), 50);
-    return FRAMEWORKS.map((fw) => ({
+    return SECTIONS.map((fw) => ({
       framework: fw,
       label: FRAMEWORK_LABEL[fw],
       results: results.filter((r) => r.framework === fw),

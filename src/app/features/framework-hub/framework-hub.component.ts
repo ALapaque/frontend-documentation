@@ -16,13 +16,15 @@ import { ModuleCardComponent } from '../../ui/module-card.component';
 import { LevelFilterComponent, type LevelFilter } from '../../ui/level-filter.component';
 import { ContentService } from '../../content/content.service';
 import { SeoService } from '../../core/seo/seo.service';
-import { FRAMEWORK_LABEL, isFramework, LEVELS, type Framework } from '../../core/levels';
+import { FRAMEWORK_LABEL, isFramework, LEVELS, type Framework, type Level } from '../../core/levels';
 
 const FILTER_KEY = 'pd:level-filter';
 const TAGLINE: Record<Framework, string> = {
   angular: 'Signals, zoneless, SSR. La discipline structurée.',
   react: 'RSC, compiler, concurrent. Le pragmatisme à grande échelle.',
   vue: 'Reactivity, Vapor, Nuxt. La progressivité élégante.',
+  web: 'HTML, fetch, événements, a11y. La plateforme sous les frameworks.',
+  css: 'Flexbox, grid, custom properties. La mise en page, en interactif.',
 };
 
 @Component({
@@ -42,7 +44,7 @@ const TAGLINE: Record<Framework, string> = {
         <h1 class="display-l headline"><span class="accent">{{ label() }}</span></h1>
         <p class="lead">{{ tagline() }}</p>
         <p class="label-mono dim">
-          {{ modules().length }} modules · 4 niveaux · MAJ {{ updated() }}
+          {{ modules().length }} modules · {{ levels().length }} niveaux · MAJ {{ updated() }}
         </p>
       </section>
 
@@ -50,7 +52,7 @@ const TAGLINE: Record<Framework, string> = {
 
       <section class="container section">
         <div class="bar">
-          <app-level-filter [(selected)]="filter" />
+          <app-level-filter [(selected)]="filter" [levels]="levels()" />
           <a routerLink="/compare" class="compare label-mono">
             Comparatifs cross-framework →
           </a>
@@ -139,6 +141,11 @@ export class FrameworkHubComponent {
       (a, b) =>
         LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level) || a.order - b.order,
     );
+  });
+
+  protected readonly levels = computed<readonly Level[]>(() => {
+    const present = new Set(this.modules().map((m) => m.level));
+    return LEVELS.filter((l) => present.has(l));
   });
 
   protected readonly filtered = computed(() => {
