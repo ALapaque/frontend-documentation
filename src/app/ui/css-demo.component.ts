@@ -7,6 +7,9 @@ import { TransformDemoComponent } from './demo/transform-demo.component';
 import { UnitsDemoComponent } from './demo/units-demo.component';
 import { ColorDemoComponent } from './demo/color-demo.component';
 import { ScrollDemoComponent } from './demo/scroll-demo.component';
+import { GradientDemoComponent } from './demo/gradient-demo.component';
+import { AnchorDemoComponent } from './demo/anchor-demo.component';
+import { PopoverDemoComponent } from './demo/popover-demo.component';
 
 /** Dispatches a `:::demo{kind=...}` content block to its interactive component. */
 @Component({
@@ -20,6 +23,9 @@ import { ScrollDemoComponent } from './demo/scroll-demo.component';
     UnitsDemoComponent,
     ColorDemoComponent,
     ScrollDemoComponent,
+    GradientDemoComponent,
+    AnchorDemoComponent,
+    PopoverDemoComponent,
   ],
   template: `
     @switch (kind()) {
@@ -46,6 +52,15 @@ import { ScrollDemoComponent } from './demo/scroll-demo.component';
       }
       @case ('scroll') {
         <app-scroll-demo />
+      }
+      @case ('gradient') {
+        <app-gradient-demo />
+      }
+      @case ('anchor') {
+        <app-anchor-demo />
+      }
+      @case ('popover') {
+        <app-popover-demo />
       }
     }
   `,

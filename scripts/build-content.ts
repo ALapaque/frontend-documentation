@@ -50,6 +50,9 @@ const DEMO_KINDS = new Set<string>([
   'units',
   'colors',
   'scroll',
+  'gradient',
+  'anchor',
+  'popover',
 ]);
 const LEVELS = new Set(['junior', 'medior', 'senior', 'next']);
 const OG_BY_LEVEL: Record<string, OgVariant> = { junior: 'sage', medior: 'gold', senior: 'crimson', next: 'iris' };

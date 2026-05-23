@@ -10,7 +10,10 @@ export type DemoKind =
   | 'transforms'
   | 'units'
   | 'colors'
-  | 'scroll';
+  | 'scroll'
+  | 'gradient'
+  | 'anchor'
+  | 'popover';
 
 export interface RelatedLink {
   readonly framework: Framework;
