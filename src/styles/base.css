@@ -267,33 +267,11 @@ button {
     animation-duration: 0.72s;
     animation-timing-function: var(--vt-ease);
   }
-  /* Cross-fade spans most of the box morph so the size/position change reads
-     as one continuous element rather than two snapping into place. */
+  /* No opacity cross-fade — pure shape morph. The new content stays fully
+     visible (it sits above the old) while the box resizes and moves. */
   ::view-transition-old(module-hero),
   ::view-transition-new(module-hero) {
     height: 100%;
-    animation-duration: 0.72s;
-    animation-timing-function: var(--vt-ease);
-  }
-  ::view-transition-old(module-hero) {
-    animation-name: vt-morph-old;
-  }
-  ::view-transition-new(module-hero) {
-    animation-name: vt-morph-new;
-  }
-  @keyframes vt-morph-old {
-    to {
-      opacity: 0;
-    }
-  }
-  @keyframes vt-morph-new {
-    /* hold transparent a touch longer, then ease in over the morph */
-    0%,
-    18% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
+    animation: none;
   }
 }
