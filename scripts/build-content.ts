@@ -22,6 +22,7 @@ import type {
   CompiledCompare,
   CompiledModule,
   ContentBlock,
+  DemoKind,
   ModuleMeta,
   OgVariant,
   SearchDoc,
@@ -39,7 +40,17 @@ const LANGS = ['ts', 'tsx', 'js', 'jsx', 'html', 'css', 'scss', 'json', 'bash', 
 const md = new MarkdownIt({ html: true, linkify: true, typographer: true });
 const mdInline = new MarkdownIt({ html: true, linkify: true, typographer: true });
 
-const FRAMEWORKS = new Set(['angular', 'react', 'vue', 'web', 'css']);
+const FRAMEWORKS = new Set(['angular', 'react', 'vue', 'web', 'css', 'typescript']);
+const DEMO_KINDS = new Set<string>([
+  'flexbox',
+  'grid',
+  'positioning',
+  'transitions',
+  'transforms',
+  'units',
+  'colors',
+  'scroll',
+]);
 const LEVELS = new Set(['junior', 'medior', 'senior', 'next']);
 const OG_BY_LEVEL: Record<string, OgVariant> = { junior: 'sage', medior: 'gold', senior: 'crimson', next: 'iris' };
 
@@ -188,8 +199,8 @@ function parseBody(body: string, hl: Highlighter): ParseResult {
         blocks.push({ kind: 'cheatsheet', items: parseCheatItems(inner) });
       } else if (name === 'demo') {
         const kind = /kind="([\w-]+)"/.exec(attrs)?.[1];
-        if (kind === 'flexbox' || kind === 'grid') {
-          blocks.push({ kind: 'demo', demo: kind });
+        if (kind && DEMO_KINDS.has(kind)) {
+          blocks.push({ kind: 'demo', demo: kind as DemoKind });
         } else if (inner.trim()) {
           blocks.push({ kind: 'prose', html: md.render(inner.trim()) });
         }
