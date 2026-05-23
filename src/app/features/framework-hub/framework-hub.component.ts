@@ -26,6 +26,7 @@ const TAGLINE: Record<Framework, string> = {
   web: 'HTML, fetch, événements, a11y. La plateforme sous les frameworks.',
   css: 'Flexbox, grid, custom properties. La mise en page, en interactif.',
   typescript: 'Types, génériques, inférence, utility types. Le langage qui tient le code à grande échelle.',
+  tooling: 'Vite, Rolldown, Vitest, Biome, monorepo. La chaîne qui build, teste et lint.',
 };
 
 @Component({

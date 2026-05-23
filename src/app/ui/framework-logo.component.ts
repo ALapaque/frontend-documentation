@@ -60,6 +60,12 @@ import type { Framework } from '../core/levels';
           <path d="M2.4 9h19.2M2.4 15h19.2" stroke="#00E5C0" stroke-width="1.6" />
         </svg>
       }
+      @case ('tooling') {
+        <svg viewBox="0 0 24 24" role="img" aria-hidden="true" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8 6.2 21l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.2-.4-.4-2.2z" stroke="#7C6CFF" />
+          <circle cx="18" cy="6" r="2.2" stroke="#00E5C0" />
+        </svg>
+      }
       @case ('typescript') {
         <svg viewBox="0 0 256 256" role="img" aria-hidden="true">
           <rect width="256" height="256" rx="28" fill="#3178C6" />

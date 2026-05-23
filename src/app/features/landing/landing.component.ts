@@ -23,6 +23,7 @@ const TAGLINE: Record<Framework, string> = {
   web: 'HTML, fetch, événements, a11y. La plateforme sous les frameworks.',
   css: 'Flexbox, grid, custom properties. En interactif.',
   typescript: 'Types, génériques, inférence. Le langage qui tient le code.',
+  tooling: 'Vite, Vitest, Biome, monorepo. La chaîne qui build et teste.',
 };
 
 const FEATURED: ReadonlyArray<[Framework, Level, string]> = [

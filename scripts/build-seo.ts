@@ -31,8 +31,9 @@ const FRAMEWORK_LABEL: Record<string, string> = {
   web: 'Web',
   css: 'CSS',
   typescript: 'TypeScript',
+  tooling: 'Outils',
 };
-const SECTIONS = ['angular', 'react', 'vue', 'web', 'css', 'typescript'];
+const SECTIONS = ['angular', 'react', 'vue', 'web', 'css', 'typescript', 'tooling'];
 const LEVEL_LABEL: Record<string, string> = {
   junior: 'Junior',
   medior: 'Medior',
