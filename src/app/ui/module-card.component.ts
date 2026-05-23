@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LevelChipComponent } from './level-chip.component';
 import { FrameworkLogoComponent } from './framework-logo.component';
 import { FRAMEWORK_LABEL } from '../core/levels';
+import { MorphService } from '../core/morph.service';
 import type { ModuleMeta } from '../content/content.types';
 
 @Component({
@@ -10,7 +11,12 @@ import type { ModuleMeta } from '../content/content.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, LevelChipComponent, FrameworkLogoComponent],
   template: `
-    <a class="card" [routerLink]="['/', meta().framework, meta().level, meta().slug]">
+    <a
+      class="card"
+      [routerLink]="['/', meta().framework, meta().level, meta().slug]"
+      [style.view-transition-name]="morphName()"
+      (click)="morph.activeKey.set(key())"
+    >
       <div class="top">
         @if (showFramework()) {
           <span class="fw label-mono">
@@ -101,10 +107,17 @@ import type { ModuleMeta } from '../content/content.types';
   `,
 })
 export class ModuleCardComponent {
+  protected readonly morph = inject(MorphService);
   readonly meta = input.required<ModuleMeta>();
   /** Show a framework tag (logo + name) instead of the order number. */
   readonly showFramework = input(false);
   protected readonly fwLabel = computed(() => FRAMEWORK_LABEL[this.meta().framework]);
+  protected readonly key = computed(
+    () => `${this.meta().framework}-${this.meta().level}-${this.meta().slug}`,
+  );
+  protected readonly morphName = computed(() =>
+    this.morph.activeKey() === this.key() ? 'module-hero' : null,
+  );
   protected order(): string {
     return this.meta().order.toString().padStart(2, '0');
   }

@@ -48,7 +48,7 @@ interface RelatedView {
     @let mod = module();
     @if (mod && !mod.meta.stub) {
       <article class="container layout reveal">
-        <header class="head glass">
+        <header class="head glass" style="view-transition-name: module-hero">
           <app-breadcrumb [items]="crumbs(mod.meta)" />
           <app-eyebrow>Module {{ orderLabel(mod.meta.order) }}</app-eyebrow>
           <h1 class="display-l">{{ mod.meta.title }}</h1>

@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { EyebrowComponent } from '../../ui/eyebrow.component';
 import { ContentService } from '../../content/content.service';
 import { SeoService } from '../../core/seo/seo.service';
+import { MorphService } from '../../core/morph.service';
 
 @Component({
   selector: 'app-compare-index',
@@ -21,7 +22,13 @@ import { SeoService } from '../../core/seo/seo.service';
     <section class="container section">
       <div class="grid stagger">
         @for (c of topics; track c.topic; let i = $index) {
-          <a class="card" [routerLink]="['/compare', c.topic]" [style.--i]="i % 9">
+          <a
+            class="card"
+            [routerLink]="['/compare', c.topic]"
+            [style.--i]="i % 9"
+            [style.view-transition-name]="morph.activeKey() === 'compare-' + c.topic ? 'compare-hero' : null"
+            (click)="morph.activeKey.set('compare-' + c.topic)"
+          >
             <h2 class="h3 title">{{ c.title }}</h2>
             <p class="lead-sm">{{ c.lead }}</p>
             <span class="go" aria-hidden="true">Lire le comparatif →</span>
@@ -86,6 +93,7 @@ import { SeoService } from '../../core/seo/seo.service';
   `,
 })
 export class CompareIndexComponent {
+  protected readonly morph = inject(MorphService);
   protected readonly topics = inject(ContentService).compareTopics;
 
   constructor() {

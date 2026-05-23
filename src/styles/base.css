@@ -238,11 +238,16 @@ button {
 
 /* ---- Page transitions (View Transitions API) ---- */
 @media (prefers-reduced-motion: no-preference) {
+  /* Smooth, deliberate easing — no overshoot, gentle accel/decel. */
+  :root {
+    --vt-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   ::view-transition-old(root) {
-    animation: vt-out 0.32s var(--ease-in-out) both;
+    animation: vt-out 0.5s var(--vt-ease) both;
   }
   ::view-transition-new(root) {
-    animation: vt-in 0.42s var(--ease-out) both;
+    animation: vt-in 0.65s var(--vt-ease) both;
   }
   @keyframes vt-out {
     to {
@@ -254,6 +259,54 @@ button {
     from {
       opacity: 0;
       transform: translateY(12px) scale(0.994);
+    }
+  }
+
+  /* ---- Shared-element morph: card <-> page header ----
+     module-hero  : hub/featured card  <-> article header
+     compare-hero : /compare card       <-> compare header
+     section-hero : framework card      <-> hub header */
+  ::view-transition-group(module-hero),
+  ::view-transition-group(compare-hero),
+  ::view-transition-group(section-hero) {
+    animation-duration: 0.72s;
+    animation-timing-function: var(--vt-ease);
+  }
+  /* Cross-fade spans most of the box morph so the size/position change reads
+     as one continuous element rather than two snapping into place. */
+  ::view-transition-old(module-hero),
+  ::view-transition-new(module-hero),
+  ::view-transition-old(compare-hero),
+  ::view-transition-new(compare-hero),
+  ::view-transition-old(section-hero),
+  ::view-transition-new(section-hero) {
+    height: 100%;
+    animation-duration: 0.72s;
+    animation-timing-function: var(--vt-ease);
+  }
+  ::view-transition-old(module-hero),
+  ::view-transition-old(compare-hero),
+  ::view-transition-old(section-hero) {
+    animation-name: vt-morph-old;
+  }
+  ::view-transition-new(module-hero),
+  ::view-transition-new(compare-hero),
+  ::view-transition-new(section-hero) {
+    animation-name: vt-morph-new;
+  }
+  @keyframes vt-morph-old {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes vt-morph-new {
+    /* hold transparent a touch longer, then ease in over the morph */
+    0%,
+    18% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
     }
   }
 }
