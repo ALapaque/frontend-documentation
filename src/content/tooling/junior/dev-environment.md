@@ -71,7 +71,7 @@ npm ci             # même Node, même lockfile -> même résultat
 
 **Pourquoi.** Node évolue : une API ajoutée en v22 n'existe pas en v18, et
 certaines syntaxes ou comportements de `node_modules` diffèrent d'une majeure à
-l'autre. Si chacun exécute le code sur un runtime différent, vous ne testez plus
+l'autre. Si chacun exécute le code sur un runtime différent, tu ne testes plus
 le même programme. Le `.nvmrc` versionné dans Git transforme « la bonne version
 de Node » en une donnée du projet, pas un savoir tribal. Un `fnm use` ou un shell
 auto-switch l'applique en une commande, et la CI lit le même fichier.

@@ -14,6 +14,7 @@
     "test": "ng test",
     "serve:ssr:frontend-documentation": "node dist/frontend-documentation/server/server.mjs",
     "scaffold:stubs": "tsx scripts/scaffold-stubs.ts",
+    "lint:content": "tsx scripts/lint-content.ts",
     "smoke": "node scripts/smoke.mjs"
   },
   "private": true,
