@@ -9,11 +9,18 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './layout/header.component';
 import { FooterComponent } from './layout/footer.component';
 import { SearchPaletteComponent } from './ui/search-palette.component';
+import { ChangelogModalComponent } from './ui/changelog-modal.component';
 
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, SearchPaletteComponent],
+  imports: [
+    RouterOutlet,
+    HeaderComponent,
+    FooterComponent,
+    SearchPaletteComponent,
+    ChangelogModalComponent,
+  ],
   template: `
     <a class="skip-link" href="#main">Aller au contenu</a>
     <app-header />
@@ -22,6 +29,7 @@ import { SearchPaletteComponent } from './ui/search-palette.component';
     </main>
     <app-footer />
     <app-search-palette />
+    <app-changelog-modal />
   `,
 })
 export class App {
