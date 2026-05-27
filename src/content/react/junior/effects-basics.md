@@ -37,9 +37,9 @@ rendu ; le truquer cache des bugs.
 - title: "[] (vide)"
   desc: "Exécuté une fois au montage, nettoyé au démontage."
 - title: "[a, b]"
-  desc: "Ré-exécuté quand a ou b change (comparaison par référence)."
+  desc: "Réexécuté quand a ou b change (comparaison par référence)."
 - title: "absent"
-  desc: "Ré-exécuté à chaque rendu — presque toujours un bug."
+  desc: "Réexécuté à chaque rendu — presque toujours un bug."
 :::
 
 ## Le cleanup n'est pas optionnel

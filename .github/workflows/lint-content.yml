@@ -1,0 +1,26 @@
+name: Cohérence FR
+
+on:
+  pull_request:
+    paths:
+      - 'src/content/**/*.md'
+      - 'scripts/lint-content.ts'
+      - 'scripts/fr-glossary.ts'
+  push:
+    branches: [main]
+    paths:
+      - 'src/content/**/*.md'
+      - 'scripts/lint-content.ts'
+      - 'scripts/fr-glossary.ts'
+
+jobs:
+  lint-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:content

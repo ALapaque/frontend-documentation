@@ -112,7 +112,7 @@ onMounted(() => {
 Quand tu vois un `useEffect`/`useCallback` avec deps vides mais qui lit un
 state ou une prop, suspecte la closure périmée. Trois remèdes : mise à jour
 fonctionnelle (`setX(prev => …)`), un `ref` mutable pour la « dernière valeur »,
-ou `useEffectEvent` pour les handlers. Ne mentez jamais au tableau de deps pour
+ou `useEffectEvent` pour les handlers. Ne mens jamais au tableau de deps pour
 faire taire le linter.
 
 ## Verdict
