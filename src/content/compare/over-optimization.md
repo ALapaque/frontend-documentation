@@ -10,7 +10,7 @@ related:
   - { framework: "vue", slug: "perf-strategy" }
 ---
 
-## Le culte du cargo
+## Optimiser par réflexe, sans mesurer
 
 `useMemo` autour d'une addition, `useCallback` sur chaque handler, `React.memo`
 sur tous les composants « au cas où ». Chaque mémoïsation a un coût : mémoire

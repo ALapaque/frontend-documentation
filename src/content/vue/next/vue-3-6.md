@@ -60,8 +60,8 @@ const count = ref(0)
 ::
 :::
 
-**Pourquoi.** Le virtual DOM est une **assurance** : il recompare tout pour
-trouver le minimum à patcher, parce qu'il ne sait pas *a priori* ce qui a
+**Pourquoi.** Le virtual DOM est un filet de sécurité : il recompare tout l'arbre
+pour trouver le minimum à patcher, parce qu'il ne sait pas *a priori* ce qui a
 changé. Avec une réactivité fine, cette ignorance disparaît — le compilateur
 relie chaque binding à son signal et n'émet que la mise à jour exacte. On
 supprime le coût du render + diff, et on baisse les allocations (pas de vnodes).
