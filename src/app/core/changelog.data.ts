@@ -22,6 +22,16 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
+    date: '2026-05-28',
+    title: "L'horizon 2026 des fondamentaux",
+    note: "Ce qui arrive côté plateforme web, CSS et outillage : Temporal, if(), Rolldown et le reste.",
+    modules: [
+      { framework: 'web', level: 'next', slug: 'web-platform-2026' },
+      { framework: 'css', level: 'next', slug: 'css-2026' },
+      { framework: 'tooling', level: 'next', slug: 'tooling-2026' },
+    ],
+  },
+  {
     date: '2026-05-27',
     title: 'Internationalisation',
     note: "Formater et traduire pour le monde entier : l'API Intl et l'i18n des trois frameworks.",
