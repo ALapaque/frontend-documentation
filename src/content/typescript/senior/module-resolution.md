@@ -32,7 +32,7 @@ de fichier explicites**, CJS les devine. Un module ESM ne peut pas `require` un
 module CJS sans précaution, et l'inverse n'est possible qu'en asynchrone
 (`import()`).
 
-## `moduleResolution`: `bundler` vs `node16`/`nodenext`
+## `moduleResolution` : `bundler` vs `node16`/`nodenext`
 
 C'est le réglage le plus mal compris de tout `tsconfig`. Le bon choix dépend de
 **qui** consomme tes fichiers à la fin.
@@ -74,7 +74,7 @@ passe, parce qu'un bundler refait lui-même la résolution permissive. Le même
 import est donc valide ou non *selon la cible* : la config doit refléter le
 runtime, pas une préférence esthétique.
 
-## Extensions explicites: la cause racine
+## Extensions explicites : la cause racine
 
 La règle « extension obligatoire en ESM » découle directement de la nature
 **statique** d'ESM : la spec impose des spécificateurs résolvables sans accès au
@@ -106,7 +106,7 @@ plus aucun import n'apparaît ou disparaît selon l'usage. Le compilateur cesse
 d'interpréter ton intention et exécute ta déclaration à la lettre.
 :::
 
-## Conditional exports: la map `exports`
+## Conditional exports : la map `exports`
 
 Le champ `exports` du `package.json` est le point d'entrée moderne d'un package
 et **remplace** `main`/`module`/`types` dispersés. Il déclare des **conditions**

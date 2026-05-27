@@ -19,7 +19,7 @@ related:
 
 Les signals sont **synchrones et pull**. RxJS est **asynchrone et push**. Tu ne
 choisis pas l'un contre l'autre : tu utilises le bon outil par couche. La règle
-de pouce : RxJS pour orchestrer des événements asynchrones, signals pour
+empirique : RxJS pour orchestrer des événements asynchrones, signals pour
 exposer un état à la vue.
 
 ## `toSignal` : consommer un Observable

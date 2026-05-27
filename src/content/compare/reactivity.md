@@ -44,7 +44,7 @@ const double = computed(() => n.value * 2);
 ## Verdict
 
 Angular et Vue partagent le même fond — un graphe de dépendances tracé à la
-lecture — quand React reconcilie un sous-arbre puis s'appuie sur la mémoïsation
+lecture — quand React réconcilie un sous-arbre puis s'appuie sur la mémoïsation
 (ou le compilateur) pour éviter le travail inutile. Comprendre *qui* re-rend
 chez React, et *quoi* est tracé chez Angular/Vue, suffit à éliminer 90 % des
 bugs de perf.

@@ -88,7 +88,7 @@ $ npm i -D @typescript/native-preview
 $ npx tsgo --noEmit   # mêmes diagnostics attendus que npx tsc --noEmit
 ```
 
-## Distribution: `@typescript/native-preview`
+## Distribution : `@typescript/native-preview`
 
 Pendant la phase d'aperçu, le binaire natif se récupère via le paquet
 **`@typescript/native-preview`**, séparé du `typescript` classique pour ne pas
@@ -104,7 +104,7 @@ les deux jusqu'à ce que la parité soit confirmée sur **ton** code. Le jour o�
 preview disparaît.
 :::
 
-## Ce que ça change concrètement: LSP et CI
+## Ce que ça change concrètement : LSP et CI
 
 Deux effets pratiques dominent. D'abord le **serveur de langage** (LSP) : c'est le
 processus qui alimente l'autocomplétion, les erreurs en temps réel et « aller à la

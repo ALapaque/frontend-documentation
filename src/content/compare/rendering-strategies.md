@@ -154,7 +154,7 @@ mais lent et fragile.
 ## TTFB, LCP : où chaque stratégie gagne ou perd
 
 - **CSR** : TTFB excellent (HTML quasi vide), LCP mauvais (tout le travail après
-  download du JS). Pénalisant sur mobile bas de gamme.
+  téléchargement du JS). Pénalisant sur mobile bas de gamme.
 - **SSR à la requête** : LCP bon, mais TTFB = temps serveur + data. Le **streaming**
   corrige ça : on envoie la coquille tout de suite et on `Suspense`-e les zones
   lentes, donc le TTFB redevient bas sans sacrifier le contenu.

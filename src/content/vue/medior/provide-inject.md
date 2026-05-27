@@ -145,7 +145,7 @@ On fournit la `ref` (ou un objet `reactive`) telle quelle : les descendants obse
 
 ### Idée reçue : « provide/inject remplace un store comme Pinia »
 
-Non. `provide`/`inject` est un mécanisme d'injection de dépendances scopé à un sous-arbre, sans outillage : pas de devtools dédiés, pas d'actions tracées, pas d'hydratation SSR pensée pour l'état partagé global. C'est parfait pour fournir une instance à un sous-arbre (un thème, un client API, le contexte d'un composant composite type `<Tabs>`/`<Tab>`). Dès que l'état est global, partagé entre routes, persisté ou débogué dans le temps, Pinia est l'outil adapté. Les deux coexistent souvent : Pinia pour l'état applicatif, `provide`/`inject` pour câbler un composant composite.
+Non. `provide`/`inject` est un mécanisme d'injection de dépendances limité à un sous-arbre, sans outillage : pas de devtools dédiés, pas d'actions tracées, pas d'hydratation SSR pensée pour l'état partagé global. C'est parfait pour fournir une instance à un sous-arbre (un thème, un client API, le contexte d'un composant composite type `<Tabs>`/`<Tab>`). Dès que l'état est global, partagé entre routes, persisté ou débogué dans le temps, Pinia est l'outil adapté. Les deux coexistent souvent : Pinia pour l'état applicatif, `provide`/`inject` pour câbler un composant composite.
 
 :::cheatsheet
 - title: "provide(clé, valeur)"

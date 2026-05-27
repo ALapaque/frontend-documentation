@@ -139,7 +139,7 @@ L'annotation `: Partial<Record<Route, ...>>` aurait autorisé l'accès à `/admi
 clés définies, donc l'accès à une route non gérée échoue à la compilation.
 
 :::callout{type="tip"}
-Règle de pouce : commence par écrire ta valeur sans annotation, ajoute
+Règle générale : commence par écrire ta valeur sans annotation, ajoute
 `satisfies T` à la fin pour la **valider**, et ne passe à l'annotation `: T` que
 si tu veux délibérément **effacer** la précision (par exemple exposer un type
 public stable indépendant de l'implémentation).

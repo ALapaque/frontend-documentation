@@ -79,7 +79,7 @@ Charger un script avec `<script type="module">` n'est pas qu'un drapeau de synta
 - **Scope propre.** Les variables top-level d'un module sont **locales au module**, pas globales. Deux modules peuvent déclarer `const config` sans collision. Pour partager, on exporte/importe — explicitement.
 
 :::callout{type="info"}
-Dans le navigateur, l'`import` statique exige une **spécifier complet** : `"./math.js"` avec l'extension, pas `"math"`. Les noms nus (`import x from "lodash"`) ne sont résolus que par un bundler ou via une **import map** (voir plus bas).
+Dans le navigateur, l'`import` statique exige un **spécificateur complet** : `"./math.js"` avec l'extension, pas `"math"`. Les noms nus (`import x from "lodash"`) ne sont résolus que par un bundler ou via une **import map** (voir plus bas).
 :::
 
 ## Top-level await
@@ -96,7 +96,7 @@ C'est puissant pour l'initialisation (charger une config, attendre une connexion
 
 ## Import maps
 
-Une **import map** déclare comment résoudre les spécifiers nus directement dans le navigateur, sans bundler. Elle mappe un nom à une URL.
+Une **import map** déclare comment résoudre les spécificateurs nus directement dans le navigateur, sans bundler. Elle associe un nom à une URL.
 
 ```html
 <script type="importmap">

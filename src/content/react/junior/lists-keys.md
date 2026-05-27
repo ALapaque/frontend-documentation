@@ -78,7 +78,7 @@ L'index n'est pas interdit, il est dangereux quand la liste change. Il convient 
 - les éléments **n'ont pas d'état propre** ni d'entrées de formulaire non contrôlées.
 
 :::callout{type="warn"}
-Ne fabriquez jamais une clé avec `Math.random()` : elle change à chaque rendu, donc React démonte et remonte tout à chaque fois. Vous perdez l'état, le focus, et toute performance. Utilisez un identifiant stable issu de la donnée.
+Ne fabrique jamais une clé avec `Math.random()` : elle change à chaque rendu, donc React démonte et remonte tout à chaque fois. Tu perds l'état, le focus, et toute performance. Utilise un identifiant stable issu de la donnée.
 :::
 
 ## À retenir

@@ -114,7 +114,7 @@ interface Conteneur<T = string> {
   valeur: T;
 }
 const c1: Conteneur = { valeur: "ok" };       // T = string par défaut
-const c2: Conteneur<number> = { valeur: 42 }; // override explicite
+const c2: Conteneur<number> = { valeur: 42 }; // surcharge explicite
 ```
 
 Un défaut peut référencer un paramètre précédent et se combiner avec une

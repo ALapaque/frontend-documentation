@@ -65,7 +65,7 @@ ma classe utilitaire va battre le composant ? ».
 ::bad
 ```css
 /* sans couches : pour qu'une utilitaire batte un composant,
-   on surenchérit la specificité — guerre des !important */
+   on surenchérit la spécificité — guerre des !important */
 .card .title { color: var(--ink); }
 .text-muted   { color: gray !important; } /* sinon .card .title gagne */
 ```

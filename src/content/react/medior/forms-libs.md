@@ -1,5 +1,5 @@
 ---
-title: "Libs de formulaires"
+title: "Bibliothèques de formulaires"
 slug: "forms-libs"
 framework: "react"
 level: "medior"
@@ -7,7 +7,7 @@ order: 5
 duration: 17
 prerequisites: ["forms-basics", "context-perf"]
 updated: 2026-05-22
-seoTitle: "Libs de formulaires — react"
+seoTitle: "Bibliothèques de formulaires — react"
 seoDescription: "React Hook Form (uncontrolled, register, handleSubmit), Formik et la validation par resolver zod : pourquoi RHF gagne sur la perf des gros formulaires."
 ogVariant: "gold"
 related:
@@ -17,7 +17,7 @@ related:
     slug: "cva"
 ---
 
-Un formulaire contrôlé met chaque champ dans un `useState` : à grande échelle, chaque frappe re-rend tout le formulaire. Les libs sérieuses contournent ça. React Hook Form (RHF) s'appuie sur le DOM non contrôlé ; Formik reste centré sur le state contrôlé. La validation se branche par un *resolver*, typiquement zod.
+Un formulaire contrôlé met chaque champ dans un `useState` : à grande échelle, chaque frappe re-rend tout le formulaire. Les bibliothèques sérieuses contournent ça. React Hook Form (RHF) s'appuie sur le DOM non contrôlé ; Formik reste centré sur le state contrôlé. La validation se branche par un *resolver*, typiquement zod.
 
 ## React Hook Form : register + handleSubmit
 
@@ -91,12 +91,12 @@ function Form() {
 
 ## Idée reçue : « Formik et RHF, c'est pareil, juste une question de goût »
 
-Faux sur le fond. Formik est conçu autour de l'état contrôlé : il maintient `values`, `errors`, `touched` dans son propre state et re-rend à mesure que vous tapez, comme la mauvaise version ci-dessus. Sur un petit formulaire, invisible ; sur un gros formulaire ou un tableau de champs répétés, Formik devient le goulet d'étranglement que les profils révèlent. RHF a fait le choix architectural inverse (non contrôlé par défaut) précisément pour ce cas. Ce n'est pas du goût : c'est deux modèles de propriété de la valeur, avec des courbes de coût différentes. Formik reste défendable pour de petits formulaires où son ergonomie de render-props plaît à l'équipe, mais la performance n'est pas un match nul.
+Faux sur le fond. Formik est conçu autour de l'état contrôlé : il maintient `values`, `errors`, `touched` dans son propre state et re-rend à mesure que tu tapes, comme la mauvaise version ci-dessus. Sur un petit formulaire, invisible ; sur un gros formulaire ou un tableau de champs répétés, Formik devient le goulet d'étranglement que le profilage révèle. RHF a fait le choix architectural inverse (non contrôlé par défaut) précisément pour ce cas. Ce n'est pas une question de goût : ce sont deux modèles de propriété de la valeur, avec des courbes de coût différentes. Formik reste défendable pour de petits formulaires où son ergonomie de render-props plaît à l'équipe, mais sur la performance, les deux ne se valent pas.
 
 ## Choisir
 
 :::callout{type="tip"}
-RHF + zod par défaut sur un projet moderne : perf par construction, typage de bout en bout, écosystème de resolvers (zod, yup, valibot). Validez avec zod côté client ET réutilisez le même schéma côté serveur. Gardez le state contrôlé manuel uniquement pour un champ isolé avec logique très spécifique, ou un composant tiers qui n'expose qu'une API contrôlée (à brancher via `Controller`).
+RHF + zod par défaut sur un projet moderne : perf par construction, typage de bout en bout, écosystème de resolvers (zod, yup, valibot). Valide avec zod côté client ET réutilise le même schéma côté serveur. Garde le state contrôlé manuel uniquement pour un champ isolé avec logique très spécifique, ou un composant tiers qui n'expose qu'une API contrôlée (à brancher via `Controller`).
 :::
 
 ## À retenir

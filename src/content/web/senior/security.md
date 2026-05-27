@@ -92,7 +92,7 @@ Access-Control-Allow-Headers: Content-Type
 ```
 
 :::callout{type="warn"}
-`Access-Control-Allow-Origin: *` est **incompatible** avec `Access-Control-Allow-Credentials: true` : le navigateur refuse la combinaison. Pire, renvoyer en écho l'`Origin` de la requête (`ACAO: <origin reçue>`) avec `credentials: true` revient à autoriser **n'importe quelle origine** à lire des réponses authentifiées — une fuite de données massive. Réfléchis chaque origine contre une allow-list serveur.
+`Access-Control-Allow-Origin: *` est **incompatible** avec `Access-Control-Allow-Credentials: true` : le navigateur refuse la combinaison. Pire, renvoyer en écho l'`Origin` de la requête (`ACAO: <origin reçue>`) avec `credentials: true` revient à autoriser **n'importe quelle origine** à lire des réponses authentifiées — une fuite de données massive. Valide chaque origine par rapport à une allow-list serveur.
 :::
 
 ## CSRF — abus de l'authentification ambiante + SameSite
@@ -115,7 +115,7 @@ Le **clickjacking** consiste à charger ton site dans une `<iframe>` invisible s
 Content-Security-Policy: frame-ancestors 'self' https://partenaire.exemple.com
 ```
 
-`frame-ancestors 'none'` interdit tout embarquement ; `'self'` autorise uniquement ta propre origine. Préfère-la à `X-Frame-Options` : elle supporte plusieurs origines et est la source de vérité moderne.
+`frame-ancestors 'none'` interdit tout embarquement ; `'self'` autorise uniquement ta propre origine. Préfère-la à `X-Frame-Options` : elle gère plusieurs origines et est la source de vérité moderne.
 
 :::cheatsheet
 - title: "textContent par défaut"

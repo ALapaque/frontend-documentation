@@ -54,7 +54,7 @@ Quand le HTML natif ne suffit pas (widgets composites : onglets, combobox, arbre
 ::
 :::
 
-**Pourquoi.** Une `<div onclick>` n'apparaît dans l'arbre d'accessibilité avec **aucun rôle interactif** : un lecteur d'écran ne l'annonce pas comme actionnable, elle n'est pas dans l'ordre de tabulation (pas de `tabindex`), et n'écoute ni Entrée ni Espace. Tu devrais ajouter `role`, `tabindex="0"`, des handlers clavier *et* gérer `aria-expanded` à la main. Le `<button>` natif fournit tout cela : rôle `button`, focusable, activable au clavier, et il participe à la soumission de formulaire. Le couple `<input type="checkbox">` + `<label for>` lie programmatiquement le nom au contrôle et expose l'état coché — un lecteur d'écran annonce « Recevoir la newsletter, case à cocher, non cochée ». Reproduire ça en ARIA est faisable mais fragile et inutile ici.
+**Pourquoi.** Une `<div onclick>` apparaît dans l'arbre d'accessibilité **sans aucun rôle interactif** : un lecteur d'écran ne l'annonce pas comme actionnable, elle n'est pas dans l'ordre de tabulation (pas de `tabindex`), et n'écoute ni Entrée ni Espace. Tu devrais ajouter `role`, `tabindex="0"`, des handlers clavier *et* gérer `aria-expanded` à la main. Le `<button>` natif fournit tout cela : rôle `button`, focusable, activable au clavier, et il participe à la soumission de formulaire. Le couple `<input type="checkbox">` + `<label for>` lie programmatiquement le nom au contrôle et expose l'état coché — un lecteur d'écran annonce « Recevoir la newsletter, case à cocher, non cochée ». Reproduire ça en ARIA est faisable mais fragile et inutile ici.
 
 ## Focus management et navigation clavier
 
@@ -103,7 +103,7 @@ Aucun outil automatique ne couvre plus de ~30–40 % des critères WCAG : ils d�
 - **Lecteur d'écran** : teste réellement avec NVDA (Windows), VoiceOver (macOS/iOS) ou TalkBack (Android). Écoute si chaque contrôle annonce un nom, un rôle et un état corrects.
 
 :::callout{type="tip"}
-Lance `axe` tôt et en continu : un test Playwright qui exécute `axe.run()` sur tes pages clés bloque les régressions en PR. Mais garde le test manuel clavier comme rituel avant chaque release — c'est lui qui révèle les vrais blocages d'usage.
+Lance `axe` tôt et en continu : un test Playwright qui exécute `axe.run()` sur tes pages clés bloque les régressions en PR. Mais garde le test manuel clavier comme rituel avant chaque mise en production — c'est lui qui révèle les vrais blocages d'usage.
 :::
 
 :::cheatsheet

@@ -30,11 +30,11 @@ graphe d'objets en vie.
 
 ## Ce qui nettoie tout seul
 
-Trois mécanismes vous évitent la corvée manuelle. Le pipe `| async` d'Angular
+Trois mécanismes t'évitent la corvée manuelle. Le pipe `| async` d'Angular
 se désabonne au démontage. Le `watch`/`computed` de Vue est lié au scope du
 `setup()` et s'arrête seul. React n'offre rien d'automatique : le retour de
-`useEffect` *est* le nettoyage, et le double-montage du Strict Mode est votre
-meilleur détecteur de fuite en dev — si un listener s'accumule, vous le voyez
+`useEffect` *est* le nettoyage, et le double-montage du Strict Mode est ton
+meilleur détecteur de fuite en dev — si un listener s'accumule, tu le vois
 immédiatement.
 
 :::callout{type="warn"}
@@ -125,7 +125,7 @@ onMounted(() => {
 ## Le cas des observers
 
 `IntersectionObserver`, `ResizeObserver`, `MutationObserver` suivent la même
-règle : on `disconnect()` au teardown. Dans React, retournez-le depuis
+règle : on `disconnect()` au teardown. Dans React, retourne-le depuis
 `useEffect` ; dans Angular, via `DestroyRef.onDestroy` ; dans Vue, via
 `onUnmounted`. Un `fetch` annulable se branche sur un `AbortController` dont on
 appelle `.abort()` au démontage — utile autant contre les fuites que contre les
@@ -134,8 +134,8 @@ race conditions.
 ## Verdict
 
 Tout abonnement durable doit avoir un **propriétaire qui le démantèle**. Le
-réflexe : à chaque fois que vous écrivez `subscribe`, `addEventListener`,
-`setInterval` ou `new XObserver`, écrivez le nettoyage dans la même respiration.
-Angular vous donne `takeUntilDestroyed`/`DestroyRef`, Vue le scope du `setup`,
+réflexe : à chaque fois que tu écris `subscribe`, `addEventListener`,
+`setInterval` ou `new XObserver`, écris le nettoyage dans la même respiration.
+Angular te donne `takeUntilDestroyed`/`DestroyRef`, Vue le scope du `setup`,
 React le retour de `useEffect`. La discipline est identique partout : **rien
 qui survit au composant ne doit garder une référence vers lui**.

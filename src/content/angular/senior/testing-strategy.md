@@ -75,7 +75,7 @@ it('debounce ne garde que la dernière valeur dans la fenêtre', () => {
 ```
 
 :::callout{type="tip"}
-Dans `scheduler.run`, tous les schedulers asynchrones sont automatiquement virtualisés : un `debounceTime` de 200ms s'exécute instantanément. C'est le seul moyen de tester un typeahead `switchMap` de façon déterministe.
+Dans `scheduler.run`, tous les schedulers asynchrones sont automatiquement virtualisés : un `debounceTime` de 200 ms s'exécute instantanément. C'est le seul moyen de tester un typeahead `switchMap` de façon déterministe.
 :::
 
 ## MSW pour l'intégration HTTP

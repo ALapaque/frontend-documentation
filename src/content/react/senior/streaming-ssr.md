@@ -71,7 +71,7 @@ Les deux frontières sont indépendantes : `Recommandations` peut arriver avant 
 Avant, l'hydratation était monolithique : tout ou rien, bloquant le thread. Avec le streaming, React hydrate frontière par frontière, et *priorise selon l'interaction*. Si l'utilisateur clique dans une zone pas encore hydratée, React hydrate cette zone en priorité, devant les autres.
 
 :::callout{type="tip"}
-L'hydratation sélective ne se configure pas : elle découle des frontières Suspense et du rendu concurrent. Multipliez les frontières pertinentes (par région d'UI) pour donner à React des points de découpe et de priorisation. Une seule frontière = un seul bloc d'hydratation, vous perdez le bénéfice.
+L'hydratation sélective ne se configure pas : elle découle des frontières Suspense et du rendu concurrent. Multiplie les frontières pertinentes (par région d'UI) pour donner à React des points de découpe et de priorisation. Une seule frontière = un seul bloc d'hydratation, tu perds le bénéfice.
 :::
 
 ## Compare : shell bloquant vs streamé

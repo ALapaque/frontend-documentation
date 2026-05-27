@@ -33,12 +33,12 @@ n'a pas besoin d'un effet qui écrit dans un troisième état : c'est un `comput
 **(b) Réagir à un événement dans un effet.** Si l'utilisateur clique « acheter »,
 la requête part *du handler*, pas d'un effet qui surveille un booléen.
 **(c) Enchaîner des effets qui posent des states.** Chaque maillon ajoute un
-rendu et un point de désynchro ; remplacez la chaîne par une valeur dérivée
+rendu et un point de désynchro ; remplace la chaîne par une valeur dérivée
 unique.
 
 :::callout{type="info"}
 La règle « You Might Not Need an Effect » de React vaut pour les trois
-frameworks. Avant d'écrire un effet, posez la question : *est-ce une synchro
+frameworks. Avant d'écrire un effet, pose-toi la question : *est-ce une synchro
 avec un système externe ?* Si non, c'est un `computed`/`useMemo` ou du code
 dans un gestionnaire d'événement.
 :::
@@ -126,8 +126,8 @@ un handler.
 
 ## Verdict
 
-Avant d'écrire un effet, demandez-vous : *« Est-ce que je calcule quelque
+Avant d'écrire un effet, demande-toi : *« Est-ce que je calcule quelque
 chose, ou est-ce que je réagis à un clic ? »* Si oui, ce n'est pas un effet —
 c'est un `computed`/`useMemo` ou du code dans le gestionnaire. **L'effet est
 réservé à la synchronisation avec un système externe**, et il a toujours un
-nettoyage. Réservez-le, et la moitié de vos bugs de rendu disparaissent.
+nettoyage. Réserve-le, et la moitié de tes bugs de rendu disparaissent.

@@ -109,8 +109,8 @@ onMounted(() => {
 
 ## Le réflexe React
 
-Quand vous voyez un `useEffect`/`useCallback` avec deps vides mais qui lit un
-state ou une prop, suspectez la closure périmée. Trois remèdes : mise à jour
+Quand tu vois un `useEffect`/`useCallback` avec deps vides mais qui lit un
+state ou une prop, suspecte la closure périmée. Trois remèdes : mise à jour
 fonctionnelle (`setX(prev => …)`), un `ref` mutable pour la « dernière valeur »,
 ou `useEffectEvent` pour les handlers. Ne mentez jamais au tableau de deps pour
 faire taire le linter.
@@ -119,7 +119,7 @@ faire taire le linter.
 
 La closure périmée est avant tout un problème **React**, parce que React
 capture des valeurs, pas des conteneurs réactifs. La discipline : functional
-updates, `ref`, et `useEffectEvent` — et respectez le tableau de deps au lieu de
+updates, `ref`, et `useEffectEvent` — et respecte le tableau de deps au lieu de
 le tronquer. Angular (signals) et Vue (refs) relisent par construction la
-valeur courante : le piège ne se présente quasiment jamais. **Lisez toujours la
-dernière valeur, ne capturez jamais un instantané.**
+valeur courante : le piège ne se présente quasiment jamais. **Lis toujours la
+dernière valeur, ne capture jamais un instantané.**

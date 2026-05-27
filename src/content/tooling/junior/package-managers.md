@@ -146,7 +146,7 @@ qu'une fois, et tu obtiens toujours la dernière version publiée.
 ## Les scripts npm : ton interface de commandes
 
 Le champ `scripts` de `package.json` mappe des noms courts à des commandes
-shell. Tout l'équipe utilise alors le **même** vocabulaire, peu importe l'outil
+shell. Toute l'équipe utilise alors le **même** vocabulaire, peu importe l'outil
 sous-jacent.
 
 ```json package.json

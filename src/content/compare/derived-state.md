@@ -12,7 +12,7 @@ related:
 
 ## Le péché de la copie
 
-Vous avez `items` en état. Vous voulez `total`, `selectedCount`, `isEmpty`. La
+Tu as `items` en état. Tu veux `total`, `selectedCount`, `isEmpty`. La
 tentation : créer un deuxième état pour chacun et le mettre à jour à chaque
 mutation de `items`. Le jour où une mutation oublie de propager — un `push`
 ailleurs, un reset partiel — les deux états divergent. Le `total` affiche 5, la
@@ -37,7 +37,7 @@ chemin de code qui modifie `total` sans passer par `items`.
 Le `useEffect`/`watch` qui « met à jour le state dérivé » est un drapeau rouge.
 Il ajoute un rendu, introduit une fenêtre où l'UI affiche l'ancienne valeur
 dérivée à côté de la nouvelle source, et casse dès qu'une mutation contourne
-l'effet. Remplacez-le par une dérivation.
+l'effet. Remplace-le par une dérivation.
 :::
 
 ## Dupliquer vs dériver
@@ -114,13 +114,13 @@ const total = computed(() =>
 
 Une seule exception : un état dérivé que l'utilisateur peut ensuite **éditer**
 indépendamment (préremplir un champ depuis une prop, puis le laisser diverger).
-Là, vous stockez délibérément — mais sachez que vous *acceptez* la divergence,
+Là, tu stockes délibérément — mais sache que tu *acceptes* la divergence,
 ce n'est pas un dérivé. Le reste se calcule.
 
 ## Verdict
 
-**Single source of truth.** Si vous pouvez calculer une valeur, calculez-la
-avec `computed`/`useMemo` ; ne la stockez jamais en parallèle. L'état dupliqué
+**Single source of truth.** Si tu peux calculer une valeur, calcule-la
+avec `computed`/`useMemo` ; ne la stocke jamais en parallèle. L'état dupliqué
 plus l'effet de synchro est une machine à fabriquer des bugs de désynchro et
-des rendus superflus. Dérivez par défaut, ne stockez qu'un état réellement
+des rendus superflus. Dérive par défaut, ne stocke qu'un état réellement
 *indépendant*.

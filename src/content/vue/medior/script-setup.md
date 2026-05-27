@@ -108,7 +108,7 @@ La réactivité ne survit qu'à l'intérieur du composant : passer une prop dés
 
 ## defineExpose : l'instance est fermée par défaut
 
-Un composant `<script setup>` ne expose rien à son parent via `ref` de template — contrairement à un composant Options où tout le `this` était accessible. Pour exposer délibérément une méthode ou un état, on utilise `defineExpose`.
+Un composant `<script setup>` n'expose rien à son parent via `ref` de template — contrairement à un composant Options où tout le `this` était accessible. Pour exposer délibérément une méthode ou un état, on utilise `defineExpose`.
 
 ```vue
 <!-- Modale.vue -->

@@ -21,7 +21,7 @@ La règle d'or de la perf React : mesurer avant d'optimiser. Saupoudrer des `mem
 
 ## React DevTools Profiler
 
-Onglet Profiler des React DevTools : on enregistre une interaction, on obtient un commit par mise à jour, avec la durée de rendu de chaque composant. Activez « Record why each component rendered » dans les réglages : chaque composant affiche alors sa raison de re-rendu (props changées, state, hook, parent re-rendu).
+Onglet Profiler des React DevTools : on enregistre une interaction, on obtient un commit par mise à jour, avec la durée de rendu de chaque composant. Active « Record why each component rendered » dans les réglages : chaque composant affiche alors sa raison de re-rendu (props changées, state, hook, parent re-rendu).
 
 - **Flame chart** : l'arbre des composants pour un commit, largeur = temps de rendu. Lire la hiérarchie et repérer le sous-arbre coûteux.
 - **Ranked chart** : les composants triés par durée, à plat. Va droit au plus cher du commit.
@@ -88,7 +88,7 @@ if (process.env.NODE_ENV === "development") {
 ```
 
 :::callout{type="warn"}
-N'optimisez jamais à l'aveugle. Ouvrez le Profiler, identifiez le commit lent, lisez la raison du re-rendu, puis ciblez. Beaucoup de re-rendus sont bénins (composants peu coûteux) : optimiser un composant rapide ajoute du code et de la comparaison pour zéro gain. Le React Compiler (voir `compiler`) automatise une grande partie de la mémoïsation : avant d'ajouter `useMemo`/`useCallback` à la main, vérifiez s'il est actif.
+N'optimise jamais à l'aveugle. Ouvre le Profiler, identifie le commit lent, lis la raison du re-rendu, puis cible. Beaucoup de re-rendus sont bénins (composants peu coûteux) : optimiser un composant rapide ajoute du code et de la comparaison pour zéro gain. Le React Compiler (voir `compiler`) automatise une grande partie de la mémoïsation : avant d'ajouter `useMemo`/`useCallback` à la main, vérifie s'il est actif.
 :::
 
 ## Code source

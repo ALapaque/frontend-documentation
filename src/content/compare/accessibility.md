@@ -1,6 +1,6 @@
 ---
 title: "Accessibilité"
-lead: "Le framework ne rend pas accessible — voici ce qu'il vous donne, et ce qui reste à vous."
+lead: "Le framework ne rend pas accessible — voici ce qu'il te donne, et ce qui reste à toi."
 updated: 2026-05-22
 seoTitle: "Accessibilité — Angular vs React vs Vue"
 seoDescription: "Gestion du focus, live regions, liaisons ARIA et routing accessible : ce que chaque framework facilite (ou pas)."
@@ -18,12 +18,12 @@ related:
 | Focus trap | `cdkTrapFocus` | Manuel / lib | Manuel / lib |
 | Annonce live | `LiveAnnouncer` | `aria-live` à la main | vue-announcer / `aria-live` |
 | Focus au routing | `withNavigationErrorHandler` / manuel | Manuel sur changement de route | Manuel + `nextTick` |
-| Sémantique / ARIA | À vous | À vous | À vous |
+| Sémantique / ARIA | À toi | À toi | À toi |
 
 ## La vérité partagée
 
-Aucun framework ne vous rend accessible. La **sémantique HTML**, les rôles ARIA,
-le contraste, l'ordre de tabulation et les libellés sont **votre travail** dans
+Aucun framework ne te rend accessible. La **sémantique HTML**, les rôles ARIA,
+le contraste, l'ordre de tabulation et les libellés sont **ton travail** dans
 les trois cas. Le framework n'aide que sur la mécanique : déplacer le focus,
 annoncer un changement, piéger le focus dans une modale. C'est là que les
 écarts d'outillage apparaissent.
@@ -96,8 +96,8 @@ async function onSearch(query: string) {
 :::callout{type="warn"}
 Dans une SPA, la navigation ne déplace **pas** le focus par défaut — le lecteur
 d'écran reste muet et le clavier reprend en haut de page. À chaque changement de
-route, déplacez le focus sur le `<h1>` (ou un conteneur `tabindex="-1"`) et
-annoncez le nouveau titre. Aucun des trois frameworks ne le fait pour vous.
+route, déplace le focus sur le `<h1>` (ou un conteneur `tabindex="-1"`) et
+annonce le nouveau titre. Aucun des trois frameworks ne le fait pour toi.
 :::
 
 Angular a un avantage net ici via le **CDK a11y** : `FocusTrap`, `LiveAnnouncer`,
@@ -112,6 +112,6 @@ L'accessibilité reste à **90 % de la discipline** : sémantique, ARIA, contras
 tests au clavier et au lecteur d'écran — identiques partout. Sur les 10 %
 mécaniques, **Angular prend l'avantage** grâce au CDK a11y, batteries incluses.
 React et Vue obligent à assembler des libs, mais le résultat peut être tout aussi
-bon. Quel que soit le stack : déplacez le focus à chaque navigation, annoncez les
-changements asynchrones via `aria-live`, et **testez avec un vrai lecteur
-d'écran**. Le framework facilite ou non — il ne décide jamais à votre place.
+bon. Quelle que soit la stack : déplace le focus à chaque navigation, annonce les
+changements asynchrones via `aria-live`, et **teste avec un vrai lecteur
+d'écran**. Le framework facilite ou non — il ne décide jamais à ta place.

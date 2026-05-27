@@ -184,8 +184,8 @@ des dépendances — un compromis de vitesse universellement adopté.
 ::
 :::
 
-**Pourquoi.** Sans `strictNullChecks` au départ, *chaque* type inféré du
-codebase oublie `null`/`undefined` : les signatures, les retours d'API, les
+**Pourquoi.** Sans `strictNullChecks` au départ, *chaque* type inféré de la
+base de code oublie `null`/`undefined` : les signatures, les retours d'API, les
 champs optionnels propagent une fausse certitude dans tout le graphe de types.
 Activer le flag après coup ne révèle pas un bug isolé mais des **milliers**
 d'erreurs corrélées, car le compilateur recalcule la nullabilité de l'ensemble

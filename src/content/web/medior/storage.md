@@ -99,7 +99,7 @@ const user = await db.get("users", 7); // objet reconstruit, pas de JSON.parse
 
 ## Cache API en bref
 
-La **Cache API** (`caches.open`, `cache.put`, `cache.match`) stocke des paires **Request/Response** complètes. Elle est conçue pour les Service Workers et le offline : on y met des assets et des réponses réseau, pas des données applicatives arbitraires. Asynchrone elle aussi, elle partage le quota de stockage de l'origine.
+La **Cache API** (`caches.open`, `cache.put`, `cache.match`) stocke des paires **Request/Response** complètes. Elle est conçue pour les Service Workers et le mode hors ligne : on y met des assets et des réponses réseau, pas des données applicatives arbitraires. Asynchrone elle aussi, elle partage le quota de stockage de l'origine.
 
 ## Comment choisir
 
@@ -113,7 +113,7 @@ La **Cache API** (`caches.open`, `cache.put`, `cache.match`) stocke des paires *
 - title: "IndexedDB"
   desc: "objets structurés, gros volumes, écritures fréquentes ; asynchrone"
 - title: "Cache API"
-  desc: "Request/Response pour le offline et les Service Workers"
+  desc: "Request/Response pour le mode hors ligne et les Service Workers"
 :::
 
 ## Quotas et sécurité

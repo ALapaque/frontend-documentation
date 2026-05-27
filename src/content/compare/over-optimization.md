@@ -15,7 +15,7 @@ related:
 `useMemo` autour d'une addition, `useCallback` sur chaque handler, `React.memo`
 sur tous les composants « au cas où ». Chaque mémoïsation a un coût : mémoire
 pour le cache, comparaison des dépendances à chaque rendu, lisibilité en moins.
-Pour un calcul trivial, ce coût *dépasse* le gain — vous payez la comparaison
+Pour un calcul trivial, ce coût *dépasse* le gain — tu paies la comparaison
 pour économiser une addition. La mémoïsation prématurée est une optimisation
 négative.
 
@@ -38,7 +38,7 @@ valeurs, rendant `useMemo`/`useCallback`/`memo` manuels largement obsolètes.
 La mémoïsation se justifie dans trois cas : un calcul **réellement lourd**, une
 **identité référentielle** requise par une dépendance (clé de `useEffect`, prop
 d'un enfant `memo`), ou une **grande liste** dont le re-render mesuré pose
-problème. Hors de ces cas, mesurez avant d'ajouter quoi que ce soit.
+problème. Hors de ces cas, mesure avant d'ajouter quoi que ce soit.
 :::
 
 ## Trivial vs justifié
@@ -54,7 +54,7 @@ export class Perf {
   rows = signal<number[]>([]);
 
   // INUTILE de "mémoïser" : un computed sur une multiplication est gratuit,
-  // mais ne créez pas de cache custom autour. computed suffit, point.
+  // mais ne crée pas de cache custom autour. computed suffit, point.
   doubled = computed(() => this.n() * 2);
 
   // JUSTIFIÉ : calcul réellement coûteux, recalculé seulement si rows change.
@@ -73,8 +73,8 @@ export function Perf({ rows }: { rows: number[] }) {
   const [n, setN] = useState(2);
 
   // INUTILE : useMemo autour de n*2 coûte plus que le calcul lui-même.
-  // const doubled = useMemo(() => n * 2, [n]);  // ne faites pas ça
-  const doubled = n * 2; // laissez-le nu
+  // const doubled = useMemo(() => n * 2, [n]);  // ne fais pas ça
+  const doubled = n * 2; // laisse-le nu
 
   // JUSTIFIÉ : reduce coûteux sur une grande liste, mesuré au Profiler.
   const score = useMemo(
@@ -95,9 +95,9 @@ import { ref, computed, shallowRef } from 'vue';
 const props = defineProps<{ rows: number[] }>();
 const n = ref(2);
 
-// INUTILE : un computed sur n*2 est trivial — mais surtout n'utilisez pas
-// shallowRef "pour optimiser" sur une valeur dont vous mutez l'intérieur :
-// vous casseriez la réactivité. shallowRef = grosse structure immuable.
+// INUTILE : un computed sur n*2 est trivial — mais surtout n'utilise pas
+// shallowRef "pour optimiser" sur une valeur dont tu mutes l'intérieur :
+// tu casserais la réactivité. shallowRef = grosse structure immuable.
 const doubled = computed(() => n.value * 2);
 
 // JUSTIFIÉ : computed sur calcul lourd, recalcul paresseux et mémoïsé.
@@ -123,9 +123,9 @@ un bug, pas un gain.
 
 ## Verdict
 
-**Profilez, puis optimisez le chemin chaud prouvé.** N'ajoutez pas `useMemo`,
+**Profile, puis optimise le chemin chaud prouvé.** N'ajoute pas `useMemo`,
 `useCallback`, `memo`, `OnPush` ou `shallowRef` par réflexe : chacun a un coût
 et des conditions. La réactivité fine (Angular, Vue) et le React Compiler
-réduisent drastiquement le besoin de mémoïsation manuelle. Mesurez au Profiler
-ou aux DevTools, identifiez le vrai goulot, et n'optimisez que là — le reste,
-laissez-le nu et lisible.
+réduisent drastiquement le besoin de mémoïsation manuelle. Mesure au Profiler
+ou aux DevTools, identifie le vrai goulot, et n'optimise que là — le reste,
+laisse-le nu et lisible.

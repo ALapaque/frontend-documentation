@@ -34,7 +34,7 @@ La conséquence directe : si tu corriges une faute de frappe dans le DOM via Jav
 Pour agir sur un nœud, il faut d'abord le retrouver dans l'arbre. Les deux méthodes modernes utilisent la syntaxe des sélecteurs CSS, ce que tu connais déjà.
 
 ```js
-const titre = document.querySelector("h1");          // le premier qui matche
+const titre = document.querySelector("h1");          // le premier correspondant
 const liens = document.querySelectorAll("nav a");    // tous, dans une NodeList
 liens.forEach((a) => console.log(a.href));
 ```

@@ -41,7 +41,7 @@ créer.
 
 ## Typer du JavaScript non typé
 
-C'est le cas le plus fréquent : une lib publiée en JS pur, sans `.d.ts` ni
+C'est le cas le plus fréquent : une bibliothèque publiée en JS pur, sans `.d.ts` ni
 package `@types`. Tu écris une déclaration ambiante qui décrit son API publique.
 La discipline ici est de **ne typer que ce que tu utilises** et de rester fidèle
 au comportement runtime réel.
@@ -84,7 +84,7 @@ désactive toute vérification : `any` se propage à chaque accès. Tu obtiens l
 silence, pas la sécurité. Décrire les **vraies** signatures fait travailler le
 système de types : une méthode mal orthographiée, un argument manquant, un
 mauvais type d'option sont rattrapés. Le coût est de maintenir la déclaration en
-phase avec la lib — mais une déclaration partielle et juste vaut infiniment mieux
+phase avec la bibliothèque — mais une déclaration partielle et juste vaut infiniment mieux
 qu'un `any` global qui crée une illusion de typage.
 
 ## Augmentation de module
@@ -119,15 +119,15 @@ sémantique de fond en comble.
 Deux sources de déclarations coexistent. Les **types ambiants** sont les `.d.ts`
 que tu écris dans ton projet (globals, augmentations, shims). Les packages
 **`@types/*`** viennent du dépôt communautaire **DefinitelyTyped** : ce sont des
-`.d.ts` publiés sur npm pour des libs JS populaires (`@types/lodash`,
+`.d.ts` publiés sur npm pour des bibliothèques JS populaires (`@types/lodash`,
 `@types/node`). TypeScript les découvre automatiquement via `typeRoots`
-(`node_modules/@types` par défaut). Une lib moderne **embarque** souvent ses
+(`node_modules/@types` par défaut). Une bibliothèque moderne **embarque** souvent ses
 propres types (champ `types`/`typings` dans son `package.json`), rendant
 `@types` inutile.
 
 ```ts
 // L'ordre de résolution d'un import : types embarqués > @types > shim ambiant
-import _ from "lodash"; // résout @types/lodash si la lib n'embarque pas ses types
+import _ from "lodash"; // résout @types/lodash si la bibliothèque n'embarque pas ses types
 ```
 
 ## `declare global`
@@ -156,7 +156,7 @@ global.
 
 ## Générer des déclarations automatiquement
 
-Si **toi** publies une lib en TypeScript, tu n'écris pas les `.d.ts` à la main :
+Si **toi** publies une bibliothèque en TypeScript, tu n'écris pas les `.d.ts` à la main :
 le compilateur les **émet** à partir de tes sources avec `declaration: true`.
 `emitDeclarationOnly` produit les `.d.ts` sans le JS (utile quand un bundler gère
 le JS) ; `declarationMap` ajoute des *source maps* pour que « aller à la
@@ -178,11 +178,11 @@ généré pour que les consommateurs les trouvent.
 :::callout{type="info"}
 Le piège des types publiés : un `.d.ts` n'est **vérifié contre rien**. Rien ne
 garantit qu'il décrit fidèlement le JS livré — ni qu'il reste juste après un
-refactor. Une lib peut publier des types qui mentent sur son propre runtime. Côté
+refactor. Une bibliothèque peut publier des types qui mentent sur son propre runtime. Côté
 producteur, fais générer les types depuis les sources (pas à la main) et active
 des tests de types (`tsd`, `expect-type`) ; côté consommateur, traite un `.d.ts`
 tiers comme une promesse non testée, pas comme une vérité — surtout les `@types`
-maintenus par la communauté, parfois en retard sur la lib réelle.
+maintenus par la communauté, parfois en retard sur la bibliothèque réelle.
 :::
 
 :::cheatsheet

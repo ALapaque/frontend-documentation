@@ -46,7 +46,7 @@ function Profil({ userId }: { userId: string }) {
 ```
 
 :::callout{type="warn"}
-Ne créez jamais la promesse dans le corps du composant (`use(fetch(...))` à chaque rendu). Une nouvelle promesse à chaque rendu = boucle de suspension infinie. La promesse doit être stable : fournie par un loader de router, un cache (TanStack Query, `cache()` RSC) ou un état parent.
+Ne crée jamais la promesse dans le corps du composant (`use(fetch(...))` à chaque rendu). Une nouvelle promesse à chaque rendu = boucle de suspension infinie. La promesse doit être stable : fournie par un loader de router, un cache (TanStack Query, `cache()` RSC) ou un état parent.
 :::
 
 ## Suspense côté data : compare
@@ -84,7 +84,7 @@ function Profil({ id }) {
 
 ## Idée reçue : « Suspense, c'est React qui fetch pour moi »
 
-Faux. Suspense ne sait rien faire de réseau : il n'a aucune notion de fetch, de cache ou de retry. C'est un *protocole* — un composant jette une promesse, React montre le fallback et réessaie quand elle résout — rien de plus. La donnée, le cache et la déduplication restent entièrement à votre charge ou à celle d'une lib (TanStack Query, `use()` sur une promesse cachée, RSC `async`). Croire que Suspense « gère le data fetching » mène droit au piège de la promesse créée dans le rendu : sans source qui stabilise et met en cache la promesse, vous bouclez. Suspense orchestre l'*affichage* de l'état de chargement ; il ne charge rien.
+Faux. Suspense ne sait rien faire de réseau : il n'a aucune notion de fetch, de cache ou de retry. C'est un *protocole* — un composant jette une promesse, React montre le fallback et réessaie quand elle résout — rien de plus. La donnée, le cache et la déduplication restent entièrement à ta charge ou à celle d'une lib (TanStack Query, `use()` sur une promesse cachée, RSC `async`). Croire que Suspense « gère le data fetching » mène droit au piège de la promesse créée dans le rendu : sans source qui stabilise et met en cache la promesse, tu boucles. Suspense orchestre l'*affichage* de l'état de chargement ; il ne charge rien.
 
 ## Intégration : libs et RSC
 

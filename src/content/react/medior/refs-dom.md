@@ -36,7 +36,7 @@ function Stopwatch() {
 }
 ```
 
-Pour le DOM, passe le ref à l'attribut `ref` d'un élément : React y écrit le nœud
+Pour le DOM, passe la ref à l'attribut `ref` d'un élément : React y écrit le nœud
 après le commit.
 
 ```tsx
@@ -69,7 +69,7 @@ function Input({ ref, ...props }: Props & { ref?: Ref<HTMLInputElement> }) {
 ::
 :::
 
-**Pourquoi** : `forwardRef` n'existait que parce que `ref` était traité spécialement et exclu de l'objet `props` transmis au composant. React 19 a levé cette exception : `ref` arrive désormais dans `props` comme n'importe quel attribut, donc l'enrobage devient du bruit. `forwardRef` reste supporté mais est déprécié et sera retiré d'une version future.
+**Pourquoi** : `forwardRef` n'existait que parce que `ref` était traité spécialement et exclu de l'objet `props` transmis au composant. React 19 a levé cette exception : `ref` arrive désormais dans `props` comme n'importe quel attribut, donc l'enrobage devient du bruit. `forwardRef` reste pris en charge mais est déprécié et sera retiré dans une version future.
 
 ## Callback refs et nettoyage
 

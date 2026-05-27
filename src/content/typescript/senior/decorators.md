@@ -73,7 +73,7 @@ class Service {
 }
 ```
 
-## L'objet `context`: le cœur du nouveau modèle
+## L'objet `context` : le cœur du nouveau modèle
 
 `context` remplace les multiples arguments hétérogènes du legacy par **un seul
 objet uniforme et typé**. Il porte le `kind` (`"class"`, `"method"`, `"field"`,
@@ -112,7 +112,7 @@ Si ton framework repose sur l'injection par paramètre (`@Inject`, `@Param`,
 Tu ne peux **pas** simplement basculer `experimentalDecorators: false` : le code
 cesserait de compiler. La migration de tels frameworks attend soit leur portage
 vers le standard, soit la proposition séparée sur les paramètres. Vérifie la
-compatibilité de ton stack avant de toucher au flag.
+compatibilité de ta pile technique avant de toucher au flag.
 :::
 
 ## Metadata via `Symbol.metadata`

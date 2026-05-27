@@ -15,8 +15,8 @@ related:
   - { framework: "react", slug: "memo-callback" }
 ---
 
-`useEffectEvent` est **stable depuis React 19.2** (après un long passage sous le
-nom `useEffectEvent` en canary). Il résout un conflit récurrent : un effet a
+`useEffectEvent` est **stable depuis React 19.2** (après un long passage en
+canary, sous le préfixe `experimental_`). Il résout un conflit récurrent : un effet a
 besoin de **lire** une valeur à jour, mais cette valeur ne doit **pas** faire
 partie de ses dépendances, sinon l'effet se re-déclenche pour rien.
 

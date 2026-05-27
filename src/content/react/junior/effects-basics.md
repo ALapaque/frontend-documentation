@@ -30,8 +30,8 @@ useEffect(() => {
 
 ## Le tableau de dépendances
 
-React relance l'effet quand une dépendance change. Le omettre relance à chaque
-rendu ; le mentir cache des bugs.
+React relance l'effet quand une dépendance change. L'omettre relance à chaque
+rendu ; le truquer cache des bugs.
 
 :::cheatsheet
 - title: "[] (vide)"
