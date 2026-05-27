@@ -109,7 +109,7 @@ export class UserComponent {
 ```
 
 :::callout{type="tip"}
-`withComponentInputBinding` couvre 90 % des cas et garde le composant pur (juste un `input`). Gardez `ActivatedRoute` pour les flux réactifs ou les `data`/`queryParams` complexes.
+`withComponentInputBinding` couvre 90 % des cas et garde le composant pur (juste un `input`). Garde `ActivatedRoute` pour les flux réactifs ou les `data`/`queryParams` complexes.
 :::
 
 :::cheatsheet

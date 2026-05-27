@@ -44,7 +44,7 @@ npx oxfmt               # le formateur
 
 **Pourquoi.** Le parser d'Oxc est l'un des plus rapides écrits en Rust : il
 travaille sur des `&str` avec des allocations groupées (arena allocation) plutôt
-qu'un objet GC par noeud. L'AST vit dans une **arène mémoire** : tous les noeuds
+qu'un objet GC par nœud. L'AST vit dans une **arène mémoire** : tous les nœuds
 d'un fichier sont alloués dans un même bloc, libéré d'un coup, sans pression sur
 un ramasse-miettes. Là où un AST JS éparpille des milliers de petits objets que
 le GC doit suivre, Oxc fait une poignée d'allocations. C'est ce socle partagé qui
@@ -65,24 +65,24 @@ eslint "src/**/*.{ts,tsx}"   # plusieurs dizaines de secondes sur un gros repo
 ::
 ::good
 ```bash
-# Oxlint : parser Oxc, traversée unique, threads = coeurs dispo.
+# Oxlint : parser Oxc, traversée unique, threads = cœurs dispo.
 oxlint src   # souvent < 1s sur le même repo
 ```
 ::
 :::
 
 **Pourquoi.** Trois mécanismes cumulés. (1) Le **parsing** : un seul parser Rust
-en arène au lieu d'un parser JS qui alloue par noeud. (2) La **traversée** :
+en arène au lieu d'un parser JS qui alloue par nœud. (2) La **traversée** :
 Oxlint exécute toutes ses règles en **une seule passe** sur l'AST partagé, là où
-ESLint laisse chaque règle s'abonner à des noeuds et multiplie les visites. (3)
+ESLint laisse chaque règle s'abonner à des nœuds et multiplie les visites. (3)
 Le **parallélisme** : Rust n'a pas de GIL, Oxlint distribue les fichiers sur
-tous les coeurs avec des threads natifs (via rayon), pendant que Node reste
+tous les cœurs avec des threads natifs (via rayon), pendant que Node reste
 mono-thread sauf à payer le coût de sérialisation des Worker. La somme donne le
 facteur 50-100×. Le compromis mi-2026 : la couverture de règles n'égale pas
 encore l'écosystème de plugins ESLint, d'où des setups hybrides.
 
 :::callout{type="warn"}
-Oxlint **ne remplace pas** tout ESLint en mi-2026. Les plugins riches
+Oxlint **ne remplace pas** tout ESLint à la mi-2026. Les plugins riches
 (`eslint-plugin-react-hooks`, règles type-aware exigeant le typechecker TS)
 n'ont pas tous d'équivalent. Le pattern courant : Oxlint en pre-commit et en CI
 pour le gros des règles rapides, ESLint restreint aux règles type-aware. Ne
@@ -148,7 +148,7 @@ Babel+ESLint+Prettier+esbuild où chaque outil parsait pour son compte.
 ## Ce que ça change pour tes workflows
 
 Concrètement : les boucles de feedback raccourcissent au point de changer les
-habitudes. Un lint en pre-commit qui passe de 20s à 0,5s peut tourner sur
+habitudes. Un lint en pre-commit qui passe de 20 s à 0,5 s peut tourner sur
 **l'arbre entier** au lieu du staged seulement. Un cold start de dev server qui
 chute permet de relancer sans réfléchir. Le typecheck reste, lui, sur `tsc` (TS
 n'est pas réécrit en Rust côté types) — donc dans une gate CI, le maillon lent
@@ -176,7 +176,7 @@ devient le typecheck, pas le lint ni le bundle.
 **Pourquoi.** Quand lint et bundle s'effondrent en temps, le profil de ta CI se
 déplace : le coût total n'est plus dominé par le tooling JS-en-JS mais par les
 étapes qui n'ont pas (encore) migré vers Rust, le typecheck en tête. Optimiser ta
-CI en 2026, c'est donc shard le typecheck ou utiliser `tsgo`/builds incrémentaux,
+CI en 2026, c'est donc sharder le typecheck ou utiliser `tsgo`/builds incrémentaux,
 plus que tuner ESLint. Le profil de performance a bougé, ta stratégie d'optim
 doit suivre.
 

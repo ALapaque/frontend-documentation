@@ -31,7 +31,7 @@ type Box = Clone<{ x: number; y: string }>; // { x: number; y: string }
 
 `keyof T` produit une union de littéraux (`"x" | "y"`), et `K in` itère dessus.
 Le but : transformer **systématiquement** la forme d'un type sans réécrire chaque
-propriété à la main. Toute la lib `Partial`, `Required`, `Readonly`, `Pick`,
+propriété à la main. Toute la bibliothèque standard — `Partial`, `Required`, `Readonly`, `Pick`,
 `Record` est faite ainsi.
 
 ## Modificateurs `readonly` et `?`
@@ -98,7 +98,7 @@ type M = MethodsOnly<{ id: number; save(): void; load(): void }>;
 
 ## Reconstruire `Pick` et `Partial` soi-même
 
-Comprendre les types mappés, c'est pouvoir les écrire sans la lib. Voici les
+Comprendre les types mappés, c'est pouvoir les écrire sans la bibliothèque. Voici les
 deux fondamentaux, et pourquoi la contrainte sur `K` est essentielle.
 
 :::compare

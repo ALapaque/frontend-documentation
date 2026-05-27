@@ -85,7 +85,7 @@ type B = RouteParam<"/users/:userId">;   // "userId"
 :::callout{type="tip"}
 Combiné à la récursion, ce parsing peut extraire **tous** les paramètres d'une
 route en accumulant les `infer` successifs dans une union. C'est exactement
-comment les routeurs typés (TanStack Router, génération de routes) dérivent la
+ainsi que les routeurs typés (TanStack Router, génération de routes) dérivent la
 forme de l'objet `params` directement depuis le littéral de chemin.
 :::
 
@@ -138,7 +138,7 @@ vite les **dizaines de milliers**. TypeScript limite d'ailleurs une union issue
 d'un gabarit à 100 000 membres et lève `Expression produces a union type that is
 too complex to represent` au-delà. Au-delà du plafond dur, même en dessous, le
 temps de vérification et la mémoire explosent : l'autocomplétion rame, le serveur
-de langage devient laggy. Garde un slot en `string` quand l'ensemble est trop
+de langage devient saccadé. Garde un slot en `string` quand l'ensemble est trop
 grand, ou valide la portion non bornée à l'exécution.
 
 :::cheatsheet

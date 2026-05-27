@@ -12,8 +12,8 @@ related:
 
 ## Le bug de la réponse périmée
 
-Vous tapez « pa », « par », « pari » dans un champ de recherche. Trois requêtes
-partent. Celle pour « par » répond *après* celle pour « pari » : votre liste
+Tu tapes « pa », « par », « pari » dans un champ de recherche. Trois requêtes
+partent. Celle pour « par » répond *après* celle pour « pari » : ta liste
 affiche les résultats de « par » alors que le champ contient « pari ».
 Personne n'a écrit de bug — c'est juste l'ordre d'arrivée du réseau. La règle
 implicite « le dernier qui répond gagne » est exactement l'inverse de ce qu'on
@@ -36,7 +36,7 @@ résultat par sa `queryKey` et jette les réponses qui ne correspondent plus à 
 clé active.
 
 :::callout{type="tip"}
-En pratique, déléguez à TanStack Query (React et Vue) : la `queryKey` inclut le
+En pratique, délègue à TanStack Query (React et Vue) : la `queryKey` inclut le
 terme de recherche, et la lib garantit que seul le résultat de la clé courante
 s'affiche. Côté Angular, `switchMap` règle le problème sans dépendance.
 :::
@@ -130,6 +130,6 @@ Toute requête déclenchée par une entrée qui change est une race condition en
 puissance. La discipline : **soit on annule la précédente, soit on ignore les
 réponses qui ne correspondent plus à la demande courante**. Angular gagne sans
 effort avec `switchMap`. React et Vue exigent un `AbortController` plus un flag
-`ignore` dans le cleanup — ou mieux, déléguez à TanStack Query, dont la
-`queryKey` rend la garantie automatique. Ne laissez jamais le réseau décider de
+`ignore` dans le cleanup — ou mieux, délègue à TanStack Query, dont la
+`queryKey` rend la garantie automatique. Ne laisse jamais le réseau décider de
 l'ordre d'affichage.

@@ -61,7 +61,7 @@ type E = ElementOf<string[]>; // string
 
 L'`Awaited` natif de TypeScript est plus subtil (il déballe récursivement les
 chaînes de `Promise<Promise<...>>` et gère les `thenable`), mais le principe est
-celui-ci : `infer` au point de désballage.
+celui-ci : `infer` au point de déballage.
 
 :::callout{type="tip"}
 Quand plusieurs `infer` portent le même nom dans des positions covariantes,
@@ -129,12 +129,12 @@ d'où `true`. Le même piège casse tout type censé tester une union « en bloc
 
 ## Pourquoi c'est la base des utility types
 
-Presque tous les utilitaires de la lib standard reposent sur ces trois pièces.
+Presque tous les utilitaires de la bibliothèque standard reposent sur ces trois pièces.
 `Exclude`/`Extract` = distributivité. `NonNullable<T> = T & {}` exploite le
 filtrage. `Parameters`, `ReturnType`, `InstanceType`, `ConstructorParameters`
 sont tous des `infer` à une position précise d'une signature. Comprendre les
 conditionnels, c'est cesser de consommer les utility types pour commencer à les
-écrire — et à composer les tiens quand la lib standard s'arrête.
+écrire — et à composer les tiens quand la bibliothèque standard s'arrête.
 
 :::cheatsheet
 - title: "T extends U ? X : Y"
@@ -155,7 +155,7 @@ conditionnels, c'est cesser de consommer les utility types pour commencer à les
 
 Un conditionnel peut s'appeler lui-même. C'est ainsi qu'on déballe des
 structures imbriquées — un `DeepReadonly`, un aplatissement de tableaux, ou un
-désballage récursif de promesses.
+déballage récursif de promesses.
 
 ```ts
 type Flatten<T> = T extends readonly (infer E)[] ? Flatten<E> : T;

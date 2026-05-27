@@ -74,7 +74,7 @@ onMounted(() => {
 </template>
 ```
 
-C'est aussi le bon endroit pour lancer un appel réseau, démarrer un timer, ou s'abonner à un évènement global.
+C'est aussi le bon endroit pour lancer un appel réseau, démarrer un timer, ou s'abonner à un événement global.
 
 :::callout{type="tip"}
 `useTemplateRef('champ')` (Vue 3.5+) lie la ref au `ref="champ"` du template par son nom : c'est l'API recommandée, plus claire que l'ancien `const champ = ref(null)` qui reposait sur une correspondance de variable implicite. La ref reste `null` jusqu'à `onMounted`.

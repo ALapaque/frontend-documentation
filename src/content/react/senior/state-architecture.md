@@ -17,11 +17,11 @@ related:
     slug: "signals"
 ---
 
-Avant de choisir une lib de state, posez la vraie question : quel *modèle* d'état ? Distinguez d'abord **server state** (donnée distante, asynchrone, cachée — du ressort de TanStack Query, voir `server-state`) du **client state** (UI, sélection, formulaire éphémère). Les libs ci-dessous adressent le client state ; chacune incarne un modèle différent avec un coût de re-rendu différent.
+Avant de choisir une lib de state, pose-toi la vraie question : quel *modèle* d'état ? Distingue d'abord le **server state** (donnée distante, asynchrone, cachée — du ressort de TanStack Query, voir `server-state`) du **client state** (UI, sélection, formulaire éphémère). Les libs ci-dessous couvrent le client state ; chacune incarne un modèle différent avec un coût de re-rendu différent.
 
 ## Quatre modèles
 
-- **Zustand** — un store unique externe, lu par sélecteur. Vous vous abonnez à une *tranche*, pas au store entier. API minimale, hors de l'arbre React donc immunisé aux re-rendus de Context.
+- **Zustand** — un store unique externe, lu par sélecteur. Tu t'abonnes à une *tranche*, pas au store entier. API minimale, hors de l'arbre React donc immunisé aux re-rendus de Context.
 - **Jotai** — atomes : des unités d'état composables, lues individuellement. Modèle « bottom-up » dérivé de Recoil ; un composant re-rend si et seulement si un atome qu'il lit change.
 - **Redux Toolkit (RTK)** — un store unique, mutations via réducteurs (slices), flux d'actions tracé. Prévisibilité, devtools, middleware, RTK Query intégré.
 - **Signals (Preact)** — valeur réactive à granularité fine : lire un signal abonne le composant, et seul ce qui dépend du signal se met à jour, parfois sans re-rendu du composant entier.
@@ -80,11 +80,11 @@ function Conso() {
 
 - **Zustand** : client state pragmatique, équipe qui veut peu de cérémonie. Sélecteurs explicites, pas de Provider obligatoire, store testable isolément. Le défaut raisonnable des projets neufs.
 - **Jotai** : état très fragmenté et dérivé, dépendances fines entre morceaux d'UI (éditeurs, canvas, formulaires complexes). Le modèle atomique évite de penser à un store monolithique.
-- **RTK** : grosse app, flux d'événements à auditer, besoin de devtools/time-travel, équipe nombreuse appréciant la rigueur du flux d'actions. RTK Query si vous voulez aussi gérer le server state dans le même outil.
+- **RTK** : grosse app, flux d'événements à auditer, besoin de devtools/time-travel, équipe nombreuse appréciant la rigueur du flux d'actions. RTK Query si tu veux aussi gérer le server state dans le même outil.
 - **Signals** : surtout natif en Preact ; en React, modèle encore périphérique. Pertinent pour de la réactivité ultra-fine, mais s'écarte du modèle de rendu standard de React.
 
 :::callout{type="warn"}
-Le piège récurrent : router le server state dans une de ces libs. Donnée distante = cache, déduplication, revalidation, invalidation. C'est TanStack Query (ou RTK Query). Mettre des réponses d'API dans Zustand/Redux « à la main » recrée un cache buggé. Gardez server state et client state séparés.
+Le piège récurrent : router le server state dans une de ces libs. Donnée distante = cache, déduplication, revalidation, invalidation. C'est TanStack Query (ou RTK Query). Mettre des réponses d'API dans Zustand/Redux « à la main » recrée un cache buggé. Garde le server state et le client state séparés.
 :::
 
 ## Code source

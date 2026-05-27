@@ -109,7 +109,7 @@ Une erreur affichée visuellement mais absente de l'arbre d'accessibilité n'exi
 
 ## Pourquoi privilégier le natif
 
-Réimplémenter la validation, le focus du premier champ invalide, les messages localisés et le clavier mobile en JavaScript, c'est des centaines de lignes à maintenir et à tester sur chaque navigateur. La plateforme l'a déjà fait, traduit dans toutes les langues, et le maintient. Pars du formulaire natif, puis enrichis seulement ce qui manque (validation asynchrone côté serveur, messages sur mesure). Le natif est ton socle, pas ton fallback.
+Réimplémenter la validation, le focus du premier champ invalide, les messages localisés et le clavier mobile en JavaScript, ce sont des centaines de lignes à maintenir et à tester sur chaque navigateur. La plateforme l'a déjà fait, traduit dans toutes les langues, et le maintient. Pars du formulaire natif, puis enrichis seulement ce qui manque (validation asynchrone côté serveur, messages sur mesure). Le natif est ton socle, pas ton fallback.
 
 :::callout{type="tip"}
 Garde toujours `<button type="submit">` (le défaut) pour l'action principale et `type="button"` pour les boutons secondaires : un bouton sans `type` dans un formulaire soumet le formulaire, ce qui provoque des soumissions accidentelles.

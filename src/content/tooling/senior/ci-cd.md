@@ -99,7 +99,7 @@ aval car chaque shard ne voit qu'une partie de la suite.
 
 ## La gate qualité
 
-Bloquer le merge tant que typecheck + lint + test ne sont pas verts est le coeur
+Bloquer le merge tant que typecheck + lint + test ne sont pas verts est le cœur
 de la valeur CI. Ce n'est pas une politique sociale, c'est un invariant : `main`
 reste toujours déployable.
 
@@ -124,7 +124,7 @@ preview:
     - run: npx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
 ```
 
-L'environnement est éphémère et adressé par le SHA ou le numéro de PR, détruit
+L'environnement est éphémère et identifié par le SHA ou le numéro de PR, détruit
 au merge/close. Bénéfice réel : la QA et le design review se font sur du buildé,
 pas sur « ça marche chez moi ».
 

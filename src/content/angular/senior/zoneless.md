@@ -19,8 +19,8 @@ related:
 
 `zone.js` patchait toutes les API asynchrones du navigateur (`setTimeout`,
 `addEventListener`, `Promise`, XHR…) pour déclencher un tick global après
-chaque tâche. Pratique, mais c'est un marteau : Angular re-vérifiait tout
-« au cas où ».
+chaque tâche. Pratique, mais brutal : Angular re-vérifiait tout
+« au cas où », sans distinguer les tâches qui touchent l'UI des autres.
 
 ## Sans zone, qui déclenche le tick ?
 

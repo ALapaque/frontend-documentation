@@ -67,7 +67,7 @@ function Inscription() {
 Aucun re-rendu à la frappe : React ignore le contenu jusqu'au submit. C'est plus léger, mais on perd la réactivité par caractère.
 
 :::callout{type="info"}
-React 19 ajoute une troisième voie pour la soumission : le prop `action` du `<form>` reçoit une fonction qui prend un `FormData`, sans gérer `value`/`onChange` à la main. C'est le sujet des modules avancés (Actions, `useActionState`) ; retenez juste qu'elle existe.
+React 19 ajoute une troisième voie pour la soumission : la prop `action` du `<form>` reçoit une fonction qui prend un `FormData`, sans gérer `value`/`onChange` à la main. C'est le sujet des modules avancés (Actions, `useActionState`) ; retiens juste qu'elle existe.
 :::
 
 ## Contrôlé vs non contrôlé
@@ -92,12 +92,12 @@ const [v, setV] = useState("");
 ::
 :::
 
-**Pourquoi** : la version contrôlée wins ici parce que la valeur vit dans un state React. Chaque frappe déclenche un re-rendu, donc l'expression `v.length < 3` est ré-évaluée et le `disabled` du bouton recalculé au bon moment dans le cycle de rendu. En non contrôlé, la valeur n'existe que dans le DOM ; React ne re-rend pas à la frappe, donc rien ne recalcule l'état du bouton tant qu'on ne relit pas manuellement la `ref` — ce qui suppose un événement et un re-rendu qu'on n'a justement pas. Le besoin (réagir en continu) impose le modèle où React voit chaque changement.
+**Pourquoi** : la version contrôlée l'emporte ici parce que la valeur vit dans un state React. Chaque frappe déclenche un re-rendu, donc l'expression `v.length < 3` est ré-évaluée et le `disabled` du bouton recalculé au bon moment dans le cycle de rendu. En non contrôlé, la valeur n'existe que dans le DOM ; React ne re-rend pas à la frappe, donc rien ne recalcule l'état du bouton tant qu'on ne relit pas manuellement la `ref` — ce qui suppose un événement et un re-rendu qu'on n'a justement pas. Le besoin (réagir en continu) impose le modèle où React voit chaque changement.
 
 ## Lequel choisir
 
 :::callout{type="tip"}
-Par défaut, contrôlé : c'est le modèle React idiomatique, prévisible, testable. Passez non contrôlé quand vous n'avez besoin de la valeur **qu'au submit**, pour un champ fichier (`<input type="file">` est toujours non contrôlé), ou pour de très gros formulaires où le re-rendu par frappe devient un coût mesurable — c'est précisément ce que font les libs comme React Hook Form.
+Par défaut, contrôlé : c'est le modèle React idiomatique, prévisible, testable. Passe en non contrôlé quand tu n'as besoin de la valeur **qu'au submit**, pour un champ fichier (`<input type="file">` est toujours non contrôlé), ou pour de très gros formulaires où le re-rendu par frappe devient un coût mesurable — c'est précisément ce que font les bibliothèques comme React Hook Form.
 :::
 
 | Critère | Contrôlé | Non contrôlé |

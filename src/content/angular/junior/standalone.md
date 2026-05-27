@@ -94,7 +94,7 @@ ng generate @angular/core:standalone
 ```
 
 :::callout{type="warn"}
-Lancez les trois étapes dans l'ordre proposé et committez entre chaque. La dernière passe touche `main.ts` et le bootstrap : c'est la plus structurante, isolez-la.
+Lance les trois étapes dans l'ordre proposé et committe entre chaque. La dernière passe touche `main.ts` et le bootstrap : c'est la plus structurante, isole-la.
 :::
 
 :::cheatsheet

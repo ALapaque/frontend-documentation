@@ -23,7 +23,7 @@ Quand deux composants doivent refléter la même donnée, le réflexe naïf est 
 
 Un état vit dans **un seul** composant. Si plusieurs composants en ont besoin, on le place dans leur **plus proche parent commun**, qui le redescend par des props.
 
-Pensez à un thermostat : l'affichage et le bouton ne stockent pas chacun leur propre température. Ils lisent et modifient une seule valeur tenue par le thermostat. Si chacun gardait sa copie, ils finiraient par diverger.
+Pense à un thermostat : l'affichage et le bouton ne stockent pas chacun leur propre température. Ils lisent et modifient une seule valeur tenue par le thermostat. Si chacun gardait sa copie, ils finiraient par diverger.
 
 Le parent expose deux choses aux enfants :
 
@@ -124,7 +124,7 @@ function Champ({ value, onChange }) {
 Remonter trop haut a un coût : chaque frappe re-rend tout le sous-arbre, et le parent se charge de détails qui ne le concernent pas.
 
 :::callout{type="tip"}
-Gardez l'état au niveau le plus bas où il est encore partagé par tous ses lecteurs. S'il n'est utilisé que par un composant, laissez-le local. On remonte uniquement quand un frère ou le parent a réellement besoin de lire ou d'écrire la valeur.
+Garde l'état au niveau le plus bas où il est encore partagé par tous ses lecteurs. S'il n'est utilisé que par un composant, laisse-le local. On remonte uniquement quand un frère ou le parent a réellement besoin de lire ou d'écrire la valeur.
 :::
 
 ## À retenir
@@ -135,7 +135,7 @@ Gardez l'état au niveau le plus bas où il est encore partagé par tous ses lec
 - title: "value + onChange"
   desc: "Le parent descend la valeur et le callback ; l'enfant reste passif (controlled)."
 - title: "Dériver, pas dupliquer"
-  desc: "Calculez les valeurs liées (Fahrenheit) à la volée plutôt que de stocker un doublon."
+  desc: "Calcule les valeurs liées (Fahrenheit) à la volée plutôt que de stocker un doublon."
 - title: "Le bon niveau"
   desc: "Aussi bas que possible, aussi haut que nécessaire pour le partage."
 :::

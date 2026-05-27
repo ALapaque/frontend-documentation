@@ -163,7 +163,7 @@ le scroll sont la **même** valeur. C'est la différence entre « réagir au scr
 En 2026, les scroll-driven animations sont stables dans les navigateurs Chromium et
 Firefox ; Safari les a livrées plus récemment et un parc d'anciens navigateurs
 subsiste. Le motif est une **amélioration progressive** : un rendu correct sans
-animation, enrichi seulement là où c'est supporté.
+animation, enrichi seulement là où c'est pris en charge.
 
 ```css
 /* fallback : tout est visible par défaut, sans dépendre du scroll */

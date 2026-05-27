@@ -81,7 +81,7 @@ this.results$ = this.search.valueChanges.pipe(
 
 ### Idée reçue : « mergeMap est le choix par défaut le plus sûr »
 
-Faux, et c'est même souvent le plus dangereux. `mergeMap` n'impose aucune limite de concurrence par défaut : un flux rapide peut ouvrir des centaines de requêtes simultanées et saturer le serveur ou la connexion. Il ne garantit ni l'ordre, ni l'annulation. Le défaut raisonnable pour une requête déclenchée par l'utilisateur est `switchMap` (on veut le dernier résultat). `mergeMap` ne se justifie que quand les opérations sont vraiment indépendantes et idempotentes — et même là, plafonnez la concurrence avec son second argument.
+Faux, et c'est même souvent le plus dangereux. `mergeMap` n'impose aucune limite de concurrence par défaut : un flux rapide peut ouvrir des centaines de requêtes simultanées et saturer le serveur ou la connexion. Il ne garantit ni l'ordre, ni l'annulation. Le défaut raisonnable pour une requête déclenchée par l'utilisateur est `switchMap` (on veut le dernier résultat). `mergeMap` ne se justifie que quand les opérations sont vraiment indépendantes et idempotentes — et même là, plafonne la concurrence avec son second argument.
 
 :::cheatsheet
 - title: "switchMap"

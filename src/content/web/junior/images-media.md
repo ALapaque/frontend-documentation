@@ -30,7 +30,7 @@ Le piège : tous les navigateurs anciens ne lisent pas l'AVIF. La solution n'est
 </picture>
 ```
 
-**Pourquoi.** Le navigateur lit les `<source>` dans l'ordre et s'arrête à la première dont il sait lire le `type`. L'`<img>` final est le filet de sécurité : c'est lui qui porte l'`alt` et qui s'affiche si aucun format avancé n'est supporté. Tu sers le meilleur format à chacun sans script ni détection serveur.
+**Pourquoi.** Le navigateur lit les `<source>` dans l'ordre et s'arrête à la première dont il sait lire le `type`. L'`<img>` final est le filet de sécurité : c'est lui qui porte l'`alt` et qui s'affiche si aucun format avancé n'est pris en charge. Tu sers le meilleur format à chacun sans script ni détection serveur.
 
 ## Servir la bonne taille : srcset et sizes
 

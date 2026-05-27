@@ -21,7 +21,7 @@ related:
 
 Angular ne sait pas, par défaut, lire ou écrire la valeur d'un composant custom. Le `ControlValueAccessor` (CVA) est le contrat qui relie un composant à l'API de formulaires : il traduit dans les deux sens entre le `FormControl` (le modèle) et l'état interne du composant (la vue).
 
-La métaphore : le CVA est un adaptateur de prise. Le `FormControl` parle une langue (valeur, validité, disabled) ; votre composant en parle une autre. Le CVA fait la conversion pour que `[(ngModel)]` ou `formControlName` fonctionnent sur votre composant comme sur un `<input>` natif.
+La métaphore : le CVA est un adaptateur de prise. Le `FormControl` parle une langue (valeur, validité, disabled) ; ton composant en parle une autre. Le CVA fait la conversion pour que `[(ngModel)]` ou `formControlName` fonctionnent sur ton composant comme sur un `<input>` natif.
 
 Quatre méthodes à implémenter :
 
@@ -123,10 +123,10 @@ export class ToggleComponent implements ControlValueAccessor {}
 
 ## Idée reçue : « il faut implémenter setDisabledState »
 
-`setDisabledState` est **optionnel** dans l'interface, mais l'ignorer casse silencieusement `control.disable()` : votre composant restera interactif alors que le modèle le croit désactivé, et il pourra émettre des valeurs sur un contrôle désactivé. De même, beaucoup oublient `onTouched` : sans appel à `this.onTouched()` au blur, l'état `touched` n'est jamais positionné, donc les messages d'erreur conditionnés à `control.touched` ne s'affichent jamais. Le contrat n'est pas « les méthodes obligatoires » mais « les quatre comportements que l'utilisateur attend d'un champ natif ».
+`setDisabledState` est **optionnel** dans l'interface, mais l'ignorer casse silencieusement `control.disable()` : ton composant restera interactif alors que le modèle le croit désactivé, et il pourra émettre des valeurs sur un contrôle désactivé. De même, beaucoup oublient `onTouched` : sans appel à `this.onTouched()` au blur, l'état `touched` n'est jamais positionné, donc les messages d'erreur conditionnés à `control.touched` ne s'affichent jamais. Le contrat n'est pas « les méthodes obligatoires » mais « les quatre comportements que l'utilisateur attend d'un champ natif ».
 
 :::callout{type="tip"}
-Vous pouvez écrire le provider en une ligne avec un helper réutilisable, mais préférez ajouter la **validation** via un second provider `NG_VALIDATORS` (`Validator`) plutôt que de mélanger validité et accès à la valeur dans le CVA.
+Tu peux écrire le provider en une ligne avec un helper réutilisable, mais préfère ajouter la **validation** via un second provider `NG_VALIDATORS` (`Validator`) plutôt que de mélanger validité et accès à la valeur dans le CVA.
 :::
 
 :::cheatsheet

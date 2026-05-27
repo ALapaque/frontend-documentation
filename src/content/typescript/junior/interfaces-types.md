@@ -180,8 +180,8 @@ type Paire = [number, number];
 :::
 
 **Pourquoi.** `interface` ne sait décrire que des **formes d'objets**, mais elle
-le fait bien : elle supporte la **fusion de déclarations** (deux `interface` de
-même nom se combinent, utile pour augmenter des types de librairies), et produit
+le fait bien : elle prend en charge la **fusion de déclarations** (deux `interface` de
+même nom se combinent, utile pour augmenter des types de bibliothèques), et produit
 souvent des messages d'erreur plus lisibles. `type` est plus **général** : seul
 lui peut nommer une union, un tuple, un type primitif ou un type calculé. La règle
 pratique : **`interface` pour les objets et les API publiques que tu exposes,

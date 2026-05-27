@@ -18,13 +18,13 @@ related:
 | API sous-jacente | `document.startViewTransition` | `document.startViewTransition` | `document.startViewTransition` |
 | Élément partagé | `view-transition-name` CSS | `view-transition-name` CSS | `view-transition-name` CSS |
 | Personnalisation | callback `onViewTransitionCreated` | props sur `<ViewTransition>` | hook `onBeforeLeave` |
-| reduced-motion | CSS `@media` à votre charge | CSS `@media` à votre charge | CSS `@media` à votre charge |
+| reduced-motion | CSS `@media` à ta charge | CSS `@media` à ta charge | CSS `@media` à ta charge |
 
 ## La même API native
 
 Les trois frameworks ne réinventent rien : ils branchent le routeur sur
-`document.startViewTransition(cb)`. Le navigateur fige un screenshot de l'ancien
-DOM, exécute votre mise à jour, puis crossfade vers le nouveau. Tout le travail
+`document.startViewTransition(cb)`. Le navigateur fige une capture de l'ancien
+DOM, exécute ta mise à jour, puis fait un fondu enchaîné vers le nouveau. Tout le travail
 fin (éléments partagés, courbes) se fait en **CSS** via les pseudo-éléments
 `::view-transition-old()` / `::view-transition-new()` et la propriété
 `view-transition-name`.
@@ -111,5 +111,5 @@ intégré : `withViewTransitions()` et c'est branché sur tout le routeur. React
 Router v7 demande juste `viewTransition` sur le lien ; le `<ViewTransition>` de
 React reste *unstable* et plus granulaire. Vue se câble en trois lignes via un
 guard. Mais quel que soit le framework, **80 % du résultat est dans le CSS** :
-nommez vos éléments partagés, gérez `reduced-motion`, et le routeur n'est qu'un
+nomme tes éléments partagés, gère `reduced-motion`, et le routeur n'est qu'un
 déclencheur.

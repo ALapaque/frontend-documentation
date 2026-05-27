@@ -14,8 +14,8 @@ related:
 
 Un composant lance un `fetch`, l'utilisateur navigue ailleurs, le composant est
 détruit — puis la réponse arrive et appelle `setState` / `signal.set` /
-`ref.value =`. Au mieux, c'est un travail inutile ; au pire, vous touchez un
-état orphelin, retenez le composant en mémoire, ou enchaînez sur du DOM
+`ref.value =`. Au mieux, c'est un travail inutile ; au pire, tu touches un
+état orphelin, retiens le composant en mémoire, ou enchaînes sur du DOM
 disparu. La parade est unique : **annuler l'async en vol au démontage**, ou au
 moins refuser d'écrire si le composant n'est plus là.
 
@@ -30,14 +30,14 @@ moins refuser d'écrire si le composant n'est plus là.
 
 React 18+ ne crie plus « can't update state on unmounted component », mais le
 problème de fond demeure : un `fetch` non annulé continue, et écrire son
-résultat est inutile voire fuyant. Préférez **annuler** (`AbortController`,
+résultat est inutile voire fuyant. Préfère **annuler** (`AbortController`,
 `takeUntilDestroyed`) à **garder une garde** (`isMounted`). L'annulation libère
 la ressource ; la garde ne fait que masquer l'écriture tardive.
 
 :::callout{type="warn"}
 Le `isMounted` via `useRef` reste un filet utile pour les API non annulables
 (une promesse tierce sans `signal`). Mais ce n'est qu'un pansement : si l'API
-*peut* être annulée, annulez-la — c'est la seule solution qui ne fuit pas.
+*peut* être annulée, annule-la — c'est la seule solution qui ne fuit pas.
 :::
 
 ## Charger en s'arrêtant si on disparaît
@@ -115,7 +115,7 @@ onMounted(() => {
 
 ## Les async non annulables
 
-Pour une promesse qu'on ne peut pas interrompre, gardez une référence vivante :
+Pour une promesse qu'on ne peut pas interrompre, garde une référence vivante :
 un `useRef(true)` mis à `false` dans le cleanup côté React, un flag dans le
 scope `setup` côté Vue, le `DestroyRef.destroyed` côté Angular. On lit ce drapeau
 avant d'écrire. C'est moins propre que l'annulation, mais ça évite l'écriture
@@ -123,9 +123,9 @@ fantôme.
 
 ## Verdict
 
-À chaque async lancé dans un composant, posez-vous : *« Et si le composant
+À chaque async lancé dans un composant, demande-toi : *« Et si le composant
 disparaît avant la réponse ? »* La réponse par défaut est **annuler** —
-`AbortController`, `takeUntilDestroyed`, `onUnmounted` qui `abort`. Réservez la
+`AbortController`, `takeUntilDestroyed`, `onUnmounted` qui `abort`. Réserve la
 garde `isMounted` aux API qu'on ne peut pas annuler. Le silence de la console
-sur React 18+ ne signifie pas que le problème a disparu : **annulez ce qui est
+sur React 18+ ne signifie pas que le problème a disparu : **annule ce qui est
 en vol au démontage**, point.

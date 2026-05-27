@@ -148,11 +148,11 @@ button { anchor-name: --aide; }
 :::callout{type="warn"}
 En mai 2026, l'anchor positioning est implémenté dans **Chromium 125+** (Chrome, Edge,
 Opera) mais **pas encore dans Safari ni Firefox**. Une **bannière de compatibilité
-s'affiche** dans la démo ci-dessus sur les navigateurs non supportés pour t'avertir que
+s'affiche** dans la démo ci-dessus sur les navigateurs non compatibles pour t'avertir que
 le positionnement automatique n'y fonctionnera pas.
 :::
 
-La dégradation doit être **pensée en amont**. Sur les moteurs sans support, `position-anchor`
+La dégradation doit être **pensée en amont**. Sur les moteurs qui ne le prennent pas en charge, `position-anchor`
 et `position-area` sont simplement ignorés : prévois donc un positionnement de secours
 classique (un parent `position: relative` + `top`/`left`), ou détecte la fonctionnalité.
 

@@ -16,7 +16,7 @@ related:
 
 ## Dériver plutôt que dupliquer
 
-Les **utility types** sont des types génériques fournis par la lib standard qui
+Les **utility types** sont des types génériques fournis par la bibliothèque standard qui
 **transforment** un type en un autre. Leur intérêt profond n'est pas de t'éviter
 de taper : c'est de garder une **source unique de vérité** (*single source of
 truth*). Quand un type B est dérivé de A, modifier A propage automatiquement le
@@ -157,7 +157,7 @@ type MonNonNullable<T> = T extends null | undefined ? never : T;
 
 :::callout{type="info"}
 Savoir qu'ils sont de simples mapped/conditional types change tout : tu peux
-**composer** (`Partial<Pick<T, K>>`), créer les tiens quand la lib n'a pas le bon
+**composer** (`Partial<Pick<T, K>>`), créer les tiens quand la bibliothèque n'a pas le bon
 (`Mutable<T>`, qui retire `readonly` via `-readonly`), et lire les messages
 d'erreur sans paniquer. Un utility type est du code, pas une boîte noire.
 :::

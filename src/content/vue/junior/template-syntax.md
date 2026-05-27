@@ -8,7 +8,7 @@ duration: 10
 prerequisites: []
 updated: 2026-05-22
 seoTitle: "Syntaxe des templates Vue — Guide Junior"
-seoDescription: "Interpolation, directives et events : la syntaxe de template Vue depuis zéro."
+seoDescription: "Interpolation, directives et événements : la syntaxe de template Vue depuis zéro."
 ogVariant: "sage"
 related:
   - { framework: "angular", slug: "data-binding" }

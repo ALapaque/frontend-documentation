@@ -65,7 +65,7 @@ expect(screen.getByText("1")).toBeVisible();
 
 ## MSW : intercepter le réseau
 
-Mock Service Worker intercepte les requêtes au niveau réseau (fetch/XHR), pas en stubbant `fetch` ni votre couche de data. Le composant fait sa vraie requête ; MSW répond. Un seul set de handlers sert les tests unitaires (Node), les tests de composants et le dev en navigateur.
+Mock Service Worker intercepte les requêtes au niveau réseau (fetch/XHR), pas en stubbant `fetch` ni ta couche de data. Le composant fait sa vraie requête ; MSW répond. Un seul jeu de handlers sert les tests unitaires (Node), les tests de composants et le dev en navigateur.
 
 ```tsx
 import { http, HttpResponse } from "msw";
@@ -82,7 +82,7 @@ afterAll(() => server.close());
 ```
 
 :::callout{type="tip"}
-Ne mockez pas votre client de data (TanStack Query, axios). Mockez la frontière réseau avec MSW : le test exerce alors votre vraie sérialisation, vos vrais headers, votre vraie gestion d'erreur HTTP. `resetHandlers` après chaque test évite la fuite d'état entre cas ; surchargez un handler dans un test précis pour simuler une 500 ou une latence.
+Ne mocke pas ton client de data (TanStack Query, axios). Mocke la frontière réseau avec MSW : le test exerce alors ta vraie sérialisation, tes vrais headers, ta vraie gestion d'erreur HTTP. `resetHandlers` après chaque test évite la fuite d'état entre cas ; surcharge un handler dans un test précis pour simuler une 500 ou une latence.
 :::
 
 ## Niveaux : quoi tester où
@@ -103,7 +103,7 @@ RTL et `user-event` : `testing-library/react-testing-library` et `testing-librar
 - title: "Comportement, pas implémentation"
   desc: "Requêtes par rôle/label/texte ; jamais classe, id ou structure DOM. Survit au refactor."
 - title: "MSW à la frontière réseau"
-  desc: "Mocker fetch/XHR, pas votre client de data ; un set de handlers pour tests et dev."
+  desc: "Mocker fetch/XHR, pas ton client de data ; un jeu de handlers pour tests et dev."
 - title: "Le bon niveau"
   desc: "Masse en intégration RTL+MSW ; Playwright CT quand jsdom ment ; e2e rares et critiques."
 - title: "Trophée"

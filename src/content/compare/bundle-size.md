@@ -72,7 +72,7 @@ export const routes: Routes = [
 ::
 ::react
 ```tsx
-// lazy() crée un chunk ; Suspense affiche un fallback pendant le download.
+// lazy() crée un chunk ; Suspense affiche un fallback pendant le téléchargement.
 import { lazy, Suspense } from 'react';
 const Reports = lazy(() => import('./Reports'));
 
@@ -162,7 +162,7 @@ frontière de chunk**.
 - title: "loadComponent (Angular)"
   desc: "Route lazy : un chunk par route, téléchargé à la navigation."
 - title: "lazy() + Suspense (React)"
-  desc: "Frontière de chunk avec fallback pendant le download du composant."
+  desc: "Frontière de chunk avec fallback pendant le téléchargement du composant."
 - title: "component: () => import() (Vue Router)"
   desc: "Dynamic import au niveau route pour un découpage automatique."
 - title: "@defer (on viewport/idle/interaction)"

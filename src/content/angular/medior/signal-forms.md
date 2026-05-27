@@ -134,7 +134,7 @@ la source de vérité, le formulaire en est une projection réactive. Plus de do
 ### Idée reçue : « ça remplace déjà les Reactive Forms »
 
 Non. Tant que l'API est en developer preview, les Reactive Forms restent la
-solution stable et supportée pour la production. Les Signal Forms ne couvrent pas
+solution stable et maintenue pour la production. Les Signal Forms ne couvrent pas
 encore tous les cas (intégrations tierces, `FormArray` dynamiques avancés,
 écosystème de validateurs existant). C'est une direction, pas un remplacement
 immédiat. L'interop existe pour cohabiter, pas pour réécrire l'existant du jour

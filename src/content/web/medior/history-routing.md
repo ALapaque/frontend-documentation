@@ -14,7 +14,7 @@ related:
   - { framework: "web", slug: "fetch" }
 ---
 
-Une Single Page Application change ce que voit l'utilisateur **sans recharger la page**. Pour que l'URL reste cohérente (partageable, bookmarkable, compatible avec le bouton retour), il faut manipuler l'historique du navigateur par programme. Tout le routing client repose sur deux mécanismes : l'**History API**, qui réécrit l'URL sans navigation réseau, et un **observateur** qui détecte les changements pour rendre la bonne vue. Mal câblés, ils cassent le bouton retour, le partage de lien et la position de défilement.
+Une Single Page Application change ce que voit l'utilisateur **sans recharger la page**. Pour que l'URL reste cohérente (partageable, ajoutable aux favoris, compatible avec le bouton retour), il faut manipuler l'historique du navigateur par programme. Tout le routing client repose sur deux mécanismes : l'**History API**, qui réécrit l'URL sans navigation réseau, et un **observateur** qui détecte les changements pour rendre la bonne vue. Mal câblés, ils cassent le bouton retour, le partage de lien et la position de défilement.
 
 ## History API : changer l'URL sans recharger
 

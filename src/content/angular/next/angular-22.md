@@ -124,7 +124,7 @@ en 22 — il n'a pas atteint le stable. À surveiller pour la v23.
 - title: "Selectorless — exp."
   desc: "Toujours expérimental en 22. Cible probable v23."
 - title: "TypeScript récent"
-  desc: "Aligné sur la dernière TS supportée du moment."
+  desc: "Aligné sur la dernière version de TS prise en charge du moment."
 :::
 
 ## Horizon v23

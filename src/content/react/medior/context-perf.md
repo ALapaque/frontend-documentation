@@ -8,7 +8,7 @@ duration: 15
 prerequisites: ["lifting-state", "memo-callback", "hooks-rules"]
 updated: 2026-05-22
 seoTitle: "Context & perf — react"
-seoDescription: "Pourquoi tous les consommateurs d'un Context re-rendent quand sa value change, et comment limiter la casse : splitter les contexts et mémoïser la value."
+seoDescription: "Pourquoi tous les consommateurs d'un Context re-rendent quand sa value change, et comment limiter la casse : découper les contextes et mémoïser la value."
 ogVariant: "gold"
 related:
   - framework: "vue"
@@ -21,7 +21,7 @@ related:
 
 ## Le mécanisme du re-rendu
 
-Quand le `value` passé à un `<Context.Provider>` change (au sens d'identité référentielle, `Object.is`), React parcourt l'arbre et re-rend chaque consommateur via `useContext`. Il n'y a pas de comparaison fine champ par champ : c'est tout ou rien sur la valeur entière.
+Quand la `value` passée à un `<Context.Provider>` change (au sens d'identité référentielle, `Object.is`), React parcourt l'arbre et re-rend chaque consommateur via `useContext`. Il n'y a pas de comparaison fine champ par champ : c'est tout ou rien sur la valeur entière.
 
 ```tsx
 const AppContext = createContext<{ user: User; theme: Theme } | null>(null);
@@ -75,7 +75,7 @@ function Provider({ children }) {
 
 ## Piège n°2 : un seul gros Context
 
-Regrouper tout l'état applicatif dans un Context unique force des re-rendus croisés. La parade : **splitter par fréquence de changement**.
+Regrouper tout l'état applicatif dans un Context unique force des re-rendus croisés. La parade : **découper par fréquence de changement**.
 
 ```tsx
 // Sépare ce qui change souvent de ce qui est quasi statique
@@ -83,7 +83,7 @@ const UserContext = createContext<UserCtx | null>(null);
 const ThemeContext = createContext<ThemeCtx | null>(null);
 ```
 
-Mieux : séparer l'**état** de l'**API de mise à jour**. Le dispatcher (`setUser`, `dispatch`) ne change jamais, on peut le mettre dans son propre Context que les composants qui n'écrivent que des actions consomment sans jamais re-rendre.
+Mieux : séparer l'**état** de l'**API de mise à jour**. Le dispatcher (`setUser`, `dispatch`) ne change jamais : on peut le placer dans son propre Context, que les composants n'émettant que des actions consomment sans jamais re-rendre.
 
 ## Idée reçue : « useContext provoque des re-rendus, donc c'est lent »
 
@@ -96,7 +96,7 @@ Faux dans sa formulation. Ce n'est pas la **lecture** via `useContext` qui coût
   desc: "Une value qui change re-rend TOUS les consommateurs, sans sélecteur."
 - title: "Mémoïser la value"
   desc: "useMemo sur l'objet passé au Provider pour préserver l'identité référentielle."
-- title: "Splitter"
+- title: "Découper"
   desc: "Un Context par fréquence de changement ; séparer état et dispatch."
 - title: "Pas un store"
   desc: "Pour des mises à jour fréquentes et sélectives, préférer un store avec sélecteurs."

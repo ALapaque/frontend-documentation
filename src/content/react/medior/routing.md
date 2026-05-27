@@ -17,7 +17,7 @@ related:
     slug: "routing-basics"
 ---
 
-Un routeur moderne ne fait pas que mapper une URL à un composant : il déclare où charger les données et où poser les frontières de chargement et d'erreur. Deux acteurs dominent l'écosystème React : TanStack Router, centré sur le type-safety, et React Router v7 (fusion avec Remix), centré sur les loaders et le data flow.
+Un routeur moderne ne fait pas que mapper une URL à un composant : il déclare où charger les données et où poser les frontières de chargement et d'erreur. Deux acteurs dominent l'écosystème React : TanStack Router, centré sur la sûreté de typage, et React Router v7 (fusion avec Remix), centré sur les loaders et le flux de données.
 
 ## Loaders : charger avant de rendre
 
@@ -93,10 +93,10 @@ const listRoute = createRoute({
 
 ## React Router v7
 
-React Router v7 absorbe Remix : loaders, `action` pour les mutations, et un mode framework avec SSR. Son data flow (loader/action) est mûr et son adoption massive. Le compromis face à TanStack : moins de garanties de types sur params et search, mais un modèle full-stack (form actions, progressive enhancement) plus intégré quand on vise le SSR de bout en bout.
+React Router v7 absorbe Remix : loaders, `action` pour les mutations, et un mode framework avec SSR. Son flux de données (loader/action) est mûr et son adoption massive. Le compromis face à TanStack : moins de garanties de types sur params et search, mais un modèle full-stack (form actions, progressive enhancement) plus intégré quand on vise le SSR de bout en bout.
 
 :::callout{type="tip"}
-SPA fortement typée, beaucoup de search params structurés : TanStack Router. App full-stack avec SSR, mutations par form actions, migration depuis Remix : React Router v7. Dans les deux cas, déléguez le cache de données à TanStack Query plutôt que de tout charger dans le loader.
+SPA fortement typée, beaucoup de search params structurés : TanStack Router. App full-stack avec SSR, mutations par form actions, migration depuis Remix : React Router v7. Dans les deux cas, délègue le cache de données à TanStack Query plutôt que de tout charger dans le loader.
 :::
 
 ### Idée reçue : « le loader remplace TanStack Query »

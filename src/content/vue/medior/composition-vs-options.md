@@ -58,7 +58,7 @@ des fonctions explicites.
 
 ### Idée reçue : « la Composition API remplace l'Options API »
 
-Les deux restent supportées. Mais pour du code typé, réutilisable et qui passe à
+Les deux restent prises en charge. Mais pour du code typé, réutilisable et qui passe à
 l'échelle, la Composition API (avec `<script setup>`) est la recommandation
 actuelle.
 

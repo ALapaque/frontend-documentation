@@ -90,7 +90,7 @@ function inc() { emit('update', (props.count ?? 0) + 1) }
 </script>
 ```
 
-La forme générique `defineProps<{...}>()` donne un typage statique complet sans déclaration runtime redondante. `defineEmits<{...}>()` type le nom de l'évènement et son payload : `emit('updte', ...)` devient une erreur de compilation.
+La forme générique `defineProps<{...}>()` donne un typage statique complet sans déclaration runtime redondante. `defineEmits<{...}>()` type le nom de l'événement et son payload : `emit('updte', ...)` devient une erreur de compilation.
 
 Depuis Vue 3.5, la **déstructuration réactive des props** est stable : les valeurs par défaut s'écrivent directement, sans `withDefaults`, et la déstructuration ne casse plus la réactivité.
 
@@ -108,7 +108,7 @@ La réactivité ne survit qu'à l'intérieur du composant : passer une prop dés
 
 ## defineExpose : l'instance est fermée par défaut
 
-Un composant `<script setup>` ne expose rien à son parent via `ref` de template — contrairement à un composant Options où tout le `this` était accessible. Pour exposer délibérément une méthode ou un état, on utilise `defineExpose`.
+Un composant `<script setup>` n'expose rien à son parent via `ref` de template — contrairement à un composant Options où tout le `this` était accessible. Pour exposer délibérément une méthode ou un état, on utilise `defineExpose`.
 
 ```vue
 <!-- Modale.vue -->

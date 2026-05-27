@@ -15,14 +15,14 @@ related:
   - { framework: "react", slug: "memo-callback" }
 ---
 
-`useEffectEvent` est **stable depuis React 19.2** (après un long passage sous le
-nom `useEffectEvent` en canary). Il résout un conflit récurrent : un effet a
+`useEffectEvent` est **stable depuis React 19.2** (après un long passage en
+canary, sous le préfixe `experimental_`). Il résout un conflit récurrent : un effet a
 besoin de **lire** une valeur à jour, mais cette valeur ne doit **pas** faire
 partie de ses dépendances, sinon l'effet se re-déclenche pour rien.
 
 ## Le problème : réactif vs « juste lu »
 
-Un effet est **réactif** : il se ré-exécute (teardown + setup) quand l'une de ses
+Un effet est **réactif** : il se réexécute (teardown + setup) quand l'une de ses
 dépendances change. C'est voulu pour ce qui définit la connexion — un `roomId`,
 une URL. Mais certaines valeurs sont seulement **consultées au moment où un
 événement se produit** : un `theme` pour styler une notification, un callback
@@ -160,7 +160,7 @@ linter comprennent et vérifient.
 
 :::callout{type="tip"}
 Heuristique pour découper un effet : demande-toi *pour chaque valeur lue* — « si
-elle change, l'effet doit-il se ré-exécuter ? ». Oui → dépendance. Non, je veux
+elle change, l'effet doit-il se réexécuter ? ». Oui → dépendance. Non, je veux
 juste sa dernière valeur → `useEffectEvent`. Ça transforme un débat sur les deps
 en une question claire.
 :::

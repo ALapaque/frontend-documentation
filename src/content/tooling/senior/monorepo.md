@@ -55,7 +55,7 @@ pas dans le workspace, au lieu d'aller chercher un homonyme sur npm.
 
 ## Le graphe et le piège des phantom dependencies
 
-Le coeur du sujet, c'est que `node_modules` plat (hoisting) ment sur ce à quoi
+Le cœur du sujet, c'est que `node_modules` plat (hoisting) ment sur ce à quoi
 tu as réellement le droit d'accéder.
 
 :::compare
@@ -85,8 +85,8 @@ déclaré. C'est une **phantom dependency** — elle disparaît dès que A retir
 lodash ou bump une version incompatible, et ça casse en prod sans que ton diff
 ait touché B. pnpm utilise un store adressé par contenu et un `node_modules`
 **non-plat** : seules les dépendances déclarées sont symlinkées dans chaque
-paquet, donc un import non déclaré échoue à la compilation, là où c'est cheap à
-corriger.
+paquet, donc un import non déclaré échoue à la compilation, là où c'est peu coûteux
+à corriger.
 
 :::callout{type="warn"}
 Le hoisting masque aussi les **doublons de version** : deux paquets exigeant
@@ -121,7 +121,7 @@ runner ordonne et **parallélise** ce qui peut l'être en respectant le graphe.
 La clé de cache est un hash de **toutes les entrées** : fichiers sources du
 paquet, hash des outputs des dépendances amont, version du runner, variables
 d'environnement déclarées, et le lockfile. Change un seul octet d'entrée → la
-clé change → la tâche se ré-exécute. Sinon, le runner **rejoue les logs et
+clé change → la tâche se réexécute. Sinon, le runner **rejoue les logs et
 restaure les `outputs` depuis le cache** sans rien exécuter. C'est pourquoi tu
 dois déclarer `outputs` et les `env` lues : un output non déclaré ne sera pas
 restauré, une env non déclarée crée des cache hits faux-positifs.

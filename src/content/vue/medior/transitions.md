@@ -107,7 +107,7 @@ async function close() {
 **Pourquoi** : le timer manuel duplique en JS la durée déclarée en CSS — toute désynchronisation coupe l'animation ou laisse l'élément fantôme, et un changement d'état rapide laisse des classes orphelines. `<Transition>` écoute les événements `transitionend`/`animationend` réels du navigateur et ne démonte le nœud qu'à la fin effective, ce qui garde une seule source de vérité sur la durée.
 
 :::callout{type="warn"}
-Respecte `prefers-reduced-motion`. Enveloppe tes transitions d'un media query qui
+Respecte `prefers-reduced-motion`. Enveloppe tes transitions d'une media query qui
 réduit les durées à zéro pour les utilisateurs sensibles au mouvement :
 `@media (prefers-reduced-motion: reduce) { .fade-enter-active { transition: none } }`.
 :::

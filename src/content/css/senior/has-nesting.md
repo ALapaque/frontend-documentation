@@ -181,8 +181,8 @@ valides.
   desc: "Référence runtime au sélecteur parent. Collé = même élément, déplacé = contexte."
 - title: "& type"
   desc: "Un type/classe imbriqué sans & devant devient un descendant implicite."
-- title: "Specificité"
-  desc: "`:has()` et l'imbrication prennent la specificité de leur argument le plus fort."
+- title: "Spécificité"
+  desc: "`:has()` et l'imbrication prennent la spécificité de leur argument le plus fort."
 :::
 
 ## Le piège de la spécificité
@@ -194,7 +194,7 @@ spécificité est celle de leur **argument le plus spécifique**.
 /* spécificité = celle de #hero, soit (1,0,0) — bien plus que prévu */
 .card:has(#hero) { color: red; }
 
-/* l'imbrication équivaut à :is() : la specificité du groupe
+/* l'imbrication équivaut à :is() : la spécificité du groupe
    est tirée vers le haut par le sélecteur le plus fort */
 .menu {
   & a, & #logo { color: blue; } /* le 'a' hérite du poids de #logo */
@@ -207,5 +207,5 @@ spécifique**, pas une moyenne ni la somme. Glisser un `#id` dans un `:has()` ou
 une liste imbriquée propage donc un poids d'ID à toute la règle, y compris aux
 sélecteurs simples voisins. Si tu veux neutraliser cet effet, enveloppe l'argument
 dans `:where(...)`, dont la spécificité est toujours zéro — `.card:has(:where(#hero))`
-contient juste sur la présence de `#hero` sans en payer le poids. C'est l'outil de
+teste juste la présence de `#hero` sans en payer le poids. C'est l'outil de
 contrôle indispensable dès qu'on mélange `:has()` et architecture de cascade.

@@ -60,7 +60,7 @@ export const useCounter = defineStore('counter', () => {
 :::callout{type="info"}
 Angular et Vue *tirent* (pull) : tu lis une valeur, le framework trace la
 dépendance et te re-notifie. React *pousse* (push) : tu déclares un nouvel état
-et l'arbre se reconcilie. Le premier modèle est plus fin par défaut, le second
+et l'arbre se réconcilie. Le premier modèle est plus fin par défaut, le second
 plus explicite.
 :::
 

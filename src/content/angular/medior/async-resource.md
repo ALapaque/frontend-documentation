@@ -70,7 +70,7 @@ userRes.error();      // unknown
 - title: "value()"
   desc: "La donnée chargée, ou undefined tant qu'elle n'est pas résolue."
 - title: "status()"
-  desc: "Idle | Loading | Resolved | Error | Reloading — l'état machine complet."
+  desc: "Idle | Loading | Resolved | Error | Reloading — la machine à états complète."
 - title: "isLoading()"
   desc: "Raccourci booléen pour les états de chargement."
 - title: "reload()"
