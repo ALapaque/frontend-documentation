@@ -68,6 +68,6 @@ Une erreur classique : confondre attribut HTML et propriété DOM. `[src]` lie u
 :::callout{type="tip"}
 La syntaxe `[(…)]` — surnommée « banana in a box » en anglais, car les `()`
 (la banane) sont nichés dans les `[]` (la boîte) — n'a rien de magique : c'est
-juste une liaison de propriété **et** une liaison d'événement sur la même ligne.
-Tout composant qui expose `value` + `valueChange` fonctionne avec `[()]`.
+juste un property binding **et** un event binding sur la même ligne. Tout
+composant qui expose `value` + `valueChange` fonctionne avec `[()]`.
 :::

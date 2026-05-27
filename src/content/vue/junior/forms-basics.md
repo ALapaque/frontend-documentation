@@ -37,7 +37,7 @@ Tape dans le champ, le paragraphe se met à jour à la frappe. Aucune fonction �
 
 ## Ce que v-model fait vraiment
 
-`v-model` n'est pas magique : c'est du sucre. Sous le capot, il lie l'attribut `value` et écoute l'évènement `input`. Écrire ce câblage à la main fonctionne, mais c'est verbeux et source d'oublis.
+`v-model` n'est pas magique : c'est du sucre. Sous le capot, il lie l'attribut `value` et écoute l'événement `input`. Écrire ce câblage à la main fonctionne, mais c'est verbeux et source d'oublis.
 
 :::compare
 ::bad
@@ -59,7 +59,7 @@ Tape dans le champ, le paragraphe se met à jour à la frappe. Aucune fonction �
 ::
 :::
 
-**Pourquoi** : `v-model` génère exactement le couple `:value` + `@input` à la compilation, mais sans surface d'erreur. La version manuelle oblige à écrire `$event.target.value` correctement à chaque champ, gère mal les cas `checkbox`/`select`/`radio` (qui n'utilisent ni `value` ni `input` de la même façon), et duplique la même intention partout. `v-model` choisit la bonne paire propriété/évènement selon le type d'élément et reste une seule source de vérité. Moins de code, moins de bugs, comportement uniforme.
+**Pourquoi** : `v-model` génère exactement le couple `:value` + `@input` à la compilation, mais sans surface d'erreur. La version manuelle oblige à écrire `$event.target.value` correctement à chaque champ, gère mal les cas `checkbox`/`select`/`radio` (qui n'utilisent ni `value` ni `input` de la même façon), et duplique la même intention partout. `v-model` choisit la bonne paire propriété/événement selon le type d'élément et reste une seule source de vérité. Moins de code, moins de bugs, comportement uniforme.
 
 ## Les modificateurs
 

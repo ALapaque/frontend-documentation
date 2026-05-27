@@ -121,7 +121,7 @@ runner ordonne et **parallélise** ce qui peut l'être en respectant le graphe.
 La clé de cache est un hash de **toutes les entrées** : fichiers sources du
 paquet, hash des outputs des dépendances amont, version du runner, variables
 d'environnement déclarées, et le lockfile. Change un seul octet d'entrée → la
-clé change → la tâche se ré-exécute. Sinon, le runner **rejoue les logs et
+clé change → la tâche se réexécute. Sinon, le runner **rejoue les logs et
 restaure les `outputs` depuis le cache** sans rien exécuter. C'est pourquoi tu
 dois déclarer `outputs` et les `env` lues : un output non déclaré ne sera pas
 restauré, une env non déclarée crée des cache hits faux-positifs.

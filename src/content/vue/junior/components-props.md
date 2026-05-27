@@ -8,7 +8,7 @@ duration: 12
 prerequisites: ["template-syntax", "reactivity-basics"]
 updated: 2026-05-22
 seoTitle: "Composants & props — vue"
-seoDescription: "defineProps, defineEmits et slots : comment un composant Vue 3 reçoit des données en descente et fait remonter des évènements, et pourquoi on ne mute jamais une prop."
+seoDescription: "defineProps, defineEmits et slots : comment un composant Vue 3 reçoit des données en descente et fait remonter des événements, et pourquoi on ne mute jamais une prop."
 ogVariant: "sage"
 related:
   - framework: "react"
@@ -17,7 +17,7 @@ related:
     slug: "data-binding"
 ---
 
-Un composant Vue est une unité réutilisable : un bout de template, une logique, un état. Pour communiquer, deux canaux suffisent. Les données descendent par les props. Les évènements remontent par les emits. C'est un sens unique dans chaque direction.
+Un composant Vue est une unité réutilisable : un bout de template, une logique, un état. Pour communiquer, deux canaux suffisent. Les données descendent par les props. Les événements remontent par les emits. C'est un sens unique dans chaque direction.
 
 ## Recevoir des données : defineProps
 
@@ -51,9 +51,9 @@ const total = 12
 
 Le `:` devant `count` indique une liaison dynamique : la valeur est une expression JavaScript (`total`), pas la chaîne `"total"`. Sans `:`, tout attribut est une chaîne littérale.
 
-## Remonter un évènement : defineEmits
+## Remonter un événement : defineEmits
 
-L'enfant n'a pas le droit de modifier ce que le parent lui envoie. Pour signaler une action, il émet un évènement que le parent écoute.
+L'enfant n'a pas le droit de modifier ce que le parent lui envoie. Pour signaler une action, il émet un événement que le parent écoute.
 
 ```vue
 <!-- Enfant.vue -->
@@ -145,7 +145,7 @@ Choisis : une prop pour une donnée (texte, nombre, objet), un slot pour du cont
 - title: "defineProps"
   desc: "Déclare les entrées descendantes, typées et avec valeurs par défaut."
 - title: "defineEmits"
-  desc: "Déclare les évènements remontants ; émet avec emit('nom', payload)."
+  desc: "Déclare les événements remontants ; émet avec emit('nom', payload)."
 - title: ":prop vs prop"
   desc: ":count lie une expression JS, count='x' passe la chaîne littérale."
 - title: "slot / #nom"
