@@ -31,12 +31,12 @@ const STYLES: Record<CalloutType, CalloutStyle> = {
       position: relative;
       border: 1px solid color-mix(in oklab, var(--accent) 28%, var(--border));
       border-left: 3px solid var(--accent);
-      background: color-mix(in oklab, var(--accent) 8%, var(--glass));
-      backdrop-filter: blur(20px) saturate(1.3);
-      -webkit-backdrop-filter: blur(20px) saturate(1.3);
+      background: color-mix(in oklab, var(--accent) 8%, var(--lg-tint));
+      backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
       border-radius: var(--radius);
       padding: 16px 18px;
-      box-shadow: -8px 0 24px -16px var(--accent);
+      box-shadow: var(--lg-edge), -8px 0 24px -16px var(--accent);
     }
     .tag {
       display: inline-flex;

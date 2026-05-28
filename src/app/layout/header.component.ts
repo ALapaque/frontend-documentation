@@ -7,7 +7,7 @@ import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive],
   template: `
-    <header class="bar">
+    <header class="bar lg-refract">
       <div class="container inner">
         <a routerLink="/" class="brand" aria-label="Accueil Practical Docs">
           <span class="mark" aria-hidden="true"></span>
@@ -44,8 +44,10 @@ import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
       z-index: 100;
       border-bottom: 1px solid var(--border-soft);
       background: color-mix(in oklab, var(--bg) 55%, transparent);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+        0 14px 44px -30px rgba(0, 0, 0, 0.8);
     }
     .inner {
       display: flex;

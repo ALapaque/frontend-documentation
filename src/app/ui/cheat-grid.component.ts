@@ -29,16 +29,17 @@ import type { CheatItem } from '../content/content.types';
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
+      box-shadow: var(--lg-edge), var(--lg-elev);
     }
     .cell {
-      background: var(--glass);
-      backdrop-filter: blur(20px) saturate(1.3);
-      -webkit-backdrop-filter: blur(20px) saturate(1.3);
+      background: var(--lg-tint);
+      backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
       padding: 16px 18px;
       transition: background var(--dur) var(--ease);
     }
     .cell:hover {
-      background: color-mix(in oklab, var(--accent) 8%, var(--glass));
+      background: color-mix(in oklab, var(--accent) 8%, var(--lg-tint));
     }
     .title {
       font-family: var(--font-mono);

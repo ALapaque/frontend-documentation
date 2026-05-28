@@ -54,9 +54,10 @@ export type LevelFilter = Level | 'all';
       border: 1px solid var(--border);
       border-radius: var(--radius-pill);
       padding: 6px 14px;
-      background: var(--glass);
-      backdrop-filter: blur(16px) saturate(1.3);
-      -webkit-backdrop-filter: blur(16px) saturate(1.3);
+      background: var(--lg-tint);
+      backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.28);
       transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
         background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
     }

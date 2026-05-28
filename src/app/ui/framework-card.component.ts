@@ -11,7 +11,7 @@ import { MorphService } from '../core/morph.service';
   template: `
     <a
       [routerLink]="['/', framework()]"
-      class="card"
+      class="card lg-refract"
       [style.view-transition-name]="morph.activeKey() === key() ? 'section-hero' : null"
       (click)="morph.activeKey.set(key())"
     >
@@ -37,9 +37,10 @@ import { MorphService } from '../core/morph.service';
       padding: 28px;
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      background: var(--glass);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      background: var(--lg-tint);
+      backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      box-shadow: var(--lg-edge), var(--lg-elev);
       overflow: hidden;
       transition: transform var(--dur) var(--ease-spring),
         border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
@@ -62,7 +63,7 @@ import { MorphService } from '../core/morph.service';
     .card:hover {
       transform: translateY(-6px);
       border-color: color-mix(in oklab, var(--accent) 45%, transparent);
-      box-shadow: var(--glow);
+      box-shadow: var(--lg-edge), var(--glow);
     }
     .card:hover::before {
       opacity: 1;

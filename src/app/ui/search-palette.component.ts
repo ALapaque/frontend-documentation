@@ -24,7 +24,7 @@ import { FRAMEWORK_LABEL } from '../core/levels';
     @if (open()) {
       <div class="backdrop" (click)="close()">
         <div
-          class="palette"
+          class="palette lg-refract"
           role="dialog"
           aria-modal="true"
           aria-label="Recherche"
@@ -96,10 +96,10 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       flex-direction: column;
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-lg);
-      background: var(--glass-strong);
-      backdrop-filter: blur(28px) saturate(1.4);
-      -webkit-backdrop-filter: blur(28px) saturate(1.4);
-      box-shadow: var(--shadow-3);
+      background: var(--lg-tint-strong);
+      backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      box-shadow: var(--lg-edge), var(--lg-elev-hero);
       overflow: hidden;
       transform-origin: top center;
       animation: palette-in var(--dur) var(--ease-spring) both;

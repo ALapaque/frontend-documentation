@@ -151,12 +151,97 @@ button {
   opacity: 0.5;
 }
 
-/* ---- Glass surface ---- */
-.glass {
-  background: var(--glass);
-  backdrop-filter: blur(22px) saturate(1.4);
-  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+/* ---- Liquid Glass material ----
+   .glass / .surface : tinted translucent base + specular edge (top light,
+   faint ring, inner-bottom depth) + elevation. .liquid-glass adds a gradient
+   rim and a hover sheen. .lg-refract layers a real SVG lensing on hero surfaces.
+   Everything reads --lg-* tokens, so the a11y fallbacks in tokens.css cascade. */
+.glass,
+.surface {
+  position: relative;
+  background: var(--lg-tint);
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
   border: 1px solid var(--border);
+  box-shadow: var(--lg-edge), var(--lg-elev);
+}
+
+.liquid-glass {
+  position: relative;
+  isolation: isolate;
+  background: var(--lg-tint);
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+  border: 1px solid transparent;
+  box-shadow: var(--lg-edge), var(--lg-elev);
+}
+.liquid-glass--strong {
+  background: var(--lg-tint-strong);
+}
+.liquid-glass--hero {
+  box-shadow: var(--lg-edge), var(--lg-elev-hero);
+}
+
+/* Gradient rim — 1px lit border that catches light at the top-left. */
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--lg-rim);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Specular sheen — a diagonal highlight that sweeps across on hover. */
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--lg-sheen);
+  background-size: 250% 250%;
+  background-position: 120% 0;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .liquid-glass::after {
+    transition: opacity var(--dur) var(--ease-out), background-position 0.9s var(--ease-out);
+  }
+  .liquid-glass:hover::after,
+  a:hover > .liquid-glass::after {
+    opacity: 1;
+    background-position: -40% 0;
+  }
+}
+
+/* Hero refraction — real lensing via the SVG displacement map (#lg-refract).
+   Guarded: only where backdrop-filter: url() is supported and the user hasn't
+   asked to reduce transparency. !important intentionally beats the component's
+   own scoped backdrop so the enhancement wins where supported. */
+@supports (backdrop-filter: url(#lg-refract)) {
+  @media (prefers-reduced-transparency: no-preference) {
+    .lg-refract {
+      backdrop-filter: url(#lg-refract) blur(var(--lg-blur)) saturate(var(--lg-sat))
+        brightness(var(--lg-bright)) !important;
+    }
+  }
+}
+
+/* The inline SVG filter definitions live once in the DOM but never paint. */
+.lg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 /* ---- Scroll-driven reveal (native, progressive, SSR-safe) ---- */
@@ -228,11 +313,8 @@ button {
   border: 0;
 }
 
+/* .surface inherits the Liquid Glass material above; here it just rounds. */
 .surface {
-  background: var(--glass);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
 }
 

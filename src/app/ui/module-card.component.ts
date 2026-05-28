@@ -12,7 +12,7 @@ import type { ModuleMeta } from '../content/content.types';
   imports: [RouterLink, LevelChipComponent, FrameworkLogoComponent],
   template: `
     <a
-      class="card"
+      class="card liquid-glass"
       [routerLink]="['/', meta().framework, meta().level, meta().slug]"
       [style.view-transition-name]="morphName()"
       (click)="morph.activeKey.set(key())"
@@ -52,16 +52,17 @@ import type { ModuleMeta } from '../content/content.types';
       padding: 22px;
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      background: var(--glass);
-      backdrop-filter: blur(18px) saturate(1.3);
-      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      background: var(--lg-tint);
+      backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
+      box-shadow: var(--lg-edge), var(--lg-elev);
       transition: transform var(--dur) var(--ease-spring),
         border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .card:hover {
       transform: translateY(-4px);
       border-color: color-mix(in oklab, var(--accent) 42%, transparent);
-      box-shadow: var(--glow);
+      box-shadow: var(--lg-edge), var(--glow);
     }
     .card:hover .title {
       color: var(--text);
