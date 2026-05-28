@@ -4,7 +4,7 @@ import { ContentService } from '../content/content.service';
 import type { ModuleMeta } from '../content/content.types';
 import { CHANGELOG, type ChangelogEntry, type ChangelogModuleRef } from './changelog.data';
 
-const STORAGE_KEY = 'changelog:lastSeen';
+const STORAGE_KEY = 'changelog:lastSeenId';
 
 /** A changelog entry with its module refs resolved to live catalogue metadata. */
 export interface ResolvedEntry extends ChangelogEntry {
@@ -21,15 +21,21 @@ export class ChangelogService {
   private readonly content = inject(ContentService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  /** Newest entry date, used as the "seen" watermark. */
-  readonly latestDate = CHANGELOG[0]?.date ?? '';
+  /** Newest entry id, used as the "seen" watermark. */
+  readonly latestId = CHANGELOG[0]?.id ?? '';
 
-  private readonly lastSeen = signal<string | null>(this.read());
+  private readonly lastSeenId = signal<string | null>(this.read());
 
-  /** Entries newer than what the reader last acknowledged, modules resolved. */
+  /**
+   * Entries the reader hasn't acknowledged, modules resolved. The watermark is
+   * the id of the newest seen entry; everything above it in the (newest-first)
+   * list is unseen. Unknown/absent id (first visit, or a removed entry) → all.
+   */
   readonly unseen = computed<readonly ResolvedEntry[]>(() => {
-    const seen = this.lastSeen();
-    return CHANGELOG.filter((e) => !seen || e.date > seen).map((e) => ({
+    const seenId = this.lastSeenId();
+    const seenIndex = seenId ? CHANGELOG.findIndex((e) => e.id === seenId) : -1;
+    const fresh = seenIndex === -1 ? CHANGELOG : CHANGELOG.slice(0, seenIndex);
+    return fresh.map((e) => ({
       ...e,
       items: e.modules.map((ref) => this.resolve(ref)).filter((m): m is ModuleMeta => !!m),
     }));
@@ -40,8 +46,8 @@ export class ChangelogService {
   /** Mark everything up to the latest entry as seen so the modal stops popping. */
   markSeen(): void {
     if (!this.isBrowser) return;
-    localStorage.setItem(STORAGE_KEY, this.latestDate);
-    this.lastSeen.set(this.latestDate);
+    localStorage.setItem(STORAGE_KEY, this.latestId);
+    this.lastSeenId.set(this.latestId);
   }
 
   private read(): string | null {

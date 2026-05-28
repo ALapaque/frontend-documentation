@@ -9,7 +9,9 @@ export interface ChangelogModuleRef {
 
 /** One dated release line, grouping the articles shipped together. */
 export interface ChangelogEntry {
-  /** ISO date (YYYY-MM-DD). Used to decide what the reader hasn't seen yet. */
+  /** Stable unique id. Drives the "seen" watermark — never reuse or reorder ids. */
+  readonly id: string;
+  /** ISO date (YYYY-MM-DD), shown to the reader. Not used for seen-tracking. */
   readonly date: string;
   readonly title: string;
   readonly note?: string;
@@ -22,6 +24,17 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
+    id: 'angular-deep-dives-2026-05',
+    date: '2026-05-28',
+    title: 'Approfondissements Angular',
+    note: 'Signal Forms gagne une partie avancée (validation croisée, async, Zod, soumission), et le module Zoneless est refondu (défaut en v21, migration, débogage).',
+    modules: [
+      { framework: 'angular', level: 'medior', slug: 'signal-forms' },
+      { framework: 'angular', level: 'senior', slug: 'zoneless' },
+    ],
+  },
+  {
+    id: 'fundamentals-horizon-2026',
     date: '2026-05-28',
     title: "L'horizon 2026 des fondamentaux",
     note: "Ce qui arrive côté plateforme web, CSS et outillage : Temporal, if(), Rolldown et le reste.",
@@ -32,6 +45,7 @@ export const CHANGELOG: readonly ChangelogEntry[] = [
     ],
   },
   {
+    id: 'i18n-2026',
     date: '2026-05-27',
     title: 'Internationalisation',
     note: "Formater et traduire pour le monde entier : l'API Intl et l'i18n des trois frameworks.",

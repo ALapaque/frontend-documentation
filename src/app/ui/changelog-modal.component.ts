@@ -35,7 +35,7 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
           </div>
 
           <div class="body">
-            @for (entry of entries(); track entry.date) {
+            @for (entry of entries(); track entry.id) {
               <section class="entry">
                 <header>
                   <h3>{{ entry.title }}</h3>
