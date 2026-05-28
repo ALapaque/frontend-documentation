@@ -61,6 +61,7 @@ import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
       font-weight: 700;
       font-size: 18px;
       letter-spacing: -0.02em;
+      white-space: nowrap;
     }
     .mark {
       width: 18px;
