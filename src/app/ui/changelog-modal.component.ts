@@ -34,7 +34,7 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
             </button>
           </div>
 
-          <div class="body">
+          <div class="body" data-lenis-prevent>
             @for (entry of entries(); track entry.id) {
               <section class="entry">
                 <header>
@@ -143,6 +143,7 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
     }
     .body {
       overflow-y: auto;
+      overscroll-behavior: contain;
       padding: 6px 0;
     }
     .entry {
