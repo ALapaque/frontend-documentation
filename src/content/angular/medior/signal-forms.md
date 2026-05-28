@@ -4,11 +4,11 @@ slug: "signal-forms"
 framework: "angular"
 level: "medior"
 order: 8
-duration: 17
+duration: 24
 prerequisites: ["forms-basics", "signals"]
-updated: 2026-05-22
-seoTitle: "Angular Signal Forms — guide Medior"
-seoDescription: "Les Signal Forms (developer preview) : form(), Field, schémas de validation par signaux et interop avec les Reactive Forms."
+updated: 2026-05-27
+seoTitle: "Angular Signal Forms — des bases à la validation avancée"
+seoDescription: "Les Signal Forms : form(), Field, schémas de validation par signaux, interop avec les Reactive Forms, puis la partie avancée — validation croisée, tableaux dynamiques, validation serveur, schémas Zod et soumission."
 ogVariant: "gold"
 related:
   - { framework: "react", slug: "forms-libs" }
@@ -144,4 +144,152 @@ au lendemain.
 Pour expérimenter sans casser l'existant : isole une feature secondaire (un
 formulaire de filtre, une recherche) dans un signal form, garde tes écrans
 critiques en Reactive Forms. Tu mesures l'ergonomie sans risque.
+:::
+
+---
+
+## Avancé
+
+Les bases ci-dessus suffisent pour un formulaire simple. En production, quatre
+besoins reviennent : un champ qui en regarde un autre, des tableaux de taille
+variable, une validation qui interroge le serveur, et une soumission qui recolle
+les erreurs renvoyées par l'API. Les sections suivantes couvrent ces cas.
+
+### Validation croisée : un champ qui en regarde un autre
+
+« Confirmer le mot de passe » compare **deux** champs : la règle n'est pas locale.
+Dans un validateur, `valueOf()` lit la valeur d'un autre champ du schéma.
+
+```ts
+import { form, validate } from '@angular/forms/signals';
+
+const f = form(model, (path) => {
+  validate(path.confirm, ({ value, valueOf }) =>
+    value() === valueOf(path.password)
+      ? null
+      : { kind: 'mismatch', message: 'Les mots de passe diffèrent' },
+  );
+});
+```
+
+Quand l'erreur doit se **rattacher** à un autre champ que celui validé,
+`validateTree` expose `fieldTree` pour cibler la destination de l'erreur. La règle
+réagit toute seule : `valueOf` lit un signal, donc dès que `password` change, la
+validation de `confirm` se réévalue — aucun `updateValueAndValidity`.
+
+### Tableaux dynamiques : `applyEach`
+
+L'équivalent du `FormArray` : appliquer un sous-schéma à **chaque** élément d'un
+tableau, sans en connaître le nombre à l'avance.
+
+```ts
+import { form, required, min, applyEach } from '@angular/forms/signals';
+
+const model = signal({ lignes: [{ produit: '', qte: 1 }] });
+const f = form(model, (path) => {
+  applyEach(path.lignes, (ligne) => {
+    required(ligne.produit, { message: 'Produit requis' });
+    min(ligne.qte, 1, { message: 'Quantité minimale : 1' });
+  });
+});
+
+// Ajouter une ligne = muter le signal de données, le formulaire suit.
+model.update((m) => ({ ...m, lignes: [...m.lignes, { produit: '', qte: 1 }] }));
+```
+
+La structure du formulaire **dérive** du modèle : ajouter ou retirer une ligne
+mute le signal source, et l'arbre de `Field` + les validateurs de `applyEach` se
+réappliquent. Plus de `FormArray.push()` / `removeAt()` à tenir en parallèle d'un
+état de données séparé.
+
+### Validation serveur : `validateHttp`
+
+Certaines règles n'ont de réponse que côté serveur (« ce pseudo est-il pris ? »).
+`validateHttp` déclare l'appel et expose un état **`pending()`** le temps de la
+réponse.
+
+```ts
+import { validateHttp } from '@angular/forms/signals';
+
+validateHttp(path.pseudo, {
+  request: ({ value }) => `/api/pseudo-libre?u=${encodeURIComponent(value())}`,
+  onSuccess: (res) => (res.pris ? { kind: 'taken', message: 'Pseudo déjà pris' } : null),
+  onError: () => ({ kind: 'net', message: 'Vérification impossible' }),
+});
+```
+
+:::callout{type="warn"}
+Pendant l'appel, `field().pending()` est `true` et `field().valid()` renvoie
+`false` — un formulaire en attente de validation serveur **n'est pas valide**.
+Désactive le bouton de soumission sur `pending()`, et debounce : `validateHttp`
+se redéclenche à chaque frappe.
+:::
+
+### Réutiliser un schéma serveur : `validateStandardSchema`
+
+Tu as souvent déjà un schéma Zod (ou Valibot) décrivant le contrat de l'API —
+généré depuis OpenAPI, ou partagé avec le back. Plutôt que de redéclarer les
+règles, branche-le.
+
+```ts
+import { z } from 'zod';
+import { form, validateStandardSchema } from '@angular/forms/signals';
+
+const contrat = z.object({ email: z.email(), age: z.number().min(18) });
+const f = form(model, (path) => validateStandardSchema(path, contrat));
+```
+
+Une seule source de vérité, partagée client/serveur : tu ne réécris pas
+`required`/`min`/`email` en double. C'est aussi la clé des **formulaires
+dynamiques** — un générateur qui lit un JSON Schema construit le `form()`
+correspondant et valide directement contre ce schéma.
+
+### Logique conditionnelle et soumission
+
+Le schéma porte aussi la logique d'état : `disabled` (et ses cousins) prend une
+fonction réactive, et l'helper `submit()` gère l'état de soumission en
+**remappant** les erreurs serveur sur les bons champs.
+
+```ts
+import { form, disabled, required, submit } from '@angular/forms/signals';
+
+const f = form(model, (path) => {
+  required(path.siret, { when: ({ valueOf }) => valueOf(path.type) === 'entreprise' });
+  disabled(path.siret, ({ valueOf }) => valueOf(path.type) !== 'entreprise');
+});
+
+async function onSubmit() {
+  await submit(f, async (form) => {
+    const res = await api.creerCompte(form().value());
+    return res.ok ? null : [{ field: f.email, error: { kind: 'server', message: res.message } }];
+  });
+}
+```
+
+**Pourquoi.** Le piège classique : l'API rejette (« email déjà utilisé ») et on
+affiche un toast déconnecté du champ fautif. `submit()` route l'erreur serveur
+vers `f.email().errors()`, exactement comme une erreur locale — l'utilisateur la
+voit là où il doit corriger.
+
+:::callout{type="tip"}
+Perf sur un gros formulaire : le coût n'est pas la validation (les signaux ne
+recalculent que ce qui dépend du champ modifié) mais le **rendu**. Garde les
+composants en `OnPush` et lis `f.champ().value()`, jamais `f().value()` dans le
+template — lire la racine abonne la vue à *tout* le formulaire. Côté test, pas de
+`fakeAsync` pour les règles synchrones : tu mutes le signal et tu lis l'état.
+:::
+
+:::cheatsheet
+- title: "valueOf() — validation croisée"
+  desc: "Lire un autre champ dans un validateur ; réagit seul (mots de passe, conditions)."
+- title: "validateTree + fieldTree"
+  desc: "Valider au niveau d'un groupe et rattacher l'erreur à un champ précis."
+- title: "applyEach"
+  desc: "Sous-schéma par élément d'un tableau ; le FormArray dérive du modèle."
+- title: "validateHttp + pending()"
+  desc: "Validation serveur async ; pending() → invalide, désactive la soumission et debounce."
+- title: "validateStandardSchema"
+  desc: "Brancher un schéma Zod/Valibot existant ; base des formulaires dynamiques."
+- title: "disabled / when + submit()"
+  desc: "Logique d'état dans le schéma ; submit() remappe les erreurs serveur sur les champs."
 :::

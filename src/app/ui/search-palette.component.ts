@@ -45,7 +45,7 @@ import { FRAMEWORK_LABEL } from '../core/levels';
             <kbd>esc</kbd>
           </div>
 
-          <div class="results">
+          <div class="results" data-lenis-prevent>
             @for (r of results(); track r.id; let i = $index) {
               <a
                 class="row"
@@ -141,6 +141,7 @@ import { FRAMEWORK_LABEL } from '../core/levels';
     }
     .results {
       overflow-y: auto;
+      overscroll-behavior: contain;
     }
     .row {
       display: flex;
