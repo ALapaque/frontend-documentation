@@ -41,8 +41,8 @@ body::before {
     radial-gradient(38vmax 38vmax at 18% 12%, color-mix(in oklab, var(--accent) 38%, transparent), transparent 60%),
     radial-gradient(34vmax 34vmax at 82% 18%, color-mix(in oklab, var(--accent-2) 30%, transparent), transparent 58%),
     radial-gradient(40vmax 40vmax at 70% 88%, color-mix(in oklab, var(--accent-3) 26%, transparent), transparent 60%);
-  filter: blur(30px) saturate(1.2);
-  opacity: 0.5;
+  filter: blur(28px) saturate(1.3);
+  opacity: 0.7;
   animation: aurora 26s var(--ease-in-out) infinite alternate;
 }
 /* faint grain + vignette to ground the glow */
@@ -159,7 +159,7 @@ button {
 .glass,
 .surface {
   position: relative;
-  background: var(--lg-tint);
+  background: var(--lg-inner-light), var(--lg-tint);
   backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
   -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
   border: 1px solid var(--border);
@@ -169,7 +169,7 @@ button {
 .liquid-glass {
   position: relative;
   isolation: isolate;
-  background: var(--lg-tint);
+  background: var(--lg-inner-light), var(--lg-tint);
   backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
   -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
   border: 1px solid transparent;
@@ -189,7 +189,7 @@ button {
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  padding: 1px;
+  padding: 1.5px;
   background: var(--lg-rim);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;

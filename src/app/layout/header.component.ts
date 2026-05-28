@@ -46,7 +46,7 @@ import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
       background: color-mix(in oklab, var(--bg) 55%, transparent);
       backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
       -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.38),
         0 14px 44px -30px rgba(0, 0, 0, 0.8);
     }
     .inner {

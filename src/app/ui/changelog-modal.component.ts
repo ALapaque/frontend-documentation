@@ -20,7 +20,7 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
     @if (open()) {
       <div class="backdrop" (click)="dismiss()">
         <div
-          class="panel lg-refract"
+          class="panel liquid-glass lg-refract"
           role="dialog"
           aria-modal="true"
           aria-labelledby="changelog-title"
@@ -92,7 +92,7 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
       flex-direction: column;
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-lg);
-      background: var(--lg-tint-strong);
+      background: var(--lg-inner-light), var(--lg-tint-strong);
       backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
       -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
       box-shadow: var(--lg-edge), var(--lg-elev-hero);

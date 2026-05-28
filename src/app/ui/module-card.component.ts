@@ -52,7 +52,7 @@ import type { ModuleMeta } from '../content/content.types';
       padding: 22px;
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      background: var(--lg-tint);
+      background: var(--lg-inner-light), var(--lg-tint);
       backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
       -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-bright));
       box-shadow: var(--lg-edge), var(--lg-elev);

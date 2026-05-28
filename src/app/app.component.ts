@@ -35,9 +35,9 @@ import { ChangelogModalComponent } from './ui/changelog-modal.component';
          Subtle fractal displacement that bends the blurred backdrop like a lens. -->
     <svg class="lg-defs" aria-hidden="true" focusable="false">
       <filter id="lg-refract" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.008 0.013" numOctaves="2" seed="7" result="noise" />
-        <feGaussianBlur in="noise" stdDeviation="1.6" result="soft" />
-        <feDisplacementMap in="SourceGraphic" in2="soft" scale="20" xChannelSelector="R" yChannelSelector="G" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.01" numOctaves="2" seed="7" result="noise" />
+        <feGaussianBlur in="noise" stdDeviation="1.4" result="soft" />
+        <feDisplacementMap in="SourceGraphic" in2="soft" scale="9" xChannelSelector="R" yChannelSelector="G" />
       </filter>
     </svg>
   `,

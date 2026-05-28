@@ -18,31 +18,46 @@
   /* ---- Liquid Glass material ----
      Centralised so the a11y fallbacks below cascade everywhere a surface
      reads these tokens (tint + blur), instead of being hardcoded per component. */
-  --lg-tint: color-mix(in oklab, #1b1828 46%, transparent);
-  --lg-tint-strong: color-mix(in oklab, #1b1828 66%, transparent);
-  --lg-blur: 20px;
-  --lg-sat: 1.7;
-  --lg-bright: 1.06;
-  /* specular edge: bright top light, faint full ring, soft inner-bottom depth */
-  --lg-edge: inset 0 1px 0 0 rgba(255, 255, 255, 0.42),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 -12px 26px -20px rgba(5, 4, 9, 0.7);
-  --lg-elev: 0 24px 60px -22px rgba(0, 0, 0, 0.62);
-  --lg-elev-hero: 0 44px 110px -32px rgba(0, 0, 0, 0.72);
-  /* gradient rim (light top-left → dark) for the .liquid-glass ring */
+  /* Lighter, faintly-blue frost so the glass reads as a luminous layer that
+     *adds* light, not a dark panel. On this near-black canvas the Apple look
+     comes from the bevel + frost + sheen, not from refraction (which needs
+     colourful content behind it to bend). */
+  --lg-tint: color-mix(in oklab, #23223e 33%, transparent);
+  --lg-tint-strong: color-mix(in oklab, #23223e 52%, transparent);
+  --lg-blur: 16px;
+  --lg-sat: 1.9;
+  --lg-bright: 1.18;
+  /* top-down inner light, layered over the tint to make the body luminous */
+  --lg-inner-light: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14),
+    rgba(255, 255, 255, 0) 44%
+  );
+  /* beveled specular edge: crisp bright top rim, faint full ring, inner top
+     glow, a soft bottom-light bounce + inner depth. The main Apple cue on dark bg. */
+  --lg-edge: inset 0 1.5px 0 0 rgba(255, 255, 255, 0.7),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 10px 22px -14px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.18),
+    inset 0 -24px 42px -28px rgba(5, 4, 9, 0.6);
+  --lg-elev: 0 24px 60px -22px rgba(0, 0, 0, 0.6);
+  --lg-elev-hero: 0 44px 110px -32px rgba(0, 0, 0, 0.7);
+  /* bright gradient rim that wraps: lit top-left, dim flanks, light bounce
+     at the bottom-right — like light catching a glass bevel all the way round. */
   --lg-rim: linear-gradient(
-    155deg,
-    rgba(255, 255, 255, 0.55),
-    rgba(255, 255, 255, 0.08) 26%,
-    transparent 55%,
-    rgba(255, 255, 255, 0.1)
+    150deg,
+    rgba(255, 255, 255, 0.92),
+    rgba(255, 255, 255, 0.16) 20%,
+    rgba(255, 255, 255, 0.04) 48%,
+    rgba(255, 255, 255, 0.28) 80%,
+    rgba(255, 255, 255, 0.6)
   );
   /* moving specular sheen */
   --lg-sheen: linear-gradient(
     105deg,
-    transparent 38%,
-    color-mix(in oklab, #fff 18%, transparent) 48%,
-    transparent 58%
+    transparent 36%,
+    rgba(255, 255, 255, 0.22) 48%,
+    transparent 60%
   );
 
   /* ---- Text ---- */
