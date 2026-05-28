@@ -14,10 +14,10 @@
 }
 
 .display-2xl {
-  font-size: clamp(60px, 9.5vw, 140px);
+  font-size: clamp(43px, 9vw, 136px);
 }
 .display-xl {
-  font-size: clamp(48px, 7.5vw, 110px);
+  font-size: clamp(38px, 7vw, 108px);
 }
 .display-l {
   font-size: clamp(34px, 5vw, 60px);

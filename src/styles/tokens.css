@@ -102,6 +102,22 @@
   color-scheme: light;
 }
 
+/* Per-framework accent: each framework section adopts a brand-adjacent accent
+   (deep enough to stay legible on the light canvas), while the fundamentals and
+   global chrome keep the house cobalt. Set via [data-fw] on the hub/article host. */
+[data-fw="angular"] {
+  --accent: #cf132a;
+  --grad: linear-gradient(100deg, #dd0031 0%, #ff5a36 100%);
+}
+[data-fw="react"] {
+  --accent: #0e7490;
+  --grad: linear-gradient(100deg, #0e7490 0%, #2b34ff 100%);
+}
+[data-fw="vue"] {
+  --accent: #0f7a44;
+  --grad: linear-gradient(100deg, #0f7a44 0%, #12a474 100%);
+}
+
 @media (max-width: 720px) {
   :root {
     --gutter: 18px;

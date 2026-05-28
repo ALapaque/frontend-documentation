@@ -31,6 +31,7 @@ interface RelatedView {
 @Component({
   selector: 'app-module-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[attr.data-fw]': 'framework()' },
   imports: [
     RouterLink,
     EyebrowComponent,

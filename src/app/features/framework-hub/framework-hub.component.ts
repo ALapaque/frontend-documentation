@@ -32,6 +32,7 @@ const TAGLINE: Record<Framework, string> = {
 @Component({
   selector: 'app-framework-hub',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[attr.data-fw]': 'fw()' },
   imports: [
     RouterLink,
     EyebrowComponent,
