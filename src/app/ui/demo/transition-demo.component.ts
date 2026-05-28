@@ -47,7 +47,7 @@ const INIT: Record<string, string | number> = {
       font-size: 11px;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: #08070c;
+      color: #fff;
       background: var(--grad);
       border: none;
       border-radius: var(--radius-pill);
@@ -72,7 +72,7 @@ const INIT: Record<string, string | number> = {
       height: 64px;
       border-radius: 12px;
       font-size: 22px;
-      color: #08070c;
+      color: #fff;
       background: var(--accent-2);
     }
     .box.active {

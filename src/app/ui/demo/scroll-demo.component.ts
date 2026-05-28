@@ -72,7 +72,7 @@ const SNIPPET: Record<string, string> = {
       border-radius: 12px;
       font-family: var(--font-mono);
       font-weight: 600;
-      color: #08070c;
+      color: #fff;
       background: var(--grad);
       box-shadow: 0 10px 30px -10px color-mix(in oklab, var(--accent) 70%, transparent);
     }

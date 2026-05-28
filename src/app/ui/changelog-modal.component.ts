@@ -216,7 +216,7 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
     .ok {
       font-family: var(--font-body);
       font-size: 14px;
-      color: #050409;
+      color: #fff;
       background: var(--accent);
       border: none;
       border-radius: 10px;

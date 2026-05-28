@@ -77,7 +77,7 @@ const GRID_INIT: Record<string, string | number> = {
       border-radius: var(--radius-sm);
       font-family: var(--font-mono);
       font-weight: 600;
-      color: #08070c;
+      color: #fff;
       background: var(--grad);
       box-shadow: 0 6px 20px -8px color-mix(in oklab, var(--accent) 70%, transparent);
     }

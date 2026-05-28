@@ -281,7 +281,7 @@ const FEATURED: ReadonlyArray<[Framework, Level, string]> = [
       transition: transform var(--dur) var(--ease-spring), box-shadow var(--dur) var(--ease-out);
     }
     .btn.primary {
-      color: #08070c;
+      color: #fff;
       background: var(--grad);
       box-shadow: var(--glow);
     }
