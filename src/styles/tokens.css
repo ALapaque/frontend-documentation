@@ -1,52 +1,52 @@
 /* ============================================================
-   Design tokens — AURORA SPATIAL.
-   Deep space canvas · living violet→cyan gradient · glass · glow.
+   Design tokens — BOLD MODERN.
+   Warm paper canvas · ink + electric cobalt · oversized type · flat & sharp.
    ============================================================ */
 
 :root {
   /* ---- Surfaces ---- */
-  --bg: #08070c; /* deep space */
-  --bg-soft: #0c0b14; /* sections */
-  --bg-card: #110f1b; /* solid card */
-  --bg-elev: #16131f; /* popovers / palette */
-  --bg-inset: #060509; /* code wells */
+  --bg: #f3f1ea; /* warm paper */
+  --bg-soft: #ebe8df; /* sections */
+  --bg-card: #ffffff; /* crisp white card, pops on warm bg */
+  --bg-elev: #ffffff; /* popovers / palette */
+  --bg-inset: #15130e; /* code wells — dark, inverted contrast block */
 
-  /* glass */
-  --glass: color-mix(in oklab, #16131f 52%, transparent);
-  --glass-strong: color-mix(in oklab, #16131f 72%, transparent);
+  /* flat opaque surfaces (no glass) */
+  --glass: var(--bg-card);
+  --glass-strong: var(--bg-card);
 
-  /* ---- Text ---- */
-  --text: #ecebf6; /* cool near-white */
-  --text-soft: #a8a3c4; /* secondary */
-  --text-dim: #807b9b; /* labels (AA on --bg) */
+  /* ---- Text (ink) ---- */
+  --text: #15130e; /* near-black ink */
+  --text-soft: #565249; /* secondary */
+  --text-dim: #837e70; /* labels (AA on --bg) */
 
-  /* ---- Accents (living gradient) ---- */
-  --accent: #7c6cff; /* violet — primary */
-  --accent-2: #00e5c0; /* cyan/mint — secondary */
-  --accent-3: #ff6cab; /* pink — tertiary */
-  --grad: linear-gradient(120deg, #7c6cff 0%, #6ad9ff 50%, #00e5c0 100%);
+  /* ---- Accents (electric signature) ---- */
+  --accent: #2b34ff; /* electric cobalt — primary */
+  --accent-2: #ff5a36; /* coral — secondary */
+  --accent-3: #12a474; /* green — tertiary */
+  --grad: linear-gradient(100deg, #2b34ff 0%, #6a2bff 52%, #ff5a36 100%);
 
   /* Legacy "gold/*" aliases → accent, so non-redesigned pages adopt the palette */
   --gold: var(--accent);
-  --gold-bright: #9a8dff;
-  --gold-soft: #5b4fd0;
-  --sage: var(--accent-2);
-  --rose: var(--accent-3);
-  --crimson: #ff6c8a;
-  --sky: #6ad9ff;
+  --gold-bright: #5a61ff;
+  --gold-soft: #6b6fd6;
+  --sage: #12a474;
+  --rose: #db2777;
+  --crimson: #e11d48;
+  --sky: #0284c7;
 
-  /* Levels — vibrant + distinct */
-  --level-junior: #00e5c0; /* mint */
-  --level-medior: #7c6cff; /* violet */
-  --level-senior: #ff6cab; /* pink */
-  --level-next: #6ad9ff; /* cyan */
-  --iris: #6ad9ff;
+  /* Levels — vibrant + distinct, legible on light */
+  --level-junior: #0d9488; /* teal */
+  --level-medior: #4f46e5; /* indigo */
+  --level-senior: #db2777; /* pink */
+  --level-next: #0284c7; /* blue */
+  --iris: #0284c7;
 
   /* ---- Borders / hairlines ---- */
-  --border: rgba(236, 235, 246, 0.1);
-  --border-soft: rgba(236, 235, 246, 0.06);
-  --border-strong: rgba(236, 235, 246, 0.16);
-  --hairline-top: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 55%);
+  --border: rgba(21, 19, 14, 0.13);
+  --border-soft: rgba(21, 19, 14, 0.07);
+  --border-strong: rgba(21, 19, 14, 0.85); /* bold structural ink line */
+  --hairline-top: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 55%);
 
   /* ---- Radii ---- */
   --radius-xs: 6px;
@@ -75,12 +75,12 @@
   --section-gap: 120px;
   --header-h: 70px;
 
-  /* ---- Elevation + glow ---- */
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-2: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
-  --shadow-3: 0 40px 100px -28px rgba(0, 0, 0, 0.8);
-  --glow: 0 0 0 1px color-mix(in oklab, var(--accent) 30%, transparent),
-    0 18px 60px -18px color-mix(in oklab, var(--accent) 55%, transparent);
+  /* ---- Elevation + glow (soft, dark-on-light) ---- */
+  --shadow-1: 0 1px 2px rgba(21, 19, 14, 0.06);
+  --shadow-2: 0 10px 34px -14px rgba(21, 19, 14, 0.18);
+  --shadow-3: 0 30px 70px -24px rgba(21, 19, 14, 0.26);
+  --glow: 0 0 0 1.5px var(--accent),
+    0 14px 40px -14px color-mix(in oklab, var(--accent) 45%, transparent);
   --glow-gold: var(--glow);
 
   /* ---- Type ---- */
@@ -99,7 +99,7 @@
 
   --focus-ring: var(--accent);
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 @media (max-width: 720px) {

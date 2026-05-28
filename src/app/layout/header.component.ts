@@ -137,8 +137,8 @@ import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
     kbd {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--text-dim);
-      background: var(--bg-inset);
+      color: var(--text-soft);
+      background: var(--bg-soft);
       border: 1px solid var(--border);
       border-radius: var(--radius-xs);
       padding: 2px 6px;

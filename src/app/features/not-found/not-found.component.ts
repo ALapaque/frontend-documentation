@@ -57,7 +57,7 @@ import { EyebrowComponent } from '../../ui/eyebrow.component';
       padding: 13px 24px;
       border-radius: var(--radius-pill);
       font-weight: 600;
-      color: #08070c;
+      color: #fff;
       background: var(--grad);
       box-shadow: var(--glow);
       transition: transform var(--dur) var(--ease-spring), box-shadow var(--dur) var(--ease-out);

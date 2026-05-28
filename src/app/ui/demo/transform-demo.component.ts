@@ -59,7 +59,7 @@ const INIT: Record<string, string | number> = { tx: 0, ty: 0, rotate: 0, scale: 
       font-family: var(--font-mono);
       font-weight: 700;
       font-size: 20px;
-      color: #08070c;
+      color: #fff;
       background: var(--grad);
       box-shadow: 0 10px 30px -10px color-mix(in oklab, var(--accent) 70%, transparent);
       transition: transform 0.12s var(--ease-out);
