@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
+import { ThemeToggleComponent } from '../ui/theme-toggle.component';
 
 @Component({
   selector: 'app-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, ThemeToggleComponent],
   template: `
     <header class="bar">
       <div class="container inner">
@@ -33,6 +34,7 @@ import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
             Rechercher
             <kbd>⌘K</kbd>
           </a>
+          <app-theme-toggle />
         </nav>
       </div>
     </header>
@@ -44,8 +46,9 @@ import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
       z-index: 100;
       border-bottom: 1px solid var(--border-soft);
       background: color-mix(in oklab, var(--bg) 55%, transparent);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge);
     }
     .inner {
       display: flex;

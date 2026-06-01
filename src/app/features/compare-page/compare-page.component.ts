@@ -112,8 +112,9 @@ interface RelatedView {
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       background: var(--glass);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-2);
     }
     .head-card h1 {
       margin: 0;
@@ -153,16 +154,18 @@ interface RelatedView {
       margin-top: 12px;
     }
     .rel {
-      padding: 7px 13px;
-      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border: 1px solid var(--border-strong);
       border-radius: var(--radius-pill);
       font-size: 14px;
       color: var(--text-soft);
       background: var(--glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(20px) saturate(1.2);
+      -webkit-backdrop-filter: blur(20px) saturate(1.2);
+      box-shadow: var(--hi-edge);
       transition: color var(--dur) var(--ease-out),
-        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+        border-color var(--dur) var(--ease-out),
+        transform var(--dur) var(--ease-spring);
     }
     .rel:hover {
       color: var(--accent-2);

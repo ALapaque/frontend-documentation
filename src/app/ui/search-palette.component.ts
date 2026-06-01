@@ -85,7 +85,7 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       justify-content: center;
       align-items: flex-start;
       padding-top: 12vh;
-      background: color-mix(in oklab, #050409 72%, transparent);
+      background: color-mix(in oklab, #000 55%, transparent);
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
     }
@@ -97,9 +97,9 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-lg);
       background: var(--glass-strong);
-      backdrop-filter: blur(28px) saturate(1.4);
-      -webkit-backdrop-filter: blur(28px) saturate(1.4);
-      box-shadow: var(--shadow-3);
+      backdrop-filter: blur(40px) saturate(1.2);
+      -webkit-backdrop-filter: blur(40px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-3);
       overflow: hidden;
       transform-origin: top center;
       animation: palette-in var(--dur) var(--ease-spring) both;
@@ -157,7 +157,7 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       border-left-color: var(--accent);
     }
     .row.active .title {
-      color: #fff;
+      color: var(--bg);
     }
     .main {
       display: flex;

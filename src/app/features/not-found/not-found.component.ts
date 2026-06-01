@@ -27,8 +27,9 @@ import { EyebrowComponent } from '../../ui/eyebrow.component';
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       background: var(--glass);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-2);
     }
     .panel h1 {
       margin: 0;
@@ -57,7 +58,7 @@ import { EyebrowComponent } from '../../ui/eyebrow.component';
       padding: 13px 24px;
       border-radius: var(--radius-pill);
       font-weight: 600;
-      color: #fff;
+      color: var(--bg);
       background: var(--grad);
       box-shadow: var(--glow);
       transition: transform var(--dur) var(--ease-spring), box-shadow var(--dur) var(--ease-out);

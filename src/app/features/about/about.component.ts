@@ -29,8 +29,9 @@ import { SeoService } from '../../core/seo/seo.service';
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       background: var(--glass);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-2);
     }
     .panel h1 {
       margin: 0;

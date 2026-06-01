@@ -70,15 +70,17 @@ import { SeoService } from '../../core/seo/seo.service';
       padding: clamp(28px, 4vw, 56px);
       border-radius: var(--radius-xl);
       background: var(--bg-card);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
       border: 1px solid var(--border);
-      box-shadow: var(--shadow-2);
+      box-shadow: var(--hi-edge), var(--shadow-2);
       overflow: hidden;
       transition: transform var(--dur) var(--ease-spring),
         box-shadow var(--dur) var(--ease-out);
     }
     .featured:hover {
       transform: translateY(-3px);
-      box-shadow: var(--shadow-3);
+      box-shadow: var(--hi-edge), var(--shadow-3);
     }
     .featured-art {
       position: absolute;
@@ -133,7 +135,9 @@ import { SeoService } from '../../core/seo/seo.service';
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--bg-card);
-      box-shadow: var(--shadow-1);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-1);
       transition: transform var(--dur) var(--ease-spring),
         border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }

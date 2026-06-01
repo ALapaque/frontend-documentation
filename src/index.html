@@ -17,6 +17,19 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
     />
+    <!-- Pre-paint theme: read the stored mode before the first render so the
+         page doesn't flash from default → user choice. ThemeService owns it
+         afterwards. -->
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem('pd:theme');
+          if (m === 'light' || m === 'dark') {
+            document.documentElement.setAttribute('data-theme', m);
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <app-root></app-root>

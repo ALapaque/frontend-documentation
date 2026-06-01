@@ -1,52 +1,52 @@
 /* ============================================================
-   Design tokens — BOLD MODERN.
-   Warm paper canvas · ink + electric cobalt · oversized type · flat & sharp.
+   Design tokens — GLASS REVERIE (dual mode).
+   Warm canvas · pastel mesh in motion · translucent glass cards ·
+   iridescent chrome accent. Light + dark variants, switched via
+   prefers-color-scheme by default and overridden via [data-theme] on <html>.
    ============================================================ */
 
 :root {
-  /* ---- Surfaces ---- */
-  --bg: #f3f1ea; /* warm paper */
-  --bg-soft: #ebe8df; /* sections */
-  --bg-card: #ffffff; /* crisp white card, pops on warm bg */
-  --bg-elev: #ffffff; /* popovers / palette */
-  --bg-inset: #15130e; /* code wells — dark, inverted contrast block */
+  /* ---- DARK (default — Glass Reverie warm-charcoal canvas) ---- */
+  --bg: #1c1a23;
+  --bg-soft: #211e29;
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --bg-elev: rgba(255, 255, 255, 0.08);
+  --bg-inset: #0f0d14;
 
-  /* flat opaque surfaces (no glass) */
   --glass: var(--bg-card);
-  --glass-strong: var(--bg-card);
+  --glass-strong: var(--bg-elev);
 
-  /* ---- Text (ink) ---- */
-  --text: #15130e; /* near-black ink */
-  --text-soft: #565249; /* secondary */
-  --text-dim: #837e70; /* labels (AA on --bg) */
+  --text: #f7f3ec;
+  --text-soft: #c9c3b5;
+  --text-dim: #8e8878;
 
-  /* ---- Accents (electric signature) ---- */
-  --accent: #2b34ff; /* electric cobalt — primary */
-  --accent-2: #ff5a36; /* coral — secondary */
-  --accent-3: #12a474; /* green — tertiary */
-  --grad: linear-gradient(100deg, #2b34ff 0%, #6a2bff 52%, #ff5a36 100%);
+  --accent: #ffb088;       /* warm coral peach */
+  --accent-2: #c9a0ff;     /* soft lavender */
+  --accent-3: #8de2a1;     /* fresh mint */
+  --grad: linear-gradient(140deg, #fff7ed 0%, #ffb088 25%, #c9a0ff 50%, #8de2a1 75%, #fff7ed 100%);
 
-  /* Legacy "gold/*" aliases → accent, so non-redesigned pages adopt the palette */
   --gold: var(--accent);
-  --gold-bright: #5a61ff;
-  --gold-soft: #6b6fd6;
-  --sage: #12a474;
-  --rose: #db2777;
-  --crimson: #e11d48;
-  --sky: #0284c7;
+  --gold-bright: #ffc8a8;
+  --gold-soft: #c79966;
+  --sage: var(--accent-3);
+  --rose: #ff8db5;
+  --crimson: #ff7aa0;
+  --sky: var(--accent-2);
 
-  /* Levels — vibrant + distinct, legible on light */
-  --level-junior: #0d9488; /* teal */
-  --level-medior: #4f46e5; /* indigo */
-  --level-senior: #db2777; /* pink */
-  --level-next: #0284c7; /* blue */
-  --iris: #0284c7;
+  /* Levels — distinct, dark-canvas-tuned */
+  --level-junior: #8de2a1;
+  --level-medior: #c9a0ff;
+  --level-senior: #ff8db5;
+  --level-next: #a4d8e8;
+  --iris: var(--level-next);
 
-  /* ---- Borders / hairlines ---- */
-  --border: rgba(21, 19, 14, 0.13);
-  --border-soft: rgba(21, 19, 14, 0.07);
-  --border-strong: rgba(21, 19, 14, 0.85); /* bold structural ink line */
-  --hairline-top: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 55%);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --hairline-top: linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 55%);
+
+  --mesh-opacity: 0.8;
+  --mesh-blur: 100px;
 
   /* ---- Radii ---- */
   --radius-xs: 6px;
@@ -75,15 +75,21 @@
   --section-gap: 120px;
   --header-h: 70px;
 
-  /* ---- Elevation + glow (soft, dark-on-light) ---- */
-  --shadow-1: 0 1px 2px rgba(21, 19, 14, 0.06);
-  --shadow-2: 0 10px 34px -14px rgba(21, 19, 14, 0.18);
-  --shadow-3: 0 30px 70px -24px rgba(21, 19, 14, 0.26);
-  --glow: 0 0 0 1.5px var(--accent),
-    0 14px 40px -14px color-mix(in oklab, var(--accent) 45%, transparent);
+  /* ---- Elevation — deep dimensional shadows for the glass to feel lifted ---- */
+  --shadow-1: 0 2px 6px rgba(0, 0, 0, 0.3),
+    0 4px 12px -2px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.4),
+    0 24px 60px -10px rgba(0, 0, 0, 0.55),
+    0 60px 120px -20px rgba(0, 0, 0, 0.4);
+  --shadow-3: 0 6px 18px rgba(0, 0, 0, 0.5),
+    0 36px 90px -16px rgba(0, 0, 0, 0.65),
+    0 80px 160px -28px rgba(0, 0, 0, 0.5);
+  --glow: 0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent),
+    0 18px 50px -14px color-mix(in oklab, var(--accent) 60%, transparent);
   --glow-gold: var(--glow);
+  --hi-edge: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
-  /* ---- Type ---- */
+  /* ---- Type — Inter sans, bold weights for display ---- */
   --font-display: "Inter", system-ui, -apple-system, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
@@ -99,23 +105,152 @@
 
   --focus-ring: var(--accent);
 
+  color-scheme: dark;
+}
+
+/* ---- LIGHT mode override.
+       Applied automatically when the OS asks for light AND the user hasn't
+       chosen a theme manually (no [data-theme] on <html>), OR explicitly when
+       [data-theme="light"]. Same pastel mesh, just deeper colours so they
+       read on cream paper instead of warm charcoal. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f7f2e8;                    /* warm cream paper */
+    --bg-soft: #eee8da;
+    --bg-card: rgba(255, 255, 255, 0.55);
+    --bg-elev: rgba(255, 255, 255, 0.75);
+    --bg-inset: #1a1820;              /* code wells stay dark */
+
+    --glass: var(--bg-card);
+    --glass-strong: var(--bg-elev);
+
+    --text: #2a2530;
+    --text-soft: #5a5366;
+    --text-dim: #8b8499;
+
+    --accent: #d97757;                /* deeper coral that reads on cream */
+    --accent-2: #7a6acc;              /* deeper lavender */
+    --accent-3: #4ea670;              /* deeper mint */
+    --grad: linear-gradient(140deg, #6a5240 0%, #d97757 25%, #7a6acc 50%, #4ea670 75%, #6a5240 100%);
+
+    --gold: var(--accent);
+    --gold-bright: #e08966;
+    --gold-soft: #b06346;
+    --sage: var(--accent-3);
+    --rose: #d96690;
+    --crimson: #c75475;
+    --sky: var(--accent-2);
+
+    --level-junior: #4ea670;
+    --level-medior: #7a6acc;
+    --level-senior: #d96690;
+    --level-next: #4a90b8;
+    --iris: var(--level-next);
+
+    --border: rgba(42, 37, 48, 0.1);
+    --border-soft: rgba(42, 37, 48, 0.05);
+    --border-strong: rgba(42, 37, 48, 0.2);
+    --hairline-top: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 55%);
+
+    --mesh-opacity: 0.5;              /* mesh more subtle on cream */
+    --mesh-blur: 110px;
+
+    --shadow-1: 0 2px 6px rgba(42, 37, 48, 0.08),
+      0 4px 12px -2px rgba(42, 37, 48, 0.1);
+    --shadow-2: 0 4px 12px rgba(42, 37, 48, 0.1),
+      0 24px 60px -10px rgba(42, 37, 48, 0.18),
+      0 60px 120px -20px rgba(42, 37, 48, 0.12);
+    --shadow-3: 0 6px 18px rgba(42, 37, 48, 0.14),
+      0 36px 90px -16px rgba(42, 37, 48, 0.24);
+    --glow: 0 0 0 1px color-mix(in oklab, var(--accent) 45%, transparent),
+      0 14px 36px -10px color-mix(in oklab, var(--accent) 50%, transparent);
+    --hi-edge: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+    color-scheme: light;
+  }
+}
+
+/* Explicit user override — [data-theme="light"] on <html> always means light. */
+:root[data-theme="light"] {
+  --bg: #f7f2e8;
+  --bg-soft: #eee8da;
+  --bg-card: rgba(255, 255, 255, 0.55);
+  --bg-elev: rgba(255, 255, 255, 0.75);
+  --bg-inset: #1a1820;
+  --glass: var(--bg-card);
+  --glass-strong: var(--bg-elev);
+  --text: #2a2530;
+  --text-soft: #5a5366;
+  --text-dim: #8b8499;
+  --accent: #d97757;
+  --accent-2: #7a6acc;
+  --accent-3: #4ea670;
+  --grad: linear-gradient(140deg, #6a5240 0%, #d97757 25%, #7a6acc 50%, #4ea670 75%, #6a5240 100%);
+  --gold: var(--accent);
+  --gold-bright: #e08966;
+  --gold-soft: #b06346;
+  --sage: var(--accent-3);
+  --rose: #d96690;
+  --crimson: #c75475;
+  --sky: var(--accent-2);
+  --level-junior: #4ea670;
+  --level-medior: #7a6acc;
+  --level-senior: #d96690;
+  --level-next: #4a90b8;
+  --iris: var(--level-next);
+  --border: rgba(42, 37, 48, 0.1);
+  --border-soft: rgba(42, 37, 48, 0.05);
+  --border-strong: rgba(42, 37, 48, 0.2);
+  --hairline-top: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 55%);
+  --mesh-opacity: 0.5;
+  --mesh-blur: 110px;
+  --shadow-1: 0 2px 6px rgba(42, 37, 48, 0.08), 0 4px 12px -2px rgba(42, 37, 48, 0.1);
+  --shadow-2: 0 4px 12px rgba(42, 37, 48, 0.1), 0 24px 60px -10px rgba(42, 37, 48, 0.18), 0 60px 120px -20px rgba(42, 37, 48, 0.12);
+  --shadow-3: 0 6px 18px rgba(42, 37, 48, 0.14), 0 36px 90px -16px rgba(42, 37, 48, 0.24);
+  --glow: 0 0 0 1px color-mix(in oklab, var(--accent) 45%, transparent), 0 14px 36px -10px color-mix(in oklab, var(--accent) 50%, transparent);
+  --hi-edge: inset 0 1px 0 rgba(255, 255, 255, 0.55);
   color-scheme: light;
 }
 
-/* Per-framework accent: each framework section adopts a brand-adjacent accent
-   (deep enough to stay legible on the light canvas), while the fundamentals and
-   global chrome keep the house cobalt. Set via [data-fw] on the hub/article host. */
+/* Per-framework accent — dark defaults */
 [data-fw="angular"] {
-  --accent: #cf132a;
-  --grad: linear-gradient(100deg, #dd0031 0%, #ff5a36 100%);
+  --accent: #ff8b94;
+  --grad: linear-gradient(140deg, #fff7ed 0%, #ff8b94 25%, #ffa37a 50%, #ff7aa0 75%, #fff7ed 100%);
 }
 [data-fw="react"] {
-  --accent: #0e7490;
-  --grad: linear-gradient(100deg, #0e7490 0%, #2b34ff 100%);
+  --accent: #7adcef;
+  --grad: linear-gradient(140deg, #fff7ed 0%, #7adcef 25%, #b8aeff 50%, #c9a0ff 75%, #fff7ed 100%);
 }
 [data-fw="vue"] {
-  --accent: #0f7a44;
-  --grad: linear-gradient(100deg, #0f7a44 0%, #12a474 100%);
+  --accent: #8de2a1;
+  --grad: linear-gradient(140deg, #fff7ed 0%, #8de2a1 25%, #c4e88a 50%, #fff7ed 75%, #fff7ed 100%);
+}
+/* Per-framework accent — light overrides */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) [data-fw="angular"] {
+    --accent: #dd3344;
+    --grad: linear-gradient(140deg, #6a5240 0%, #dd3344 25%, #ff7a5c 50%, #c44b8e 75%, #6a5240 100%);
+  }
+  :root:not([data-theme="dark"]) [data-fw="react"] {
+    --accent: #0e7e9c;
+    --grad: linear-gradient(140deg, #6a5240 0%, #0e7e9c 25%, #5b8cc8 50%, #7a6acc 75%, #6a5240 100%);
+  }
+  :root:not([data-theme="dark"]) [data-fw="vue"] {
+    --accent: #1f8a5a;
+    --grad: linear-gradient(140deg, #6a5240 0%, #1f8a5a 25%, #4ea670 50%, #c4e88a 75%, #6a5240 100%);
+  }
+}
+:root[data-theme="light"] [data-fw="angular"] {
+  --accent: #dd3344;
+  --grad: linear-gradient(140deg, #6a5240 0%, #dd3344 25%, #ff7a5c 50%, #c44b8e 75%, #6a5240 100%);
+}
+:root[data-theme="light"] [data-fw="react"] {
+  --accent: #0e7e9c;
+  --grad: linear-gradient(140deg, #6a5240 0%, #0e7e9c 25%, #5b8cc8 50%, #7a6acc 75%, #6a5240 100%);
+}
+:root[data-theme="light"] [data-fw="vue"] {
+  --accent: #1f8a5a;
+  --grad: linear-gradient(140deg, #6a5240 0%, #1f8a5a 25%, #4ea670 50%, #c4e88a 75%, #6a5240 100%);
 }
 
 @media (max-width: 720px) {

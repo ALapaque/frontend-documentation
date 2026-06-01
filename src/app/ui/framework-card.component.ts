@@ -38,8 +38,9 @@ import { MorphService } from '../core/morph.service';
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--glass);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-1);
       overflow: hidden;
       transition: transform var(--dur) var(--ease-spring),
         border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
@@ -61,8 +62,8 @@ import { MorphService } from '../core/morph.service';
     }
     .card:hover {
       transform: translateY(-6px);
-      border-color: color-mix(in oklab, var(--accent) 45%, transparent);
-      box-shadow: var(--glow);
+      border-color: var(--accent);
+      box-shadow: var(--hi-edge), var(--shadow-2), var(--glow);
     }
     .card:hover::before {
       opacity: 1;

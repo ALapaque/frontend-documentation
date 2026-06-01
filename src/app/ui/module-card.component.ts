@@ -53,15 +53,16 @@ import type { ModuleMeta } from '../content/content.types';
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--glass);
-      backdrop-filter: blur(18px) saturate(1.3);
-      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-1);
       transition: transform var(--dur) var(--ease-spring),
         border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .card:hover {
       transform: translateY(-4px);
-      border-color: color-mix(in oklab, var(--accent) 42%, transparent);
-      box-shadow: var(--glow);
+      border-color: var(--accent);
+      box-shadow: var(--hi-edge), var(--shadow-2);
     }
     .card:hover .title {
       color: var(--text);

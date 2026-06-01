@@ -73,14 +73,15 @@ interface Group {
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--glass);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-1);
       max-width: 620px;
       transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .field:focus-within {
-      border-color: color-mix(in oklab, var(--accent) 50%, transparent);
-      box-shadow: var(--glow);
+      border-color: var(--accent);
+      box-shadow: var(--hi-edge), var(--shadow-2), var(--glow);
     }
     input {
       flex: 1;
@@ -130,8 +131,9 @@ interface Group {
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background: var(--glass);
-      backdrop-filter: blur(18px) saturate(1.3);
-      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge);
       transition: transform var(--dur) var(--ease-spring),
         border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
