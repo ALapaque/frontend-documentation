@@ -103,7 +103,7 @@ export interface BlogMeta {
   readonly date: string;
   readonly author: string;
   readonly tags: readonly string[];
-  readonly cover: 'angular-v22' | 'default';
+  readonly cover: 'angular-v22' | 'vue-vapor' | 'default';
   readonly seoTitle: string;
   readonly seoDescription: string;
   readonly related: readonly RelatedLink[];

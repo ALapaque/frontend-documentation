@@ -33,6 +33,20 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
+    id: 'vue-vapor-preview-2026-06',
+    date: '2026-06-01',
+    title: 'Aperçu : Vue 3.6 et Vapor mode',
+    note: "Stable visé Q4, bêta feature-complete : comment tester Vapor par îlots cet été sans casser ton app.",
+    cta: {
+      label: "Lire l'aperçu — Vue 3.6 et Vapor",
+      href: '/blog/vue-3-6-vapor-preview',
+    },
+    modules: [
+      { framework: 'vue', level: 'next', slug: 'vue-3-6' },
+      { framework: 'vue', level: 'senior', slug: 'vapor-mode' },
+    ],
+  },
+  {
     id: 'angular-22-blog-2026-06',
     date: '2026-06-01',
     title: 'Angular 22 arrive',

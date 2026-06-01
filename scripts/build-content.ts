@@ -418,7 +418,10 @@ async function main(): Promise<void> {
     const d = data as Record<string, unknown>;
     const { blocks, toc } = parseBody(content, hl);
     const title = String(d['title'] ?? slug);
-    const cover = (d['cover'] === 'angular-v22' ? 'angular-v22' : 'default') as BlogMeta['cover'];
+    const coverRaw = d['cover'];
+    const cover = (coverRaw === 'angular-v22' || coverRaw === 'vue-vapor'
+      ? coverRaw
+      : 'default') as BlogMeta['cover'];
     const meta: BlogMeta = {
       slug,
       title,
