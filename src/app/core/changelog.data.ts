@@ -7,6 +7,13 @@ export interface ChangelogModuleRef {
   readonly slug: string;
 }
 
+/** Primary call-to-action on a changelog entry — typically a blog post link. */
+export interface ChangelogCta {
+  readonly label: string;
+  /** Internal router URL (e.g. /blog/<slug>). */
+  readonly href: string;
+}
+
 /** One dated release line, grouping the articles shipped together. */
 export interface ChangelogEntry {
   /** Stable unique id. Drives the "seen" watermark — never reuse or reorder ids. */
@@ -15,6 +22,8 @@ export interface ChangelogEntry {
   readonly date: string;
   readonly title: string;
   readonly note?: string;
+  /** Optional headline CTA above the module list (e.g. linked to a blog post). */
+  readonly cta?: ChangelogCta;
   readonly modules: readonly ChangelogModuleRef[];
 }
 
@@ -23,6 +32,21 @@ export interface ChangelogEntry {
  * the first-visit modal shows every entry the reader hasn't seen yet.
  */
 export const CHANGELOG: readonly ChangelogEntry[] = [
+  {
+    id: 'angular-22-blog-2026-06',
+    date: '2026-06-01',
+    title: 'Angular 22 arrive',
+    note: 'Signal Forms stables, zoneless par défaut, Vitest par défaut. Le guide pour ne pas le rater, et les modules concernés.',
+    cta: {
+      label: "Lire l'article — Angular 22, ce que ça change",
+      href: '/blog/angular-22-ce-que-ca-change',
+    },
+    modules: [
+      { framework: 'angular', level: 'next', slug: 'angular-22' },
+      { framework: 'angular', level: 'medior', slug: 'signal-forms' },
+      { framework: 'angular', level: 'senior', slug: 'zoneless' },
+    ],
+  },
   {
     id: 'angular-deep-dives-2026-05',
     date: '2026-05-28',

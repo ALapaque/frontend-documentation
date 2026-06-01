@@ -44,6 +44,12 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
                 @if (entry.note) {
                   <p class="note small">{{ entry.note }}</p>
                 }
+                @if (entry.cta; as cta) {
+                  <a class="cta" [routerLink]="cta.href" (click)="dismiss()">
+                    <span class="cta-label">{{ cta.label }}</span>
+                    <span class="cta-arrow" aria-hidden="true">→</span>
+                  </a>
+                }
                 <ul class="modules">
                   @for (m of entry.items; track m.framework + m.level + m.slug) {
                     <li>
@@ -169,6 +175,32 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
     .note {
       margin: 0 0 10px;
       color: var(--text-soft);
+    }
+    .cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: filter var(--dur) var(--ease-out), transform var(--dur) var(--ease-spring);
+    }
+    .cta:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+    .cta-label {
+      font-weight: 600;
+    }
+    .cta-arrow {
+      transition: transform var(--dur) var(--ease-out);
+    }
+    .cta:hover .cta-arrow {
+      transform: translateX(3px);
     }
     .modules {
       list-style: none;

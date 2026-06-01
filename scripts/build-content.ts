@@ -16,9 +16,11 @@ import matter from 'gray-matter';
 import MarkdownIt from 'markdown-it';
 import { createHighlighter, type Highlighter } from 'shiki';
 import type {
+  BlogMeta,
   CheatItem,
   CodePiece,
   CompareMeta,
+  CompiledBlog,
   CompiledCompare,
   CompiledModule,
   ContentBlock,
@@ -282,7 +284,7 @@ async function main(): Promise<void> {
 
   for (const file of files) {
     const parts = relative(CONTENT_DIR, file).split(sep);
-    if (parts[0] === 'compare') continue; // handled separately below
+    if (parts[0] === 'compare' || parts[0] === 'blog') continue; // handled separately below
     if (parts.length !== 3) {
       console.warn(`[content] skip (expected {fw}/{lvl}/{slug}.md): ${parts.join('/')}`);
       continue;
@@ -404,7 +406,64 @@ async function main(): Promise<void> {
       `export const COMPARE_LOADERS: Record<string, () => Promise<{ default: CompiledCompare }>> = {\n${compareEntries}\n};\n`,
   );
 
-  console.log(`[content] compiled ${metas.length} module(s), ${compareMetas.length} compare doc(s).`);
+  // ---- Blog posts (src/content/blog/*.md) ----
+  const blogDir = join(CONTENT_DIR, 'blog');
+  const blogMetas: BlogMeta[] = [];
+  const blogSlugs: string[] = [];
+  for (const file of files) {
+    const parts = relative(CONTENT_DIR, file).split(sep);
+    if (parts[0] !== 'blog' || parts.length !== 2) continue;
+    const slug = parts[1].replace(/\.md$/, '');
+    const { data, content } = matter(readFileSync(file, 'utf8'));
+    const d = data as Record<string, unknown>;
+    const { blocks, toc } = parseBody(content, hl);
+    const title = String(d['title'] ?? slug);
+    const cover = (d['cover'] === 'angular-v22' ? 'angular-v22' : 'default') as BlogMeta['cover'];
+    const meta: BlogMeta = {
+      slug,
+      title,
+      lead: String(d['lead'] ?? ''),
+      date: fmtDate(d['date']),
+      author: String(d['author'] ?? ''),
+      tags: Array.isArray(d['tags']) ? (d['tags'] as string[]).map(String) : [],
+      cover,
+      seoTitle: String(d['seoTitle'] ?? title),
+      seoDescription: String(d['seoDescription'] ?? ''),
+      related: Array.isArray(d['related']) ? (d['related'] as BlogMeta['related']) : [],
+    };
+    const compiled: CompiledBlog = { meta, blocks, toc };
+    mkdirSync(join(OUT_DIR, 'blog'), { recursive: true });
+    writeFileSync(join(OUT_DIR, 'blog', `${slug}.json`), JSON.stringify(compiled));
+    blogMetas.push(meta);
+    blogSlugs.push(slug);
+  }
+  void blogDir;
+
+  // newest first
+  blogMetas.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  writeFileSync(
+    join(OUT_DIR, 'blog-list.ts'),
+    banner +
+      `import type { BlogMeta } from '../../app/content/content.types';\n` +
+      `export const BLOG_LIST: BlogMeta[] = ${JSON.stringify(blogMetas, null, 2)};\n`,
+  );
+  const blogEntries = blogSlugs
+    .sort()
+    .map(
+      (s) =>
+        `  '${s}': () => import('./blog/${s}.json') as unknown as Promise<{ default: CompiledBlog }>,`,
+    )
+    .join('\n');
+  writeFileSync(
+    join(OUT_DIR, 'blog-loaders.ts'),
+    banner +
+      `import type { CompiledBlog } from '../../app/content/content.types';\n` +
+      `export const BLOG_LOADERS: Record<string, () => Promise<{ default: CompiledBlog }>> = {\n${blogEntries}\n};\n`,
+  );
+
+  console.log(
+    `[content] compiled ${metas.length} module(s), ${compareMetas.length} compare doc(s), ${blogMetas.length} blog post(s).`,
+  );
 }
 
 main().catch((err) => {

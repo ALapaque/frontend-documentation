@@ -53,6 +53,20 @@ const TAGLINE: Record<Framework, string> = {
 
       <app-ornament />
 
+      @if (featuredPost(); as post) {
+        <section class="container featured-wrap">
+          <a class="featured" [routerLink]="['/blog', post.slug]" [attr.data-cover]="post.cover">
+            <div class="featured-art" aria-hidden="true"></div>
+            <div class="featured-body">
+              <span class="label-mono eyebrow">À la une · Blog · {{ postDate(post.date) }}</span>
+              <h2 class="featured-title">{{ post.title }}</h2>
+              <p class="featured-lead">{{ post.lead }}</p>
+              <span class="go label-mono">Lire l'article →</span>
+            </div>
+          </a>
+        </section>
+      }
+
       <section class="container section">
         <div class="bar">
           <app-level-filter [(selected)]="filter" [levels]="levels()" />
@@ -117,6 +131,68 @@ const TAGLINE: Record<Framework, string> = {
       color: var(--accent-2);
       gap: 10px;
     }
+    /* Featured blog post block (above the modules grid). */
+    .featured-wrap {
+      margin-bottom: 18px;
+    }
+    .featured {
+      position: relative;
+      display: block;
+      isolation: isolate;
+      padding: clamp(24px, 3.6vw, 44px);
+      border-radius: var(--radius-xl);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-2);
+      overflow: hidden;
+      transition: transform var(--dur) var(--ease-spring),
+        box-shadow var(--dur) var(--ease-out);
+    }
+    .featured:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-3);
+    }
+    .featured-art {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      filter: blur(40px) saturate(1.2);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .featured[data-cover="angular-v22"] .featured-art {
+      background:
+        radial-gradient(50vmax 50vmax at 110% -10%,
+          color-mix(in oklab, #dd0031 55%, transparent), transparent 60%),
+        radial-gradient(34vmax 34vmax at 0% 120%,
+          color-mix(in oklab, #ff5a36 45%, transparent), transparent 60%);
+    }
+    .featured-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+      max-width: 740px;
+    }
+    .featured-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      font-size: clamp(26px, 3.6vw, 40px);
+      line-height: 1.05;
+      color: var(--text);
+    }
+    .featured-lead {
+      color: var(--text-soft);
+      font-size: clamp(15px, 1.6vw, 17px);
+      line-height: 1.55;
+      margin: 0;
+    }
+    .featured .go {
+      color: var(--accent);
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -160,6 +236,16 @@ export class FrameworkHubComponent {
     const dates = this.modules().map((m) => m.updated).filter(Boolean).sort();
     return dates.at(-1) ?? '—';
   });
+
+  /** Latest blog post tagged with this framework (powers the featured slot). */
+  protected readonly featuredPost = computed(() => {
+    const fw = this.fw();
+    if (!fw) return null;
+    return this.content.blogPostsForFramework(fw)[0] ?? null;
+  });
+
+  private readonly postDateFmt = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' });
+  protected readonly postDate = (iso: string) => this.postDateFmt.format(new Date(iso));
 
   constructor() {
     const seo = inject(SeoService);

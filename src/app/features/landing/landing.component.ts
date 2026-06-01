@@ -40,6 +40,17 @@ const FEATURED: ReadonlyArray<[Framework, Level, string]> = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, FrameworkCardComponent, ModuleCardComponent],
   template: `
+    <a class="hero-banner" routerLink="/blog/angular-22-ce-que-ca-change" aria-label="Lire l'article — Angular 22, ce que ça change">
+      <div class="container hero-banner-in">
+        <span class="pulse" aria-hidden="true"></span>
+        <span class="hb-eyebrow label-mono">Nouveau</span>
+        <span class="hb-title">
+          <strong>Angular 22</strong> : Signal Forms stable, zoneless par défaut, Vitest par défaut —
+          <span class="hb-cta">lire le décryptage <span aria-hidden="true">→</span></span>
+        </span>
+      </div>
+    </a>
+
     <section class="hero">
       <div class="beams" aria-hidden="true">
         <span class="beam b1"></span>
@@ -147,6 +158,64 @@ const FEATURED: ReadonlyArray<[Framework, Level, string]> = [
     </section>
   `,
   styles: `
+    /* ---------- HERO BANNER (Angular v22 announcement) ---------- */
+    .hero-banner {
+      display: block;
+      background: linear-gradient(100deg, #dd0031 0%, #ff5a36 100%);
+      color: #fff;
+      border-bottom: 1px solid color-mix(in oklab, #000 18%, transparent);
+      box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.25) inset, var(--shadow-1);
+      transition: filter var(--dur) var(--ease-out);
+    }
+    .hero-banner:hover {
+      filter: brightness(1.06);
+    }
+    .hero-banner-in {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-block: 12px;
+      font-size: 14px;
+      flex-wrap: wrap;
+    }
+    .hero-banner .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+      flex-shrink: 0;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .hero-banner .pulse {
+        animation: hb-pulse 2.4s var(--ease-out) infinite;
+      }
+      @keyframes hb-pulse {
+        0%   { box-shadow: 0 0 0 0   rgba(255,255,255,.7); }
+        70%  { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
+        100% { box-shadow: 0 0 0 0   rgba(255,255,255,0); }
+      }
+    }
+    .hb-eyebrow {
+      color: rgba(255, 255, 255, 0.85);
+      letter-spacing: 0.22em;
+    }
+    .hb-title {
+      color: rgba(255, 255, 255, 0.95);
+    }
+    .hb-title strong {
+      color: #fff;
+      font-weight: 700;
+    }
+    .hb-cta {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+      margin-left: 4px;
+      white-space: nowrap;
+    }
+
     /* ---------- HERO ---------- */
     .hero {
       position: relative;

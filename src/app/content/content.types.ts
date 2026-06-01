@@ -95,6 +95,26 @@ export interface CompiledCompare {
   readonly toc: readonly TocEntry[];
 }
 
+/** Blog post front-matter (timely narrative pieces, not part of the level matrix). */
+export interface BlogMeta {
+  readonly slug: string;
+  readonly title: string;
+  readonly lead: string;
+  readonly date: string;
+  readonly author: string;
+  readonly tags: readonly string[];
+  readonly cover: 'angular-v22' | 'default';
+  readonly seoTitle: string;
+  readonly seoDescription: string;
+  readonly related: readonly RelatedLink[];
+}
+
+export interface CompiledBlog {
+  readonly meta: BlogMeta;
+  readonly blocks: readonly ContentBlock[];
+  readonly toc: readonly TocEntry[];
+}
+
 /** Flattened, plain-text document for the client search index. */
 export interface SearchDoc {
   readonly id: string;
