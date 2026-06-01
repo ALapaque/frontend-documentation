@@ -1,6 +1,7 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import { CATALOGUE } from '../content/generated/catalogue';
 import { COMPARE_LIST } from '../content/generated/compare-list';
+import { BLOG_LIST } from '../content/generated/blog-list';
 import { SECTIONS } from './core/levels';
 
 /**
@@ -17,6 +18,12 @@ export const serverRoutes: ServerRoute[] = [
     path: 'compare/:topic',
     renderMode: RenderMode.Prerender,
     getPrerenderParams: async () => COMPARE_LIST.map((c) => ({ topic: c.topic })),
+  },
+  { path: 'blog', renderMode: RenderMode.Prerender },
+  {
+    path: 'blog/:slug',
+    renderMode: RenderMode.Prerender,
+    getPrerenderParams: async () => BLOG_LIST.map((p) => ({ slug: p.slug })),
   },
   {
     path: ':framework',

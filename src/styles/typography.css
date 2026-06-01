@@ -83,4 +83,8 @@ code.inline,
   border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent);
   border-radius: var(--radius-xs);
   padding: 0.12em 0.42em;
+  /* Long unbreakable identifiers (e.g. `ExpressionChangedAfterItHasBeenCheckedError`)
+     can't shrink and would push the page wider than the viewport on mobile —
+     overflow-wrap lets them break anywhere when there's no other choice. */
+  overflow-wrap: anywhere;
 }

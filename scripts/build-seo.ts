@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { Resvg } from '@resvg/resvg-js';
 import { CATALOGUE } from '../src/content/generated/catalogue';
 import { COMPARE_LIST } from '../src/content/generated/compare-list';
+import { BLOG_LIST } from '../src/content/generated/blog-list';
 import { SITE_URL, SITE_NAME, SITE_TAGLINE } from '../src/app/core/site';
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..');
@@ -46,9 +47,10 @@ const xml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 function routes(): string[] {
-  const r = ['/', '/search', '/about', '/compare'];
+  const r = ['/', '/search', '/about', '/compare', '/blog'];
   for (const fw of SECTIONS) r.push(`/${fw}`);
   for (const c of COMPARE_LIST) r.push(`/compare/${c.topic}`);
+  for (const p of BLOG_LIST) r.push(`/blog/${p.slug}`);
   for (const m of CATALOGUE) r.push(`/${m.framework}/${m.level}/${m.slug}`);
   return r;
 }

@@ -3,10 +3,14 @@ import { CATALOGUE } from '../../content/generated/catalogue';
 import { MODULE_LOADERS } from '../../content/generated/loaders';
 import { COMPARE_LIST } from '../../content/generated/compare-list';
 import { COMPARE_LOADERS } from '../../content/generated/compare-loaders';
+import { BLOG_LIST } from '../../content/generated/blog-list';
+import { BLOG_LOADERS } from '../../content/generated/blog-loaders';
 import type { Framework, Level } from '../core/levels';
 import {
   moduleKey,
+  type BlogMeta,
   type CompareMeta,
+  type CompiledBlog,
   type CompiledCompare,
   type CompiledModule,
   type ModuleMeta,
@@ -55,6 +59,20 @@ export class ContentService {
 
   async loadCompare(topic: string): Promise<CompiledCompare | null> {
     const loader = COMPARE_LOADERS[topic];
+    if (!loader) return null;
+    return (await loader()).default;
+  }
+
+  /** Blog posts, newest first. */
+  readonly blogPosts: readonly BlogMeta[] = BLOG_LIST;
+
+  /** Blog posts tagged with this framework, newest first. */
+  blogPostsForFramework(framework: Framework): readonly BlogMeta[] {
+    return this.blogPosts.filter((p) => p.tags.includes(framework));
+  }
+
+  async loadBlogPost(slug: string): Promise<CompiledBlog | null> {
+    const loader = BLOG_LOADERS[slug];
     if (!loader) return null;
     return (await loader()).default;
   }

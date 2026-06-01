@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { ContentService } from './content.service';
 import { isFramework, isLevel } from '../core/levels';
-import type { CompiledCompare, CompiledModule } from './content.types';
+import type { CompiledBlog, CompiledCompare, CompiledModule } from './content.types';
 
 /** Resolves the compiled module for `/{framework}/{level}/{slug}` (or null). */
 export const moduleResolver: ResolveFn<CompiledModule | null> = (
@@ -21,4 +21,12 @@ export const compareResolver: ResolveFn<CompiledCompare | null> = (
 ) => {
   const topic = route.paramMap.get('topic') ?? '';
   return inject(ContentService).loadCompare(topic);
+};
+
+/** Resolves the compiled blog post for `/blog/{slug}` (or null). */
+export const blogResolver: ResolveFn<CompiledBlog | null> = (
+  route: ActivatedRouteSnapshot,
+) => {
+  const slug = route.paramMap.get('slug') ?? '';
+  return inject(ContentService).loadBlogPost(slug);
 };
