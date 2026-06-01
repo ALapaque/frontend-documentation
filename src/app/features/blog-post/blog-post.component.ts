@@ -191,6 +191,15 @@ interface RelatedView {
       flex-direction: column;
       gap: 24px;
       padding-block: 56px 80px;
+      min-width: 0;
+    }
+    /* Flex children default to min-width: auto, which lets a wide code block
+       (with overflow-x: auto inside) push the article wider than the viewport.
+       Constrain every direct child to the body's width — code blocks then
+       scroll horizontally inside their own frame as intended. */
+    .body > * {
+      max-width: 100%;
+      min-width: 0;
     }
     .body .sec {
       font-family: var(--font-display);
