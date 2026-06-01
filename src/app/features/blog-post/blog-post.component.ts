@@ -137,6 +137,13 @@ interface RelatedView {
         radial-gradient(36vmax 36vmax at -10% 110%,
           color-mix(in oklab, #ff5a36 38%, transparent), transparent 65%);
     }
+    :host([data-cover="vue-vapor"]) .cover-art {
+      background:
+        radial-gradient(50vmax 50vmax at 110% -10%,
+          color-mix(in oklab, #12a474 50%, transparent), transparent 60%),
+        radial-gradient(36vmax 36vmax at -10% 110%,
+          color-mix(in oklab, #0f7a44 38%, transparent), transparent 65%);
+    }
     .cover-art {
       position: absolute;
       inset: 0;
