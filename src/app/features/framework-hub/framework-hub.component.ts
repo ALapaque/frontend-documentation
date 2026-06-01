@@ -133,13 +133,13 @@ const TAGLINE: Record<Framework, string> = {
     }
     /* Featured blog post block (above the modules grid). */
     .featured-wrap {
-      margin-bottom: 18px;
+      margin-block: clamp(40px, 7vw, 72px);
     }
     .featured {
       position: relative;
       display: block;
       isolation: isolate;
-      padding: clamp(24px, 3.6vw, 44px);
+      padding: clamp(28px, 4.2vw, 52px);
       border-radius: var(--radius-xl);
       background: var(--bg-card);
       border: 1px solid var(--border);
