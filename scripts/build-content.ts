@@ -42,7 +42,7 @@ const LANGS = ['ts', 'tsx', 'js', 'jsx', 'html', 'css', 'scss', 'json', 'bash', 
 const md = new MarkdownIt({ html: true, linkify: true, typographer: true });
 const mdInline = new MarkdownIt({ html: true, linkify: true, typographer: true });
 
-const FRAMEWORKS = new Set(['angular', 'react', 'vue', 'web', 'css', 'typescript', 'tooling']);
+const FRAMEWORKS = new Set(['angular', 'react', 'vue', 'web', 'css', 'typescript', 'tooling', 'architecture']);
 const DEMO_KINDS = new Set<string>([
   'flexbox',
   'grid',
