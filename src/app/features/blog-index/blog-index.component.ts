@@ -95,6 +95,13 @@ import { SeoService } from '../../core/seo/seo.service';
         radial-gradient(34vmax 34vmax at 0% 120%,
           color-mix(in oklab, #ff5a36 45%, transparent), transparent 60%);
     }
+    .featured[data-cover="vue-vapor"] .featured-art {
+      background:
+        radial-gradient(50vmax 50vmax at 110% -10%,
+          color-mix(in oklab, #12a474 55%, transparent), transparent 60%),
+        radial-gradient(34vmax 34vmax at 0% 120%,
+          color-mix(in oklab, #0f7a44 45%, transparent), transparent 60%);
+    }
     .featured-body {
       display: flex;
       flex-direction: column;
