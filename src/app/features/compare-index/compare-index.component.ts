@@ -61,8 +61,9 @@ import { MorphService } from '../../core/morph.service';
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--glass);
-      backdrop-filter: blur(20px) saturate(1.3);
-      -webkit-backdrop-filter: blur(20px) saturate(1.3);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-1);
       transition: transform var(--dur) var(--ease-spring),
         border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }

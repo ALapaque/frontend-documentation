@@ -178,8 +178,9 @@ interface RelatedView {
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       background: var(--glass);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-2);
     }
     .meta {
       display: flex;
@@ -234,15 +235,16 @@ interface RelatedView {
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background: var(--glass);
-      backdrop-filter: blur(18px) saturate(1.3);
-      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-1);
       transition: transform var(--dur) var(--ease-spring),
         border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
     }
     .page:hover {
       transform: translateY(-4px);
       border-color: color-mix(in oklab, var(--accent) 45%, transparent);
-      box-shadow: var(--glow);
+      box-shadow: var(--hi-edge), var(--shadow-2), var(--glow);
     }
     .page.next {
       text-align: right;
@@ -259,21 +261,23 @@ interface RelatedView {
       margin-top: 10px;
     }
     .rel {
-      padding: 7px 13px;
-      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border: 1px solid var(--border-strong);
       border-radius: var(--radius-pill);
       font-size: 14px;
       color: var(--text-soft);
       background: var(--glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(20px) saturate(1.2);
+      -webkit-backdrop-filter: blur(20px) saturate(1.2);
+      box-shadow: var(--hi-edge);
       transition: color var(--dur) var(--ease-out),
-        border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+        border-color var(--dur) var(--ease-out),
+        transform var(--dur) var(--ease-spring);
     }
     .rel:hover {
-      color: var(--accent-2);
-      border-color: color-mix(in oklab, var(--accent) 45%, transparent);
-      box-shadow: var(--glow);
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-1px);
     }
     .src {
       color: var(--text-dim);

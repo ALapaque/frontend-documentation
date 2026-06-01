@@ -46,6 +46,7 @@ import { SafeHtmlPipe } from '../core/safe-html.pipe';
       background: var(--bg-inset);
       overflow: hidden;
       min-width: 0;
+      box-shadow: var(--shadow-1);
     }
     .bar {
       display: flex;

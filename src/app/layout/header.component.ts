@@ -46,8 +46,9 @@ import { ThemeToggleComponent } from '../ui/theme-toggle.component';
       z-index: 100;
       border-bottom: 1px solid var(--border-soft);
       background: color-mix(in oklab, var(--bg) 55%, transparent);
-      backdrop-filter: blur(22px) saturate(1.4);
-      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge);
     }
     .inner {
       display: flex;
