@@ -30,8 +30,9 @@ body {
   overflow-x: hidden;
 }
 
-/* Faint colour washes — two soft blobs that keep the warm paper alive without
-   muddying it. Subtle on purpose; the design carries on type + ink, not glow. */
+/* Editorial dark canvas: a warm amber halo top-right + a cool cyan halo
+   bottom-left, both very subtle. Keeps the night from being flat without
+   pulling attention from the text. */
 body::before {
   content: "";
   position: fixed;
@@ -39,13 +40,13 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(36vmax 36vmax at 88% 6%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 60%),
-    radial-gradient(40vmax 40vmax at 6% 92%, color-mix(in oklab, var(--accent-2) 16%, transparent), transparent 62%);
-  filter: blur(40px) saturate(1.1);
-  opacity: 0.5;
-  animation: aurora 30s var(--ease-in-out) infinite alternate;
+    radial-gradient(40vmax 40vmax at 92% 4%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 60%),
+    radial-gradient(46vmax 46vmax at 4% 96%, color-mix(in oklab, var(--accent-2) 14%, transparent), transparent 62%);
+  filter: blur(60px) saturate(1.05);
+  opacity: 0.55;
+  animation: aurora 40s var(--ease-in-out) infinite alternate;
 }
-/* faint grain to give the paper tooth */
+/* faint film grain so the dark surface has texture, not glass */
 body::after {
   content: "";
   position: fixed;
@@ -53,8 +54,8 @@ body::after {
   z-index: -1;
   pointer-events: none;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  background-blend-mode: multiply;
-  opacity: 0.04;
+  background-blend-mode: overlay;
+  opacity: 0.06;
 }
 
 @keyframes aurora {
@@ -87,8 +88,8 @@ button {
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--accent) 40%, transparent);
-  color: #fff;
+  background: color-mix(in oklab, var(--accent) 36%, transparent);
+  color: var(--bg);
 }
 
 * {

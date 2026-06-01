@@ -1,493 +1,488 @@
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
-  ElementRef,
   inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { FrameworkCardComponent } from '../../ui/framework-card.component';
-import { ModuleCardComponent } from '../../ui/module-card.component';
 import { ContentService } from '../../content/content.service';
 import { SeoService } from '../../core/seo/seo.service';
 import { SITE_TAGLINE } from '../../core/site';
-import { FRAMEWORKS, FUNDAMENTALS, type Framework, type Level } from '../../core/levels';
-import type { ModuleMeta } from '../../content/content.types';
+import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL, type Framework } from '../../core/levels';
 
 const TAGLINE: Record<Framework, string> = {
   angular: 'Signals, zoneless, SSR. La discipline structurée.',
   react: 'RSC, compiler, concurrent. Le pragmatisme à grande échelle.',
   vue: 'Reactivity, Vapor, Nuxt. La progressivité élégante.',
   web: 'HTML, fetch, événements, a11y. La plateforme sous les frameworks.',
-  css: 'Flexbox, grid, custom properties. En interactif.',
+  css: 'Flexbox, grid, custom properties — en interactif.',
   typescript: 'Types, génériques, inférence. Le langage qui tient le code.',
   tooling: 'Vite, Vitest, Biome, monorepo. La chaîne qui build et teste.',
 };
 
-const FEATURED: ReadonlyArray<[Framework, Level, string]> = [
-  ['angular', 'medior', 'signals'],
-  ['angular', 'junior', 'lifecycle'],
-  ['react', 'senior', 'rsc'],
-  ['vue', 'senior', 'vapor-mode'],
-  ['angular', 'senior', 'ssr-hydration'],
-  ['react', 'medior', 'server-state'],
-];
-
+/** Editorial home — newspaper masthead, featured story up top, then framework
+ *  and fundamentals sections as plain typographic rows separated by hairlines.
+ *  No card grids, no big buttons; reading rhythm + ornament lines do the work. */
 @Component({
   selector: 'app-landing',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, FrameworkCardComponent, ModuleCardComponent],
+  imports: [RouterLink],
   template: `
-    <a class="hero-banner" routerLink="/blog/angular-22-ce-que-ca-change" aria-label="Lire l'article — Angular 22, ce que ça change">
-      <div class="container hero-banner-in">
-        <span class="pulse" aria-hidden="true"></span>
-        <span class="hb-eyebrow label-mono">Nouveau</span>
-        <span class="hb-title">
-          <strong>Angular 22</strong> : Signal Forms stable, zoneless par défaut, Vitest par défaut —
-          <span class="hb-cta">lire le décryptage <span aria-hidden="true">→</span></span>
-        </span>
-      </div>
-    </a>
+    <div class="editorial">
+      <!-- Masthead — newspaper banner with issue label and date -->
+      <header class="masthead container">
+        <div class="masthead-row">
+          <span class="label-mono issue">Practical Docs · N° {{ issueNumber() }}</span>
+          <span class="label-mono date">{{ today() }}</span>
+        </div>
+        <hr class="rule" />
+      </header>
 
-    <section class="hero">
-      <div class="beams" aria-hidden="true">
-        <span class="beam b1"></span>
-        <span class="beam b2"></span>
-      </div>
-      <div class="container hero-in">
-        <span class="badge">
-          <span class="dot" aria-hidden="true"></span>
-          Practical Docs · 2026
-        </span>
-        <h1 class="display-2xl headline">
-          <span class="line"><span>Three frameworks.</span></span>
-          <span class="line"><span>One <em class="accent">discipline</em>.</span></span>
-        </h1>
-        <p class="lead">
+      <!-- Featured story: Angular v22 blog post, typographic full-width hero -->
+      @if (featuredPost(); as fp) {
+        <section class="container featured">
+          <a class="featured-link" [routerLink]="['/blog', fp.slug]">
+            <span class="label-mono eyebrow accent-text">À la une · {{ formatDate(fp.date) }}</span>
+            <h1 class="display-2xl story-title">{{ fp.title }}</h1>
+            <p class="lead story-lead">{{ fp.lead }}</p>
+            <span class="read-cta">Lire l'article<span class="arrow">→</span></span>
+          </a>
+        </section>
+        <hr class="rule container" />
+      }
+
+      <!-- Manifesto: who this site is for, single column, italic -->
+      <section class="container manifesto">
+        <p class="lead manifest">
           Angular, React et Vue — expliqués du Junior au Senior. Pas de bullshit,
           des exemples minimaux, des diagrammes là où le texte échoue.
         </p>
-        <div class="cta">
-          <a routerLink="/angular" class="btn primary magnetic">Explorer Angular</a>
-          <a routerLink="/compare/state-management" class="btn ghost magnetic">
-            Voir les comparatifs
-          </a>
-        </div>
         <div class="stats">
-          <div class="stat">
-            <span class="num tnum" [attr.data-count]="total()">{{ total() }}</span>
-            <span class="lbl label-mono">Modules</span>
-          </div>
-          <div class="stat">
-            <span class="num tnum" data-count="3">3</span>
-            <span class="lbl label-mono">Frameworks</span>
-          </div>
-          <div class="stat">
-            <span class="num tnum" data-count="4">4</span>
-            <span class="lbl label-mono">Niveaux</span>
-          </div>
+          <span><strong class="num">{{ total() }}</strong> articles</span>
+          <span class="sep">·</span>
+          <span><strong class="num">{{ frameworks.length }}</strong> frameworks</span>
+          <span class="sep">·</span>
+          <span><strong class="num">{{ fundamentals.length }}</strong> fondamentaux</span>
+          <span class="sep">·</span>
+          <span><strong class="num">4</strong> niveaux</span>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="container section">
-      <div class="cards stagger">
-        @for (fw of frameworks; track fw; let i = $index) {
-          <app-framework-card
-            [framework]="fw"
-            [tagline]="tagline[fw]"
-            [count]="count(fw)"
-            [style.--i]="i"
-          />
-        }
-      </div>
-    </section>
+      <hr class="rule container" />
 
-    <section class="container section">
-      <header class="sec-head scroll-reveal">
-        <span class="label-mono kicker">Fondamentaux</span>
-        <h2 class="section-h">Le <span class="accent">socle</span></h2>
-        <p class="sec-lead">Avant le framework, la plateforme. Le Web et le CSS — avec des démos interactives.</p>
-      </header>
-      <div class="cards stagger">
-        @for (fn of fundamentals; track fn; let i = $index) {
-          <app-framework-card
-            [framework]="fn"
-            [tagline]="tagline[fn]"
-            [count]="count(fn)"
-            [style.--i]="i"
-          />
-        }
-      </div>
-    </section>
+      <!-- Frameworks as typographic rows, not cards -->
+      <section class="container index-section">
+        <header class="index-head">
+          <span class="label-mono kicker">Les frameworks</span>
+          <h2 class="section-h">Trois grammaires.</h2>
+        </header>
+        <ol class="rows">
+          @for (fw of frameworks; track fw; let i = $index) {
+            <li class="row" [attr.data-fw]="fw">
+              <a [routerLink]="['/', fw]" class="row-link">
+                <span class="num-chapter label-mono">{{ chapterNum(i + 1) }}</span>
+                <span class="row-title">{{ label(fw) }}</span>
+                <span class="row-tagline">{{ tagline[fw] }}</span>
+                <span class="row-meta label-mono">{{ count(fw) }} articles</span>
+                <span class="row-arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          }
+        </ol>
+      </section>
 
-    <section class="container section">
-      <header class="sec-head scroll-reveal">
-        <span class="label-mono kicker">Sélection</span>
-        <h2 class="section-h">À la <span class="accent">une</span></h2>
-      </header>
-      <div class="featured stagger">
-        @for (m of featured(); track m.slug + m.framework; let first = $first; let i = $index) {
-          <div class="feat" [class.lead-cell]="first" [style.--i]="i">
-            <app-module-card [meta]="m" [showFramework]="true" />
-          </div>
-        }
-      </div>
-    </section>
+      <hr class="rule container" />
 
-    <section class="container section">
-      <div class="philosophy glass scroll-reveal">
-        <div class="col">
-          <span class="num-mono">01</span>
-          <h3 class="h3">Clarté</h3>
-          <p>Un concept à la fois, nommé pour ce qu'il est. Pas de jargon gratuit, pas de détour.</p>
-        </div>
-        <div class="col">
-          <span class="num-mono">02</span>
-          <h3 class="h3">Profondeur</h3>
-          <p>Trois niveaux assumés. Le Senior creuse l'implémentation là où le Junior pose les fondations.</p>
-        </div>
-        <div class="col">
-          <span class="num-mono">03</span>
-          <h3 class="h3">Honnêteté</h3>
-          <p>Les pièges, les trade-offs, les idées reçues. On dit quand un outil ne vaut pas son coût.</p>
-        </div>
-      </div>
-    </section>
+      <!-- Fundamentals — same row pattern -->
+      <section class="container index-section">
+        <header class="index-head">
+          <span class="label-mono kicker">Fondamentaux</span>
+          <h2 class="section-h">La plateforme sous les frameworks.</h2>
+        </header>
+        <ol class="rows">
+          @for (fn of fundamentals; track fn; let i = $index) {
+            <li class="row">
+              <a [routerLink]="['/', fn]" class="row-link">
+                <span class="num-chapter label-mono">{{ chapterNum(i + 1) }}</span>
+                <span class="row-title">{{ label(fn) }}</span>
+                <span class="row-tagline">{{ tagline[fn] }}</span>
+                <span class="row-meta label-mono">{{ count(fn) }} articles</span>
+                <span class="row-arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          }
+        </ol>
+      </section>
+
+      <hr class="rule container" />
+
+      <!-- Recent blog posts as a press list -->
+      @if (recentPosts().length) {
+        <section class="container index-section">
+          <header class="index-head">
+            <span class="label-mono kicker">Du blog</span>
+            <h2 class="section-h">Notes d'atelier récentes.</h2>
+          </header>
+          <ol class="posts">
+            @for (p of recentPosts(); track p.slug) {
+              <li class="post">
+                <a [routerLink]="['/blog', p.slug]" class="post-link">
+                  <span class="post-date label-mono">{{ formatDate(p.date) }}</span>
+                  <span class="post-title">{{ p.title }}</span>
+                  <span class="post-lead">{{ p.lead }}</span>
+                </a>
+              </li>
+            }
+          </ol>
+        </section>
+        <hr class="rule container" />
+      }
+
+      <!-- Colophon — three values in a pull-quote -->
+      <section class="container colophon">
+        <span class="label-mono kicker">Trois principes.</span>
+        <p class="quote">
+          <span class="dropcap">C</span>larté — un concept à la fois, nommé pour ce qu'il est.
+          <strong>Profondeur</strong> — trois niveaux assumés, le senior creuse là où le junior pose
+          les fondations. <strong>Honnêteté</strong> — les pièges, les trade-offs et les idées reçues
+          dits sans détour.
+        </p>
+      </section>
+    </div>
   `,
   styles: `
-    /* ---------- HERO BANNER (Angular v22 announcement) ---------- */
-    .hero-banner {
-      display: block;
-      background: linear-gradient(100deg, #dd0031 0%, #ff5a36 100%);
-      color: #fff;
-      border-bottom: 1px solid color-mix(in oklab, #000 18%, transparent);
-      box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.25) inset, var(--shadow-1);
-      transition: filter var(--dur) var(--ease-out);
-    }
-    .hero-banner:hover {
-      filter: brightness(1.06);
-    }
-    .hero-banner-in {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding-block: 12px;
-      font-size: 14px;
-      flex-wrap: wrap;
-    }
-    .hero-banner .pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-      flex-shrink: 0;
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      .hero-banner .pulse {
-        animation: hb-pulse 2.4s var(--ease-out) infinite;
-      }
-      @keyframes hb-pulse {
-        0%   { box-shadow: 0 0 0 0   rgba(255,255,255,.7); }
-        70%  { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
-        100% { box-shadow: 0 0 0 0   rgba(255,255,255,0); }
-      }
-    }
-    .hb-eyebrow {
-      color: rgba(255, 255, 255, 0.85);
-      letter-spacing: 0.22em;
-    }
-    .hb-title {
-      color: rgba(255, 255, 255, 0.95);
-    }
-    .hb-title strong {
-      color: #fff;
-      font-weight: 700;
-    }
-    .hb-cta {
-      color: #fff;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-thickness: 1px;
-      margin-left: 4px;
-      white-space: nowrap;
+    /* Editorial home — long, narrow, vertical rhythm carried by hairlines. */
+    .editorial {
+      padding-block: clamp(28px, 6vw, 56px) clamp(80px, 12vw, 160px);
     }
 
-    /* ---------- HERO ---------- */
-    .hero {
-      position: relative;
-      padding-block: clamp(80px, 16vh, 200px) clamp(40px, 8vw, 90px);
-      overflow: clip;
+    .container {
+      max-width: 980px;
     }
-    .beams {
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
+
+    /* ---- Masthead ---- */
+    .masthead {
+      margin-bottom: clamp(40px, 7vw, 72px);
     }
-    .beam {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.5;
-    }
-    .beam.b1 {
-      width: 40vmax;
-      height: 40vmax;
-      top: -16vmax;
-      left: 40%;
-      background: radial-gradient(circle, color-mix(in oklab, var(--accent) 60%, transparent), transparent 60%);
-      animation: float1 18s var(--ease-in-out) infinite alternate;
-    }
-    .beam.b2 {
-      width: 30vmax;
-      height: 30vmax;
-      top: 6vmax;
-      left: 6%;
-      background: radial-gradient(circle, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 60%);
-      animation: float2 22s var(--ease-in-out) infinite alternate;
-    }
-    @keyframes float1 {
-      to {
-        transform: translate(-8%, 10%) scale(1.15);
-      }
-    }
-    @keyframes float2 {
-      to {
-        transform: translate(10%, -8%) scale(1.2);
-      }
-    }
-    .hero-in {
+    .masthead-row {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 26px;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding-bottom: 14px;
     }
-    .badge {
+    .issue,
+    .date {
+      color: var(--text-soft);
+    }
+
+    /* Hairline rule, double-line newspaper style on top, single below. */
+    .rule {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: clamp(40px, 6vw, 64px) auto;
+      max-width: 980px;
+      padding-inline: var(--gutter);
+      box-sizing: content-box;
+    }
+    .masthead .rule {
+      margin: 0;
+      max-width: none;
+      padding: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      height: 4px;
+    }
+
+    /* ---- Featured story (Angular v22 blog post, full bleed typo) ---- */
+    .featured {
+      max-width: 760px;
+    }
+    .featured-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+    .featured-link:hover .read-cta {
+      color: var(--accent);
+    }
+    .featured-link:hover .arrow {
+      transform: translateX(6px);
+    }
+    .accent-text {
+      color: var(--accent);
+    }
+    .story-title {
+      margin: 12px 0 18px;
+      color: var(--text);
+    }
+    .story-lead {
+      max-width: 640px;
+    }
+    .read-cta {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      padding: 7px 14px;
-      border-radius: var(--radius-pill);
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
+      gap: 10px;
+      margin-top: 22px;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 500;
       color: var(--text-soft);
-      animation: rise 0.7s var(--ease-out) both;
+      transition: color var(--dur) var(--ease-out);
     }
-    .badge .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--accent-2);
-      box-shadow: 0 0 12px 1px var(--accent-2);
-      animation: pulse 2.4s ease-in-out infinite;
+    .arrow {
+      transition: transform var(--dur) var(--ease-out);
     }
-    @keyframes pulse {
-      50% {
-        opacity: 0.4;
-        transform: scale(0.8);
-      }
+
+    /* ---- Manifesto ---- */
+    .manifesto {
+      max-width: 760px;
     }
-    .headline {
-      margin: 0;
-      max-width: 16ch;
-    }
-    .headline .line {
-      display: block;
-      overflow: hidden;
-    }
-    .headline .line > * {
-      display: inline-block;
-      transform: translateY(110%);
-      animation: lineUp 0.9s var(--ease-out) forwards;
-    }
-    .headline .line:nth-child(1) > * {
-      animation-delay: 0.12s;
-    }
-    .headline .line:nth-child(2) > * {
-      animation-delay: 0.26s;
-    }
-    .accent em {
-      font-style: normal;
-    }
-    @keyframes lineUp {
-      to {
-        transform: none;
-      }
-    }
-    @keyframes rise {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-    }
-    .lead {
-      max-width: 600px;
-      animation: rise 0.8s 0.4s var(--ease-out) both;
-    }
-    .cta {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      animation: rise 0.8s 0.5s var(--ease-out) both;
-    }
-    .btn {
-      position: relative;
-      padding: 14px 26px;
-      border-radius: var(--radius-pill);
-      font-size: 15px;
-      font-weight: 600;
-      will-change: transform;
-      transition: transform var(--dur) var(--ease-spring), box-shadow var(--dur) var(--ease-out);
-    }
-    .btn.primary {
-      color: #fff;
-      background: var(--grad);
-      box-shadow: var(--glow);
-    }
-    .btn.primary:hover {
-      box-shadow: var(--glow), 0 10px 40px -8px color-mix(in oklab, var(--accent) 60%, transparent);
-    }
-    .btn.ghost {
-      color: var(--text);
-      border: 1px solid var(--border-strong);
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .btn.ghost:hover {
-      border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+    .manifest {
+      margin-bottom: 18px;
     }
     .stats {
       display: flex;
-      gap: 40px;
-      margin-top: 14px;
-      animation: rise 0.8s 0.62s var(--ease-out) both;
-    }
-    .stat {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .stat .num {
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px 10px;
       font-family: var(--font-display);
-      font-weight: 800;
-      font-size: clamp(30px, 4vw, 44px);
-      line-height: 1;
-      letter-spacing: -0.03em;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .stat .lbl {
+      font-size: 14px;
       color: var(--text-dim);
     }
-
-    /* ---------- GRIDS ---------- */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+    .stats .num {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      color: var(--text);
+      font-size: 15px;
+      margin-right: 2px;
     }
-    .sec-head {
+    .stats .sep {
+      opacity: 0.5;
+    }
+
+    /* ---- Index sections (frameworks / fundamentals) ---- */
+    .index-section {
+      max-width: 980px;
+    }
+    .index-head {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-bottom: 28px;
+      margin-bottom: clamp(20px, 3vw, 32px);
     }
     .kicker {
-      color: var(--accent-2);
-    }
-    .sec-lead {
       color: var(--text-soft);
-      max-width: 52ch;
     }
-    .featured {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-    .featured .feat {
-      min-width: 0;
-    }
-    .featured .lead-cell {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-    .featured .lead-cell ::ng-deep .card {
-      justify-content: flex-start;
-      gap: 16px;
+    .index-head .section-h {
+      margin: 0;
+      color: var(--text);
     }
 
-    /* ---------- PHILOSOPHY ---------- */
-    .philosophy {
+    .rows {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .row {
+      border-top: 1px solid var(--border);
+    }
+    .row:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+    .row-link {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      padding: clamp(28px, 4vw, 48px);
-      border-radius: var(--radius-xl);
+      grid-template-columns: 56px minmax(140px, 1fr) 2.4fr auto auto;
+      align-items: baseline;
+      gap: 24px;
+      padding: 22px 4px;
+      text-decoration: none;
+      color: inherit;
+      transition: background var(--dur) var(--ease-out);
     }
-    .philosophy .col {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .row-link:hover {
+      background: color-mix(in oklab, var(--accent) 5%, transparent);
     }
-    .philosophy .num-mono {
-      font-family: var(--font-mono);
-      font-size: 13px;
+    .row-link:hover .row-arrow {
       color: var(--accent);
-      letter-spacing: 0.1em;
+      transform: translateX(6px);
     }
-    .philosophy p {
+    .row-link:hover .row-title {
+      color: var(--accent);
+    }
+    /* per-fw accent on hover when [data-fw] is set */
+    .row[data-fw="angular"] .row-link:hover {
+      background: color-mix(in oklab, #ff7177 6%, transparent);
+    }
+    .row[data-fw="angular"] .row-link:hover .row-title,
+    .row[data-fw="angular"] .row-link:hover .row-arrow {
+      color: #ff7177;
+    }
+    .row[data-fw="react"] .row-link:hover {
+      background: color-mix(in oklab, #7ad8ef 6%, transparent);
+    }
+    .row[data-fw="react"] .row-link:hover .row-title,
+    .row[data-fw="react"] .row-link:hover .row-arrow {
+      color: #7ad8ef;
+    }
+    .row[data-fw="vue"] .row-link:hover {
+      background: color-mix(in oklab, #8de2a1 6%, transparent);
+    }
+    .row[data-fw="vue"] .row-link:hover .row-title,
+    .row[data-fw="vue"] .row-link:hover .row-arrow {
+      color: #8de2a1;
+    }
+    .num-chapter {
+      color: var(--text-dim);
+    }
+    .row-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(22px, 2.4vw, 28px);
+      color: var(--text);
+      letter-spacing: -0.012em;
+      transition: color var(--dur) var(--ease-out);
+    }
+    .row-tagline {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-style: italic;
       color: var(--text-soft);
-      max-width: 36ch;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    .row-meta {
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+    .row-arrow {
+      color: var(--text-dim);
+      font-size: 22px;
+      transition: color var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
     }
 
-    @media (max-width: 860px) {
-      .featured,
-      .philosophy {
-        grid-template-columns: 1fr;
+    @media (max-width: 720px) {
+      .row-link {
+        grid-template-columns: 36px 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 4px 14px;
+        padding: 18px 4px;
       }
-      .featured .lead-cell {
-        grid-row: span 1;
+      .num-chapter {
+        grid-row: 1;
       }
-      .stats {
-        gap: 28px;
+      .row-title {
+        grid-row: 1;
+        font-size: 22px;
+      }
+      .row-arrow {
+        grid-row: 1;
+      }
+      .row-tagline {
+        grid-column: 2 / -1;
+        grid-row: 2;
+        font-size: 14px;
+      }
+      .row-meta {
+        display: none;
       }
     }
-    @media (prefers-reduced-motion: reduce) {
-      .headline .line > *,
-      .badge,
-      .lead,
-      .cta,
-      .stats {
-        animation: none;
+
+    /* ---- Recent posts as press list ---- */
+    .posts {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .post {
+      border-top: 1px solid var(--border);
+    }
+    .post:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+    .post-link {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 24px;
+      padding: 22px 4px;
+      text-decoration: none;
+      color: inherit;
+      transition: background var(--dur) var(--ease-out);
+    }
+    .post-link:hover {
+      background: color-mix(in oklab, var(--accent) 5%, transparent);
+    }
+    .post-link:hover .post-title {
+      color: var(--accent);
+    }
+    .post-date {
+      color: var(--text-dim);
+      padding-top: 6px;
+    }
+    .post-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(20px, 2.2vw, 26px);
+      color: var(--text);
+      grid-column: 2;
+      transition: color var(--dur) var(--ease-out);
+    }
+    .post-lead {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--text-soft);
+      font-size: 16px;
+      line-height: 1.5;
+      grid-column: 2;
+      margin-top: 6px;
+    }
+    @media (max-width: 720px) {
+      .post-link {
+        grid-template-columns: 1fr;
+        gap: 8px;
       }
-      .headline .line > * {
-        transform: none;
+      .post-title,
+      .post-lead {
+        grid-column: 1;
       }
-      .beam {
-        animation: none;
-      }
+    }
+
+    /* ---- Colophon — three principles as a pull quote ---- */
+    .colophon {
+      max-width: 760px;
+    }
+    .quote {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(20px, 2.4vw, 26px);
+      line-height: 1.5;
+      color: var(--text);
+      margin-top: 18px;
+      font-optical-sizing: auto;
+    }
+    .quote strong {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .dropcap {
+      float: left;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(56px, 7vw, 84px);
+      line-height: 0.85;
+      color: var(--accent);
+      padding-right: 10px;
+      padding-top: 4px;
     }
   `,
 })
 export class LandingComponent {
   private readonly content = inject(ContentService);
-  private readonly host = inject(ElementRef);
   protected readonly frameworks = FRAMEWORKS;
   protected readonly fundamentals = FUNDAMENTALS;
   protected readonly tagline = TAGLINE;
+  protected readonly label = (fw: Framework) => FRAMEWORK_LABEL[fw];
 
   constructor() {
     inject(SeoService).set({
@@ -502,68 +497,32 @@ export class LandingComponent {
         description: 'Documentation pédagogique multi-framework.',
       },
     });
-
-    const destroyRef = inject(DestroyRef);
-    afterNextRender(() => {
-      const root = this.host.nativeElement as HTMLElement;
-      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const cleanups: Array<() => void> = [];
-
-      // Count-up stats
-      if (!reduce) {
-        root.querySelectorAll<HTMLElement>('.num[data-count]').forEach((el) => {
-          const target = Number(el.dataset['count'] ?? '0');
-          const io = new IntersectionObserver((entries, obs) => {
-            for (const e of entries) {
-              if (!e.isIntersecting) continue;
-              obs.disconnect();
-              const start = performance.now();
-              const dur = 1100;
-              const tick = (now: number) => {
-                const p = Math.min((now - start) / dur, 1);
-                el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
-                if (p < 1) requestAnimationFrame(tick);
-              };
-              requestAnimationFrame(tick);
-            }
-          });
-          io.observe(el);
-          cleanups.push(() => io.disconnect());
-        });
-      }
-
-      // Magnetic buttons
-      if (!reduce && matchMedia('(pointer: fine)').matches) {
-        root.querySelectorAll<HTMLElement>('.magnetic').forEach((el) => {
-          const onMove = (ev: PointerEvent) => {
-            const r = el.getBoundingClientRect();
-            const dx = ev.clientX - (r.left + r.width / 2);
-            const dy = ev.clientY - (r.top + r.height / 2);
-            el.style.transform = `translate(${dx * 0.18}px, ${dy * 0.28}px)`;
-          };
-          const onLeave = () => (el.style.transform = '');
-          el.addEventListener('pointermove', onMove);
-          el.addEventListener('pointerleave', onLeave);
-          cleanups.push(() => {
-            el.removeEventListener('pointermove', onMove);
-            el.removeEventListener('pointerleave', onLeave);
-          });
-        });
-      }
-
-      destroyRef.onDestroy(() => cleanups.forEach((fn) => fn()));
-    });
   }
 
   protected readonly total = computed(() => this.content.catalogue.length);
-
   protected count(fw: Framework): number {
     return this.content.forFramework(fw).length;
   }
 
-  protected readonly featured = computed<ModuleMeta[]>(() =>
-    FEATURED.map(([fw, lvl, slug]) => this.content.meta(fw, lvl, slug)).filter(
-      (m): m is ModuleMeta => m !== undefined,
-    ),
-  );
+  /** Latest blog post (the lead story for the editorial home). */
+  protected readonly featuredPost = computed(() => this.content.blogPosts[0] ?? null);
+  /** Following posts for the "Du blog" list (excludes the featured one). */
+  protected readonly recentPosts = computed(() => this.content.blogPosts.slice(1, 5));
+
+  private readonly dateFmt = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' });
+  protected formatDate(iso: string): string {
+    return this.dateFmt.format(new Date(iso));
+  }
+  protected today(): string {
+    return this.dateFmt.format(new Date());
+  }
+  protected chapterNum(n: number): string {
+    return String(n).padStart(2, '0');
+  }
+  /** A small monotonic-ish issue number — first day of this month, in this year. */
+  protected issueNumber(): number {
+    const start = new Date(2026, 0, 1).getTime();
+    const months = Math.floor((Date.now() - start) / (30 * 24 * 3600 * 1000));
+    return months + 1;
+  }
 }
