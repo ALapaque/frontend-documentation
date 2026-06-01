@@ -63,7 +63,7 @@ const CONTROLS: readonly Control[] = [
       font-family: var(--font-mono);
       font-size: 13px;
       font-weight: 600;
-      color: #fff;
+      color: var(--bg);
       background: var(--grad);
       border: none;
       cursor: pointer;

@@ -1,52 +1,53 @@
 /* ============================================================
-   Design tokens — BOLD MODERN.
-   Warm paper canvas · ink + electric cobalt · oversized type · flat & sharp.
+   Design tokens — EDITORIAL DARK.
+   Deep blue-grey night · narrow reading column · serif display ·
+   amber accent · code that whispers, not shouts.
    ============================================================ */
 
 :root {
-  /* ---- Surfaces ---- */
-  --bg: #f3f1ea; /* warm paper */
-  --bg-soft: #ebe8df; /* sections */
-  --bg-card: #ffffff; /* crisp white card, pops on warm bg */
-  --bg-elev: #ffffff; /* popovers / palette */
-  --bg-inset: #15130e; /* code wells — dark, inverted contrast block */
+  /* ---- Surfaces (cool deep night, not pitch black) ---- */
+  --bg: #0d1218; /* page canvas — slightly blue */
+  --bg-soft: #11161f; /* section bands */
+  --bg-card: #161c25; /* elevated cards */
+  --bg-elev: #1b2230; /* popovers / palette */
+  --bg-inset: #060911; /* code wells — darker than bg */
 
-  /* flat opaque surfaces (no glass) */
+  /* No glass material — editorial is flat, occasional translucent header. */
   --glass: var(--bg-card);
-  --glass-strong: var(--bg-card);
+  --glass-strong: var(--bg-elev);
 
-  /* ---- Text (ink) ---- */
-  --text: #15130e; /* near-black ink */
-  --text-soft: #565249; /* secondary */
-  --text-dim: #837e70; /* labels (AA on --bg) */
+  /* ---- Text (warm-leaning for long reading) ---- */
+  --text: #e6e9ed; /* high-contrast not pure white */
+  --text-soft: #a0a6b0; /* secondary */
+  --text-dim: #6b727e; /* labels, hairlines */
 
-  /* ---- Accents (electric signature) ---- */
-  --accent: #2b34ff; /* electric cobalt — primary */
-  --accent-2: #ff5a36; /* coral — secondary */
-  --accent-3: #12a474; /* green — tertiary */
-  --grad: linear-gradient(100deg, #2b34ff 0%, #6a2bff 52%, #ff5a36 100%);
+  /* ---- Accents (warm amber signature + cool foil) ---- */
+  --accent: #f0b86e; /* warm amber — primary */
+  --accent-2: #a8d5e2; /* dust cyan — quiet foil */
+  --accent-3: #e8825a; /* coral — tertiary highlight */
+  --grad: linear-gradient(100deg, #f0b86e 0%, #e8825a 100%);
 
-  /* Legacy "gold/*" aliases → accent, so non-redesigned pages adopt the palette */
+  /* Legacy aliases — keep components that read them in sync. */
   --gold: var(--accent);
-  --gold-bright: #5a61ff;
-  --gold-soft: #6b6fd6;
-  --sage: #12a474;
-  --rose: #db2777;
-  --crimson: #e11d48;
-  --sky: #0284c7;
+  --gold-bright: #f7cd8a;
+  --gold-soft: #c79456;
+  --sage: var(--accent-2);
+  --rose: #e88aa8;
+  --crimson: #e26b6b;
+  --sky: var(--accent-2);
 
-  /* Levels — vibrant + distinct, legible on light */
-  --level-junior: #0d9488; /* teal */
-  --level-medior: #4f46e5; /* indigo */
-  --level-senior: #db2777; /* pink */
-  --level-next: #0284c7; /* blue */
-  --iris: #0284c7;
+  /* Levels — distinct, legible on the dark canvas. */
+  --level-junior: #a8d5e2; /* cyan */
+  --level-medior: #f0b86e; /* amber */
+  --level-senior: #e88aa8; /* rose */
+  --level-next: #a48fd9; /* violet */
+  --iris: var(--level-next);
 
-  /* ---- Borders / hairlines ---- */
-  --border: rgba(21, 19, 14, 0.13);
-  --border-soft: rgba(21, 19, 14, 0.07);
-  --border-strong: rgba(21, 19, 14, 0.85); /* bold structural ink line */
-  --hairline-top: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 55%);
+  /* ---- Borders / hairlines (light strokes on dark) ---- */
+  --border: rgba(230, 233, 237, 0.1);
+  --border-soft: rgba(230, 233, 237, 0.06);
+  --border-strong: rgba(230, 233, 237, 0.22);
+  --hairline-top: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 55%);
 
   /* ---- Radii ---- */
   --radius-xs: 6px;
@@ -75,16 +76,17 @@
   --section-gap: 120px;
   --header-h: 70px;
 
-  /* ---- Elevation + glow (soft, dark-on-light) ---- */
-  --shadow-1: 0 1px 2px rgba(21, 19, 14, 0.06);
-  --shadow-2: 0 10px 34px -14px rgba(21, 19, 14, 0.18);
-  --shadow-3: 0 30px 70px -24px rgba(21, 19, 14, 0.26);
-  --glow: 0 0 0 1.5px var(--accent),
-    0 14px 40px -14px color-mix(in oklab, var(--accent) 45%, transparent);
+  /* ---- Elevation + glow (deep, soft, dark canvas) ---- */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 14px 40px -18px rgba(0, 0, 0, 0.65);
+  --shadow-3: 0 34px 90px -28px rgba(0, 0, 0, 0.8);
+  --glow: 0 0 0 1.5px color-mix(in oklab, var(--accent) 70%, transparent),
+    0 14px 40px -14px color-mix(in oklab, var(--accent) 40%, transparent);
   --glow-gold: var(--glow);
 
-  /* ---- Type ---- */
-  --font-display: "Inter", system-ui, -apple-system, sans-serif;
+  /* ---- Type — serif display (Fraunces, optical sizes), sans body ---- */
+  --font-display: "Fraunces", "Newsreader", Charter, "Iowan Old Style", Georgia,
+    serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
@@ -99,23 +101,22 @@
 
   --focus-ring: var(--accent);
 
-  color-scheme: light;
+  color-scheme: dark;
 }
 
-/* Per-framework accent: each framework section adopts a brand-adjacent accent
-   (deep enough to stay legible on the light canvas), while the fundamentals and
-   global chrome keep the house cobalt. Set via [data-fw] on the hub/article host. */
+/* Per-framework accent: brand-adjacent colours brightened to stay legible on
+   the deep dark canvas. Fundamentals and the global chrome keep the amber. */
 [data-fw="angular"] {
-  --accent: #cf132a;
-  --grad: linear-gradient(100deg, #dd0031 0%, #ff5a36 100%);
+  --accent: #ff7177;
+  --grad: linear-gradient(100deg, #ff7177 0%, #ffa37a 100%);
 }
 [data-fw="react"] {
-  --accent: #0e7490;
-  --grad: linear-gradient(100deg, #0e7490 0%, #2b34ff 100%);
+  --accent: #7ad8ef;
+  --grad: linear-gradient(100deg, #7ad8ef 0%, #b8aeff 100%);
 }
 [data-fw="vue"] {
-  --accent: #0f7a44;
-  --grad: linear-gradient(100deg, #0f7a44 0%, #12a474 100%);
+  --accent: #8de2a1;
+  --grad: linear-gradient(100deg, #8de2a1 0%, #c4e88a 100%);
 }
 
 @media (max-width: 720px) {

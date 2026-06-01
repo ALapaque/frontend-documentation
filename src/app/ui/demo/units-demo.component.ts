@@ -68,7 +68,7 @@ const NOTE: Record<string, string> = {
       font-family: var(--font-mono);
       font-size: 12px;
       font-weight: 600;
-      color: #fff;
+      color: var(--bg);
       background: var(--grad);
       white-space: nowrap;
       overflow: hidden;
