@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
+import { ThemeToggleComponent } from '../ui/theme-toggle.component';
 
 @Component({
   selector: 'app-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, ThemeToggleComponent],
   template: `
     <header class="bar">
       <div class="container inner">
@@ -33,6 +34,7 @@ import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL } from '../core/levels';
             Rechercher
             <kbd>⌘K</kbd>
           </a>
+          <app-theme-toggle />
         </nav>
       </div>
     </header>

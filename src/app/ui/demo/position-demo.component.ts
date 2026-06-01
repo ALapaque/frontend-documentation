@@ -58,7 +58,7 @@ const INIT: Record<string, string | number> = { position: 'static', top: 0, left
       border: 1px solid var(--border);
     }
     .target {
-      color: #fff;
+      color: var(--bg);
       background: var(--grad);
       border: none;
       box-shadow: 0 6px 20px -8px color-mix(in oklab, var(--accent) 70%, transparent);

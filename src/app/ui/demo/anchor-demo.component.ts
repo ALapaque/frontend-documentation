@@ -50,7 +50,7 @@ const CONTROLS: readonly Control[] = [
       border-radius: var(--radius-sm);
       font-family: var(--font-mono);
       font-weight: 600;
-      color: #fff;
+      color: var(--bg);
       background: var(--accent-2);
       border: none;
     }
@@ -60,7 +60,7 @@ const CONTROLS: readonly Control[] = [
       border-radius: 8px;
       font-family: var(--font-mono);
       font-size: 12px;
-      color: #fff;
+      color: var(--bg);
       background: var(--grad);
       box-shadow: 0 8px 24px -8px color-mix(in oklab, var(--accent) 70%, transparent);
     }

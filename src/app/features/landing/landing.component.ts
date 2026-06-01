@@ -8,486 +8,411 @@ import {
   inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { FrameworkCardComponent } from '../../ui/framework-card.component';
-import { ModuleCardComponent } from '../../ui/module-card.component';
 import { ContentService } from '../../content/content.service';
 import { SeoService } from '../../core/seo/seo.service';
 import { SITE_TAGLINE } from '../../core/site';
-import { FRAMEWORKS, FUNDAMENTALS, type Framework, type Level } from '../../core/levels';
-import type { ModuleMeta } from '../../content/content.types';
+import { FRAMEWORKS, FUNDAMENTALS, FRAMEWORK_LABEL, type Framework } from '../../core/levels';
+import { FrameworkLogoComponent } from '../../ui/framework-logo.component';
 
 const TAGLINE: Record<Framework, string> = {
-  angular: 'Signals, zoneless, SSR. La discipline structurée.',
-  react: 'RSC, compiler, concurrent. Le pragmatisme à grande échelle.',
-  vue: 'Reactivity, Vapor, Nuxt. La progressivité élégante.',
-  web: 'HTML, fetch, événements, a11y. La plateforme sous les frameworks.',
-  css: 'Flexbox, grid, custom properties. En interactif.',
-  typescript: 'Types, génériques, inférence. Le langage qui tient le code.',
-  tooling: 'Vite, Vitest, Biome, monorepo. La chaîne qui build et teste.',
+  angular: 'Signals, zoneless, SSR.',
+  react: 'RSC, compiler, concurrent.',
+  vue: 'Reactivity, Vapor, Nuxt.',
+  web: 'HTML, fetch, events, a11y.',
+  css: 'Layout, motion, theming.',
+  typescript: 'Types, generics, inference.',
+  tooling: 'Vite, Vitest, Biome.',
 };
 
-const FEATURED: ReadonlyArray<[Framework, Level, string]> = [
-  ['angular', 'medior', 'signals'],
-  ['angular', 'junior', 'lifecycle'],
-  ['react', 'senior', 'rsc'],
-  ['vue', 'senior', 'vapor-mode'],
-  ['angular', 'senior', 'ssr-hydration'],
-  ['react', 'medior', 'server-state'],
-];
-
+/** Glass Reverie landing — pastel mesh + glass cards + iridescent chrome word.
+ *  Bento: featured (mouse-tilt), stats, 3 framework tiles aligned, fundamentals strip.
+ *  Real brand logos in their own dark plinths. */
 @Component({
   selector: 'app-landing',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, FrameworkCardComponent, ModuleCardComponent],
+  imports: [RouterLink, FrameworkLogoComponent],
   template: `
-    <a class="hero-banner" routerLink="/blog/angular-22-ce-que-ca-change" aria-label="Lire l'article — Angular 22, ce que ça change">
-      <div class="container hero-banner-in">
-        <span class="pulse" aria-hidden="true"></span>
-        <span class="hb-eyebrow label-mono">Nouveau</span>
-        <span class="hb-title">
-          <strong>Angular 22</strong> : Signal Forms stable, zoneless par défaut, Vitest par défaut —
-          <span class="hb-cta">lire le décryptage <span aria-hidden="true">→</span></span>
-        </span>
-      </div>
-    </a>
+    <main class="page">
+      <section class="hero container">
+        <a class="badge" routerLink="/blog/angular-22-ce-que-ca-change">
+          <span class="badge-dot" aria-hidden="true"></span>
+          <span class="badge-eyebrow label-mono">Nouveau</span>
+          <span class="badge-text">Angular 22 est là — Signal Forms stables, zoneless par défaut</span>
+        </a>
 
-    <section class="hero">
-      <div class="beams" aria-hidden="true">
-        <span class="beam b1"></span>
-        <span class="beam b2"></span>
-      </div>
-      <div class="container hero-in">
-        <span class="badge">
-          <span class="dot" aria-hidden="true"></span>
-          Practical Docs · 2026
-        </span>
         <h1 class="display-2xl headline">
-          <span class="line"><span>Three frameworks.</span></span>
-          <span class="line"><span>One <em class="accent">discipline</em>.</span></span>
+          Trois frameworks.<br />
+          Une <span class="chrome-w">discipline</span>.
         </h1>
         <p class="lead">
-          Angular, React et Vue — expliqués du Junior au Senior. Pas de bullshit,
-          des exemples minimaux, des diagrammes là où le texte échoue.
+          Angular, React et Vue — du Junior au Senior. Exemples minimaux, pièges
+          assumés, comparaisons côte à côte.
         </p>
+
         <div class="cta">
-          <a routerLink="/angular" class="btn primary magnetic">Explorer Angular</a>
-          <a routerLink="/compare/state-management" class="btn ghost magnetic">
-            Voir les comparatifs
+          <a routerLink="/angular" class="btn primary">Explorer Angular →</a>
+          <a routerLink="/compare" class="btn ghost">Voir les comparatifs</a>
+        </div>
+      </section>
+
+      <section class="bento container">
+        @if (featuredPost(); as fp) {
+          <a class="tile tile-featured tilt" [routerLink]="['/blog', fp.slug]">
+            <span class="tile-ey label-mono">À la une · Blog</span>
+            <h2 class="tile-title">{{ fp.title }}</h2>
+            <p class="tile-lead">{{ fp.lead }}</p>
+            <span class="tile-cta">Lire l'article →</span>
           </a>
-        </div>
-        <div class="stats">
+        }
+
+        <div class="tile tile-stats">
           <div class="stat">
-            <span class="num tnum" [attr.data-count]="total()">{{ total() }}</span>
-            <span class="lbl label-mono">Modules</span>
-          </div>
-          <div class="stat">
-            <span class="num tnum" data-count="3">3</span>
-            <span class="lbl label-mono">Frameworks</span>
+            <span class="stat-num" [attr.data-count]="total()">0</span>
+            <span class="stat-lbl label-mono">Articles</span>
           </div>
           <div class="stat">
-            <span class="num tnum" data-count="4">4</span>
-            <span class="lbl label-mono">Niveaux</span>
+            <span class="stat-num" data-count="7">0</span>
+            <span class="stat-lbl label-mono">Sections</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" data-count="4">0</span>
+            <span class="stat-lbl label-mono">Niveaux</span>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="container section">
-      <div class="cards stagger">
-        @for (fw of frameworks; track fw; let i = $index) {
-          <app-framework-card
-            [framework]="fw"
-            [tagline]="tagline[fw]"
-            [count]="count(fw)"
-            [style.--i]="i"
-          />
+        @for (fw of frameworks; track fw) {
+          <a class="tile tile-fw" [routerLink]="['/', fw]">
+            <div class="fw-logo">
+              <app-framework-logo [framework]="fw" />
+            </div>
+            <h3 class="fw-title">{{ label(fw) }}</h3>
+            <p class="fw-tagline">{{ tagline[fw] }}</p>
+            <span class="fw-meta label-mono">{{ count(fw) }} articles · 4 niveaux</span>
+          </a>
         }
-      </div>
-    </section>
 
-    <section class="container section">
-      <header class="sec-head scroll-reveal">
-        <span class="label-mono kicker">Fondamentaux</span>
-        <h2 class="section-h">Le <span class="accent">socle</span></h2>
-        <p class="sec-lead">Avant le framework, la plateforme. Le Web et le CSS — avec des démos interactives.</p>
-      </header>
-      <div class="cards stagger">
-        @for (fn of fundamentals; track fn; let i = $index) {
-          <app-framework-card
-            [framework]="fn"
-            [tagline]="tagline[fn]"
-            [count]="count(fn)"
-            [style.--i]="i"
-          />
-        }
-      </div>
-    </section>
-
-    <section class="container section">
-      <header class="sec-head scroll-reveal">
-        <span class="label-mono kicker">Sélection</span>
-        <h2 class="section-h">À la <span class="accent">une</span></h2>
-      </header>
-      <div class="featured stagger">
-        @for (m of featured(); track m.slug + m.framework; let first = $first; let i = $index) {
-          <div class="feat" [class.lead-cell]="first" [style.--i]="i">
-            <app-module-card [meta]="m" [showFramework]="true" />
-          </div>
-        }
-      </div>
-    </section>
-
-    <section class="container section">
-      <div class="philosophy glass scroll-reveal">
-        <div class="col">
-          <span class="num-mono">01</span>
-          <h3 class="h3">Clarté</h3>
-          <p>Un concept à la fois, nommé pour ce qu'il est. Pas de jargon gratuit, pas de détour.</p>
+        <div class="tile tile-fundamentals">
+          <header class="fund-head">
+            <span class="tile-ey label-mono">Fondamentaux</span>
+            <h3 class="fund-title">La plateforme sous les frameworks</h3>
+          </header>
+          <ul class="fund-list">
+            @for (fn of fundamentals; track fn) {
+              <li>
+                <a [routerLink]="['/', fn]" class="fund-item">
+                  <span class="fund-name">{{ label(fn) }}</span>
+                  <span class="fund-count label-mono">{{ count(fn) }}</span>
+                </a>
+              </li>
+            }
+          </ul>
         </div>
-        <div class="col">
-          <span class="num-mono">02</span>
-          <h3 class="h3">Profondeur</h3>
-          <p>Trois niveaux assumés. Le Senior creuse l'implémentation là où le Junior pose les fondations.</p>
-        </div>
-        <div class="col">
-          <span class="num-mono">03</span>
-          <h3 class="h3">Honnêteté</h3>
-          <p>Les pièges, les trade-offs, les idées reçues. On dit quand un outil ne vaut pas son coût.</p>
-        </div>
-      </div>
-    </section>
+      </section>
+    </main>
   `,
   styles: `
-    /* ---------- HERO BANNER (Angular v22 announcement) ---------- */
-    .hero-banner {
-      display: block;
-      background: linear-gradient(100deg, #dd0031 0%, #ff5a36 100%);
-      color: #fff;
-      border-bottom: 1px solid color-mix(in oklab, #000 18%, transparent);
-      box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.25) inset, var(--shadow-1);
-      transition: filter var(--dur) var(--ease-out);
+    .page {
+      padding-block: clamp(20px, 4vw, 40px) clamp(60px, 10vw, 120px);
     }
-    .hero-banner:hover {
-      filter: brightness(1.06);
-    }
-    .hero-banner-in {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding-block: 12px;
-      font-size: 14px;
-      flex-wrap: wrap;
-    }
-    .hero-banner .pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-      flex-shrink: 0;
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      .hero-banner .pulse {
-        animation: hb-pulse 2.4s var(--ease-out) infinite;
-      }
-      @keyframes hb-pulse {
-        0%   { box-shadow: 0 0 0 0   rgba(255,255,255,.7); }
-        70%  { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
-        100% { box-shadow: 0 0 0 0   rgba(255,255,255,0); }
-      }
-    }
-    .hb-eyebrow {
-      color: rgba(255, 255, 255, 0.85);
-      letter-spacing: 0.22em;
-    }
-    .hb-title {
-      color: rgba(255, 255, 255, 0.95);
-    }
-    .hb-title strong {
-      color: #fff;
-      font-weight: 700;
-    }
-    .hb-cta {
-      color: #fff;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-thickness: 1px;
-      margin-left: 4px;
-      white-space: nowrap;
-    }
+    .container { max-width: 1180px; }
 
-    /* ---------- HERO ---------- */
+    /* ===== HERO ===== */
     .hero {
-      position: relative;
-      padding-block: clamp(80px, 16vh, 200px) clamp(40px, 8vw, 90px);
-      overflow: clip;
-    }
-    .beams {
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-    }
-    .beam {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.5;
-    }
-    .beam.b1 {
-      width: 40vmax;
-      height: 40vmax;
-      top: -16vmax;
-      left: 40%;
-      background: radial-gradient(circle, color-mix(in oklab, var(--accent) 60%, transparent), transparent 60%);
-      animation: float1 18s var(--ease-in-out) infinite alternate;
-    }
-    .beam.b2 {
-      width: 30vmax;
-      height: 30vmax;
-      top: 6vmax;
-      left: 6%;
-      background: radial-gradient(circle, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 60%);
-      animation: float2 22s var(--ease-in-out) infinite alternate;
-    }
-    @keyframes float1 {
-      to {
-        transform: translate(-8%, 10%) scale(1.15);
-      }
-    }
-    @keyframes float2 {
-      to {
-        transform: translate(10%, -8%) scale(1.2);
-      }
-    }
-    .hero-in {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 26px;
+      padding-block: clamp(56px, 9vw, 110px) clamp(36px, 5vw, 56px);
+      text-align: center;
+      max-width: 1100px;
     }
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      padding: 7px 14px;
-      border-radius: var(--radius-pill);
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
+      gap: 10px;
+      padding: 8px 18px 8px 12px;
+      margin-bottom: 36px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      background: var(--bg-card);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      font-size: 13px;
       color: var(--text-soft);
-      animation: rise 0.7s var(--ease-out) both;
+      text-decoration: none;
+      box-shadow: var(--hi-edge);
+      transition: border-color var(--dur) var(--ease-out),
+        transform var(--dur) var(--ease-spring);
     }
-    .badge .dot {
-      width: 7px;
-      height: 7px;
+    .badge:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .badge-dot {
+      width: 7px; height: 7px;
       border-radius: 50%;
-      background: var(--accent-2);
-      box-shadow: 0 0 12px 1px var(--accent-2);
-      animation: pulse 2.4s ease-in-out infinite;
+      background: var(--accent);
+      box-shadow: 0 0 14px var(--accent);
     }
-    @keyframes pulse {
-      50% {
-        opacity: 0.4;
-        transform: scale(0.8);
+    @media (prefers-reduced-motion: no-preference) {
+      .badge-dot { animation: pulse-dot 2s var(--ease-out) infinite; }
+      @keyframes pulse-dot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.4); opacity: 0.7; }
       }
     }
+    .badge-eyebrow { color: var(--accent); }
+    .badge-text { color: var(--text); font-weight: 500; }
+
     .headline {
-      margin: 0;
+      margin: 0 auto 24px;
       max-width: 16ch;
+      color: var(--text);
     }
-    .headline .line {
-      display: block;
-      overflow: hidden;
+    /* Iridescent chrome word */
+    .chrome-w {
+      background: var(--grad);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 32px color-mix(in oklab, var(--accent) 55%, transparent));
     }
-    .headline .line > * {
-      display: inline-block;
-      transform: translateY(110%);
-      animation: lineUp 0.9s var(--ease-out) forwards;
-    }
-    .headline .line:nth-child(1) > * {
-      animation-delay: 0.12s;
-    }
-    .headline .line:nth-child(2) > * {
-      animation-delay: 0.26s;
-    }
-    .accent em {
-      font-style: normal;
-    }
-    @keyframes lineUp {
-      to {
-        transform: none;
+    @media (prefers-reduced-motion: no-preference) {
+      .chrome-w { animation: chrome-shift 8s var(--ease-in-out) infinite alternate; }
+      @keyframes chrome-shift {
+        from { background-position: 0% 50%; }
+        to   { background-position: 100% 50%; }
       }
     }
-    @keyframes rise {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-    }
-    .lead {
-      max-width: 600px;
-      animation: rise 0.8s 0.4s var(--ease-out) both;
-    }
+
+    .lead { max-width: 560px; margin: 0 auto 36px; }
     .cta {
       display: flex;
       gap: 14px;
+      justify-content: center;
       flex-wrap: wrap;
-      animation: rise 0.8s 0.5s var(--ease-out) both;
     }
     .btn {
-      position: relative;
-      padding: 14px 26px;
-      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 999px;
       font-size: 15px;
       font-weight: 600;
-      will-change: transform;
-      transition: transform var(--dur) var(--ease-spring), box-shadow var(--dur) var(--ease-out);
+      text-decoration: none;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: transform var(--dur) var(--ease-spring),
+        box-shadow var(--dur) var(--ease-out),
+        border-color var(--dur) var(--ease-out);
     }
     .btn.primary {
-      color: #fff;
-      background: var(--grad);
-      box-shadow: var(--glow);
+      color: var(--bg);
+      background: var(--text);
+      box-shadow: 0 8px 32px -4px color-mix(in oklab, var(--text) 40%, transparent),
+        0 0 0 1px color-mix(in oklab, var(--text) 30%, transparent);
     }
     .btn.primary:hover {
-      box-shadow: var(--glow), 0 10px 40px -8px color-mix(in oklab, var(--accent) 60%, transparent);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px -6px color-mix(in oklab, var(--text) 50%, transparent),
+        0 0 0 1px color-mix(in oklab, var(--text) 40%, transparent);
     }
     .btn.ghost {
       color: var(--text);
       border: 1px solid var(--border-strong);
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: var(--bg-card);
     }
     .btn.ghost:hover {
-      border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+      border-color: var(--accent);
+      transform: translateY(-2px);
     }
-    .stats {
+
+    /* ===== BENTO ===== */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-rows: minmax(140px, auto);
+      gap: 22px;
+      margin-top: clamp(40px, 6vw, 80px);
+    }
+    .tile {
+      position: relative;
+      padding: 32px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: var(--bg-card);
+      backdrop-filter: blur(30px) saturate(1.2);
+      -webkit-backdrop-filter: blur(30px) saturate(1.2);
+      box-shadow: var(--hi-edge), var(--shadow-2);
+      text-decoration: none;
+      color: inherit;
+      overflow: hidden;
+      will-change: transform;
+      transition: transform var(--dur) var(--ease-spring),
+        box-shadow var(--dur) var(--ease-out),
+        border-color var(--dur) var(--ease-out);
+    }
+    a.tile:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-strong);
+      box-shadow: var(--hi-edge), var(--shadow-3);
+    }
+
+    /* Layout: featured 4×2 + stats 2×2 on rows 1-2 → 3 fw tiles fall on row 3 aligned */
+    .tile-featured { grid-column: span 4; grid-row: span 2; }
+    .tile-stats    { grid-column: span 2; grid-row: span 2; }
+    .tile-fw       { grid-column: span 2; }
+    .tile-fundamentals { grid-column: span 6; }
+    @media (max-width: 960px) {
+      .bento { grid-template-columns: repeat(2, 1fr); }
+      .tile-featured { grid-column: 1 / -1; grid-row: auto; }
+      .tile-stats    { grid-column: 1 / -1; grid-row: auto; }
+      .tile-fw       { grid-column: span 1; }
+      .tile-fundamentals { grid-column: 1 / -1; }
+    }
+    @media (max-width: 560px) {
+      .tile-fw { grid-column: 1 / -1; }
+    }
+
+    .tile-ey { color: var(--accent); }
+
+    .tile-featured {
       display: flex;
-      gap: 40px;
-      margin-top: 14px;
-      animation: rise 0.8s 0.62s var(--ease-out) both;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 340px;
     }
-    .stat {
+    .tile-featured .tile-ey { margin-bottom: 16px; }
+    .tile-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(28px, 3.4vw, 40px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin: 0 0 14px;
+      max-width: 18ch;
+    }
+    .tile-lead {
+      color: var(--text-soft);
+      font-size: 15px;
+      line-height: 1.5;
+      max-width: 52ch;
+      margin: 0 0 18px;
+    }
+    .tile-cta { color: var(--accent); font-weight: 600; font-size: 15px; }
+
+    .tile-stats {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 26px;
+    }
+    .stat { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(40px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-lbl { color: var(--text-dim); }
+
+    .tile-fw {
+      display: flex;
+      flex-direction: column;
+      min-height: 220px;
+    }
+    .fw-logo {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      background: color-mix(in oklab, var(--bg-inset) 80%, transparent);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      padding: 6px;
+    }
+    .fw-logo app-framework-logo,
+    .fw-logo ::ng-deep svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .fw-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 26px;
+      letter-spacing: -0.015em;
+      color: var(--text);
+      margin: 0 0 6px;
+    }
+    .fw-tagline { color: var(--text-soft); font-size: 14px; margin: 0 0 auto; }
+    .fw-meta { color: var(--text-dim); margin-top: 14px; }
+
+    .tile-fundamentals { padding: 28px 32px; }
+    .fund-head {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      margin-bottom: 18px;
     }
-    .stat .num {
+    .fund-title {
       font-family: var(--font-display);
-      font-weight: 800;
-      font-size: clamp(30px, 4vw, 44px);
-      line-height: 1;
-      letter-spacing: -0.03em;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-weight: 600;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin: 0;
     }
-    .stat .lbl {
-      color: var(--text-dim);
-    }
-
-    /* ---------- GRIDS ---------- */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    .sec-head {
+    .fund-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-    .kicker {
-      color: var(--accent-2);
-    }
-    .sec-lead {
-      color: var(--text-soft);
-      max-width: 52ch;
-    }
-    .featured {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-    .featured .feat {
-      min-width: 0;
-    }
-    .featured .lead-cell {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-    .featured .lead-cell ::ng-deep .card {
-      justify-content: flex-start;
-      gap: 16px;
-    }
-
-    /* ---------- PHILOSOPHY ---------- */
-    .philosophy {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      padding: clamp(28px, 4vw, 48px);
-      border-radius: var(--radius-xl);
-    }
-    .philosophy .col {
-      display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 10px;
     }
-    .philosophy .num-mono {
-      font-family: var(--font-mono);
-      font-size: 13px;
+    .fund-item {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 10px 18px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      background: var(--bg-card);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: border-color var(--dur) var(--ease-out),
+        transform var(--dur) var(--ease-spring),
+        color var(--dur) var(--ease-out);
+    }
+    .fund-item:hover {
+      border-color: var(--accent);
       color: var(--accent);
-      letter-spacing: 0.1em;
+      transform: translateY(-2px);
     }
-    .philosophy p {
-      color: var(--text-soft);
-      max-width: 36ch;
-    }
-
-    @media (max-width: 860px) {
-      .featured,
-      .philosophy {
-        grid-template-columns: 1fr;
-      }
-      .featured .lead-cell {
-        grid-row: span 1;
-      }
-      .stats {
-        gap: 28px;
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .headline .line > *,
-      .badge,
-      .lead,
-      .cta,
-      .stats {
-        animation: none;
-      }
-      .headline .line > * {
-        transform: none;
-      }
-      .beam {
-        animation: none;
-      }
-    }
+    .fund-count { color: var(--text-dim); }
   `,
 })
 export class LandingComponent {
   private readonly content = inject(ContentService);
-  private readonly host = inject(ElementRef);
+  private readonly host = inject(ElementRef<HTMLElement>);
   protected readonly frameworks = FRAMEWORKS;
   protected readonly fundamentals = FUNDAMENTALS;
   protected readonly tagline = TAGLINE;
+  protected readonly label = (fw: Framework) => FRAMEWORK_LABEL[fw];
+
+  protected readonly total = computed(() => this.content.catalogue.length);
+  protected count(fw: Framework): number {
+    return this.content.forFramework(fw).length;
+  }
+  protected readonly featuredPost = computed(() => this.content.blogPosts[0] ?? null);
 
   constructor() {
     inject(SeoService).set({
@@ -509,9 +434,8 @@ export class LandingComponent {
       const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
       const cleanups: Array<() => void> = [];
 
-      // Count-up stats
       if (!reduce) {
-        root.querySelectorAll<HTMLElement>('.num[data-count]').forEach((el) => {
+        root.querySelectorAll<HTMLElement>('.stat-num[data-count]').forEach((el) => {
           const target = Number(el.dataset['count'] ?? '0');
           const io = new IntersectionObserver((entries, obs) => {
             for (const e of entries) {
@@ -532,16 +456,15 @@ export class LandingComponent {
         });
       }
 
-      // Magnetic buttons
       if (!reduce && matchMedia('(pointer: fine)').matches) {
-        root.querySelectorAll<HTMLElement>('.magnetic').forEach((el) => {
+        root.querySelectorAll<HTMLElement>('.tilt').forEach((el) => {
           const onMove = (ev: PointerEvent) => {
             const r = el.getBoundingClientRect();
-            const dx = ev.clientX - (r.left + r.width / 2);
-            const dy = ev.clientY - (r.top + r.height / 2);
-            el.style.transform = `translate(${dx * 0.18}px, ${dy * 0.28}px)`;
+            const px = (ev.clientX - r.left) / r.width - 0.5;
+            const py = (ev.clientY - r.top) / r.height - 0.5;
+            el.style.transform = `perspective(1400px) rotateX(${(-py * 4).toFixed(2)}deg) rotateY(${(px * 5).toFixed(2)}deg) translateY(-3px)`;
           };
-          const onLeave = () => (el.style.transform = '');
+          const onLeave = () => { el.style.transform = ''; };
           el.addEventListener('pointermove', onMove);
           el.addEventListener('pointerleave', onLeave);
           cleanups.push(() => {
@@ -554,16 +477,4 @@ export class LandingComponent {
       destroyRef.onDestroy(() => cleanups.forEach((fn) => fn()));
     });
   }
-
-  protected readonly total = computed(() => this.content.catalogue.length);
-
-  protected count(fw: Framework): number {
-    return this.content.forFramework(fw).length;
-  }
-
-  protected readonly featured = computed<ModuleMeta[]>(() =>
-    FEATURED.map(([fw, lvl, slug]) => this.content.meta(fw, lvl, slug)).filter(
-      (m): m is ModuleMeta => m !== undefined,
-    ),
-  );
 }

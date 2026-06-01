@@ -157,7 +157,7 @@ import { FRAMEWORK_LABEL } from '../core/levels';
       border-left-color: var(--accent);
     }
     .row.active .title {
-      color: #fff;
+      color: var(--bg);
     }
     .main {
       display: flex;

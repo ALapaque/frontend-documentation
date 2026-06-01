@@ -65,7 +65,7 @@ export type LevelFilter = Level | 'all';
       border-color: color-mix(in oklab, var(--accent) 40%, transparent);
     }
     .chip.active {
-      color: #fff;
+      color: var(--bg);
       border-color: transparent;
       background: var(--chip);
       box-shadow: 0 0 0 1px var(--chip),

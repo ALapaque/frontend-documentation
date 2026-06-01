@@ -184,7 +184,7 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
       padding: 12px 14px;
       margin-bottom: 10px;
       background: var(--accent);
-      color: #fff;
+      color: var(--bg);
       border-radius: 12px;
       text-decoration: none;
       transition: filter var(--dur) var(--ease-out), transform var(--dur) var(--ease-spring);
@@ -248,7 +248,7 @@ import { FRAMEWORK_LABEL, type Framework } from '../core/levels';
     .ok {
       font-family: var(--font-body);
       font-size: 14px;
-      color: #fff;
+      color: var(--bg);
       background: var(--accent);
       border: none;
       border-radius: 10px;
