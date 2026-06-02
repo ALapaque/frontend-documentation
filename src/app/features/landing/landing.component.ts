@@ -22,6 +22,7 @@ const TAGLINE: Record<Framework, string> = {
   css: 'Layout, motion, theming.',
   typescript: 'Types, generics, inference.',
   tooling: 'Vite, Vitest, Biome.',
+  architecture: 'Monorepo, DDD, TDD, slices.',
 };
 
 /** Glass Reverie landing — pastel mesh + glass cards + iridescent chrome word.

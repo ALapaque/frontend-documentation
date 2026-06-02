@@ -148,15 +148,28 @@ import { ThemeToggleComponent } from '../ui/theme-toggle.component';
       padding: 2px 6px;
     }
     @media (max-width: 720px) {
-      .link:not(.active),
+      /* Hide all nav links on mobile — the page header / breadcrumb already
+         shows the section context. Keep search (as icon) + theme toggle. */
+      .link,
       .sep {
         display: none;
       }
       .search {
-        padding: 8px 13px;
+        padding: 8px 12px;
+        gap: 0;
+        font-size: 0;       /* hide the "Rechercher" text */
       }
       .search kbd {
         display: none;
+      }
+      .search::before {
+        content: "";
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background: currentColor;
+        -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='m20 20-3-3'/></svg>") center / contain no-repeat;
+        mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='m20 20-3-3'/></svg>") center / contain no-repeat;
       }
     }
   `,

@@ -27,6 +27,7 @@ const TAGLINE: Record<Framework, string> = {
   css: 'Flexbox, grid, custom properties. La mise en page, en interactif.',
   typescript: 'Types, génériques, inférence, utility types. Le langage qui tient le code à grande échelle.',
   tooling: 'Vite, Rolldown, Vitest, Biome, monorepo. La chaîne qui build, teste et lint.',
+  architecture: 'Monorepo, DDD, TDD, FDD, slices verticales. Les patterns qui tiennent à l\'échelle, côté front.',
 };
 
 @Component({
