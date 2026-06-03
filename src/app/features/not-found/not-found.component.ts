@@ -46,12 +46,6 @@ import { EyebrowComponent } from '../../ui/eyebrow.component';
       -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 8px 40px color-mix(in oklab, var(--accent) 45%, transparent));
     }
-    .accent {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
     .back {
       display: inline-block;
       margin-top: 8px;

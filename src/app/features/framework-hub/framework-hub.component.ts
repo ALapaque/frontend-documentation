@@ -102,12 +102,6 @@ const TAGLINE: Record<Framework, string> = {
     .headline {
       margin: 0;
     }
-    .headline .accent {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
     .dim {
       color: var(--text-dim);
     }
