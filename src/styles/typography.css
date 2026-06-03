@@ -39,13 +39,31 @@
   letter-spacing: -0.005em;
 }
 
-/* Gradient accent word (violet→cyan), the aurora signature */
-.accent {
+/* Gradient accent word — the iridescent signature.
+   The 300% background-size + linear infinite shift produces a continuous
+   colour flow rather than a back-and-forth, which reads as "movement"
+   rather than "breathing". Used by .accent globally and via the explicit
+   .shimmer-text class on full titles that don't go through .accent. */
+.accent,
+.shimmer-text {
   font-style: normal;
   background: var(--grad);
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 28px color-mix(in oklab, var(--accent) 45%, transparent));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .accent,
+  .shimmer-text {
+    animation: shimmer-shift 6s linear infinite;
+  }
+  @keyframes shimmer-shift {
+    from { background-position: 0% 50%; }
+    to   { background-position: 300% 50%; }
+  }
 }
 
 .lead {

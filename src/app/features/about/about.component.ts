@@ -36,12 +36,6 @@ import { SeoService } from '../../core/seo/seo.service';
     .panel h1 {
       margin: 0;
     }
-    .panel .accent {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
     .panel .lead {
       max-width: 60ch;
     }
