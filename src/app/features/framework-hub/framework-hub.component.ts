@@ -60,7 +60,7 @@ const TAGLINE: Record<Framework, string> = {
             <div class="featured-art" aria-hidden="true"></div>
             <div class="featured-body">
               <span class="label-mono eyebrow">À la une · Blog · {{ postDate(post.date) }}</span>
-              <h2 class="featured-title">{{ post.title }}</h2>
+              <h2 class="featured-title shimmer-text">{{ post.title }}</h2>
               <p class="featured-lead">{{ post.lead }}</p>
               <span class="go label-mono">Lire l'article →</span>
             </div>
@@ -191,7 +191,6 @@ const TAGLINE: Record<Framework, string> = {
       letter-spacing: -0.035em;
       font-size: clamp(26px, 3.6vw, 40px);
       line-height: 1.05;
-      color: var(--text);
     }
     .featured-lead {
       color: var(--text-soft);

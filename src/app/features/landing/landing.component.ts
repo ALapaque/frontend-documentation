@@ -43,7 +43,7 @@ const TAGLINE: Record<Framework, string> = {
 
         <h1 class="display-2xl headline">
           Trois frameworks.<br />
-          Une <span class="chrome-w">discipline</span>.
+          Une <span class="shimmer-text">discipline</span>.
         </h1>
         <p class="lead">
           Angular, React et Vue — du Junior au Senior. Exemples minimaux, pièges
@@ -166,23 +166,6 @@ const TAGLINE: Record<Framework, string> = {
       max-width: 16ch;
       color: var(--text);
     }
-    /* Iridescent chrome word */
-    .chrome-w {
-      background: var(--grad);
-      background-size: 200% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 32px color-mix(in oklab, var(--accent) 55%, transparent));
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      .chrome-w { animation: chrome-shift 8s var(--ease-in-out) infinite alternate; }
-      @keyframes chrome-shift {
-        from { background-position: 0% 50%; }
-        to   { background-position: 100% 50%; }
-      }
-    }
-
     .lead { max-width: 560px; margin: 0 auto 36px; }
     .cta {
       display: flex;

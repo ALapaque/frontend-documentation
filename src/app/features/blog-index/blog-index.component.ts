@@ -25,7 +25,7 @@ import { SeoService } from '../../core/seo/seo.service';
           <div class="featured-art" aria-hidden="true"></div>
           <div class="featured-body">
             <span class="label-mono eyebrow">À la une · {{ formattedDate(f.date) }}</span>
-            <h2 class="display-l title">{{ f.title }}</h2>
+            <h2 class="display-l title shimmer-text">{{ f.title }}</h2>
             <p class="lead">{{ f.lead }}</p>
             <span class="go label-mono">Lire l'article →</span>
           </div>
