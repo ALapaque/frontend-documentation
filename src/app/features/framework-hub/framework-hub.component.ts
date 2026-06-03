@@ -151,11 +151,22 @@ const TAGLINE: Record<Framework, string> = {
     }
     .featured-art {
       position: absolute;
-      inset: 0;
+      inset: -15%;                    /* extra room so the rotation/scale never clips */
       z-index: -1;
       filter: blur(40px) saturate(1.2);
       opacity: 0.55;
       pointer-events: none;
+      will-change: transform;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .featured-art {
+        animation: art-drift 22s ease-in-out infinite alternate;
+      }
+      @keyframes art-drift {
+        0%   { transform: translate3d(-2%, -1%, 0) scale(1) rotate(0deg); }
+        50%  { transform: translate3d(3%, 2%, 0) scale(1.12) rotate(4deg); }
+        100% { transform: translate3d(-1%, 3%, 0) scale(1.06) rotate(-3deg); }
+      }
     }
     .featured[data-cover="angular-v22"] .featured-art {
       background:
