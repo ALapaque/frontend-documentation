@@ -6,7 +6,7 @@ level: "medior"
 order: 8
 duration: 24
 prerequisites: ["forms-basics", "signals"]
-updated: 2026-05-27
+updated: 2026-06-10
 seoTitle: "Angular Signal Forms — des bases à la validation avancée"
 seoDescription: "Les Signal Forms : form(), Field, schémas de validation par signaux, interop avec les Reactive Forms, puis la partie avancée — validation croisée, tableaux dynamiques, validation serveur, schémas Zod et soumission."
 ogVariant: "gold"
@@ -15,17 +15,17 @@ related:
   - { framework: "vue", slug: "forms-basics" }
 ---
 
-## Statut : developer preview
+## Statut : stable depuis Angular 22
 
-Les **Signal Forms** vivent dans `@angular/forms/signals`. C'est une *developer
-preview* : l'API publique peut changer entre deux mineures, les noms de fonctions
-et la forme des schémas ne sont pas figés. On ne migre pas une appli de prod
-dessus aujourd'hui — on l'évalue, on prototype.
+Les **Signal Forms** vivent dans `@angular/forms/signals`. Expérimentales en
+v21, elles sont **stables depuis Angular 22** (juin 2026) : l'API publique est
+figée et suit la politique de dépréciation standard du framework. Tu peux les
+utiliser en production.
 
-:::callout{type="warn"}
-Tant que l'API est en preview, traite chaque montée de version mineure comme une
-*breaking change* potentielle. Verrouille la version d'Angular et lis le
-CHANGELOG de `@angular/forms` avant de bumper.
+:::callout{type="info"}
+Les **Reactive Forms ne sont pas dépréciés** : ils restent maintenus et il n'y a
+pas d'urgence à migrer l'existant. La bascule pragmatique : nouveau formulaire =
+Signal Form, migration de l'existant au fil des refontes d'écrans.
 :::
 
 L'idée centrale : un formulaire n'est plus un arbre d'objets `FormControl`
@@ -131,19 +131,18 @@ changements via `valueChanges` (un Observable) et tu pousses les valeurs avec
 la source de vérité, le formulaire en est une projection réactive. Plus de double
 état à synchroniser, plus de souscriptions RxJS à gérer pour lire la validité.
 
-### Idée reçue : « ça remplace déjà les Reactive Forms »
+### Idée reçue : « il faut migrer tous les Reactive Forms »
 
-Non. Tant que l'API est en developer preview, les Reactive Forms restent la
-solution stable et maintenue pour la production. Les Signal Forms ne couvrent pas
-encore tous les cas (intégrations tierces, `FormArray` dynamiques avancés,
-écosystème de validateurs existant). C'est une direction, pas un remplacement
-immédiat. L'interop existe pour cohabiter, pas pour réécrire l'existant du jour
-au lendemain.
+Non. Les Signal Forms sont stables depuis la 22 et sont le bon défaut pour le
+**nouveau** code — mais les Reactive Forms restent maintenus, et certaines
+intégrations tierces (bibliothèques de composants, écosystème de validateurs
+existant) parlent encore `FormControl`. L'interop existe pour cohabiter : on ne
+réécrit pas l'existant du jour au lendemain, on migre au fil des refontes.
 
 :::callout{type="tip"}
-Pour expérimenter sans casser l'existant : isole une feature secondaire (un
-formulaire de filtre, une recherche) dans un signal form, garde tes écrans
-critiques en Reactive Forms. Tu mesures l'ergonomie sans risque.
+Pour démarrer sans risque : commence par une feature secondaire (un formulaire
+de filtre, une recherche), mesure l'ergonomie en équipe, puis fais des Signal
+Forms le standard des nouveaux écrans.
 :::
 
 ---
