@@ -38,7 +38,7 @@ const TAGLINE: Record<Framework, string> = {
         <a class="badge" routerLink="/blog/angular-22-ce-que-ca-change">
           <span class="badge-dot" aria-hidden="true"></span>
           <span class="badge-eyebrow label-mono">Nouveau</span>
-          <span class="badge-text">Angular 22 est là — Signal Forms stables, zoneless par défaut</span>
+          <span class="badge-text">Angular 22 est sorti — Signal Forms et Resources stables, OnPush par défaut</span>
         </a>
 
         <h1 class="display-2xl headline">

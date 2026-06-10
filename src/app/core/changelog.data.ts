@@ -33,6 +33,21 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
+    id: 'angular-22-released-2026-06',
+    date: '2026-06-10',
+    title: 'Angular 22 est sorti',
+    note: "La release du 3 juin confirmée : Signal Forms et Resources stables, OnPush par défaut, TypeScript 6 requis. L'article et les modules sont à jour sur la release note officielle.",
+    cta: {
+      label: "Lire le bilan — Angular 22, ce que ça change",
+      href: '/blog/angular-22-ce-que-ca-change',
+    },
+    modules: [
+      { framework: 'angular', level: 'next', slug: 'angular-22' },
+      { framework: 'angular', level: 'medior', slug: 'signal-forms' },
+      { framework: 'angular', level: 'senior', slug: 'zoneless' },
+    ],
+  },
+  {
     id: 'vue-vapor-preview-2026-06',
     date: '2026-06-01',
     title: 'Aperçu : Vue 3.6 et Vapor mode',
@@ -50,7 +65,7 @@ export const CHANGELOG: readonly ChangelogEntry[] = [
     id: 'angular-22-blog-2026-06',
     date: '2026-06-01',
     title: 'Angular 22 arrive',
-    note: 'Signal Forms stables, zoneless par défaut, Vitest par défaut. Le guide pour ne pas le rater, et les modules concernés.',
+    note: 'Signal Forms stables, OnPush par défaut, Vitest par défaut. Le guide pour ne pas le rater, et les modules concernés.',
     cta: {
       label: "Lire l'article — Angular 22, ce que ça change",
       href: '/blog/angular-22-ce-que-ca-change',

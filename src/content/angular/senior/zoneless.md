@@ -6,7 +6,7 @@ level: "senior"
 order: 2
 duration: 22
 prerequisites: ["change-detection", "signals"]
-updated: 2026-05-27
+updated: 2026-06-10
 seoTitle: "Angular zoneless — défaut en v21, migration et débogage"
 seoDescription: "Le mode sans zone.js, désormais par défaut en Angular 21 : comment Angular sait quand re-rendre, l'ordre de migration (OnPush → signals → retrait de zone.js), débusquer les dépendances cachées avec checkNoChanges, et tester en zoneless."
 ogVariant: "crimson"
@@ -159,7 +159,7 @@ et plus prévisible.
 
 :::cheatsheet
 - title: "Statut"
-  desc: "Stable depuis 20.2, défaut en Angular 21. ~33 ko de moins sans zone.js."
+  desc: "Stable depuis 20.2, défaut en Angular 21 ; la 22 ajoute OnPush par défaut. ~33 ko de moins sans zone.js."
 - title: "Déclencheurs du tick"
   desc: "Mutation de signal, événement lié, AsyncPipe, markForCheck()."
 - title: "Ordre de migration"
