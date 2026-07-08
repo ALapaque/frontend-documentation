@@ -60,7 +60,6 @@ Côté client, `useChat` gère l'état du chat : liste des messages, statut (`re
 ```tsx
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
-
 export function Chat() {
   const [input, setInput] = useState(""); // le champ de saisie : ton state
   const { messages, sendMessage, status, stop } = useChat();
@@ -87,7 +86,6 @@ Un outil, c'est une fonction que tu déclares et que **le modèle décide** d'ap
 ```ts
 import { streamText, tool, stepCountIs, convertToModelMessages } from "ai";
 import { z } from "zod";
-
 const result = streamText({
   model: anthropic("claude-sonnet-4-5"),
   messages: convertToModelMessages(messages),
@@ -134,8 +132,6 @@ const { object } = await generateObject({
 
 ## Production
 
-Ce qui distingue une démo d'un produit : ce que tu fais quand ça rate, et ce que ça coûte quand ça marche.
-
 ```ts
 const result = streamText({
   model: anthropic("claude-sonnet-4-5"),
@@ -146,17 +142,15 @@ const result = streamText({
 });
 ```
 
-**Pourquoi.** Chaque requête renvoie **tout** l'historique au modèle : sans troncature (ou résumé des vieux messages), le coût croît avec la conversation et tu finis par déborder la fenêtre de contexte. `maxOutputTokens` borne la sortie ; les retries intégrés absorbent les erreurs transitoires, mais garde un timeout global. Enfin, active le **prompt caching** quand ton provider le prend en charge (Anthropic le propose via `providerOptions`) : le system prompt et les définitions d'outils, identiques à chaque appel, coûtent alors une fraction du prix après le premier passage.
+**Pourquoi.** Ce qui distingue une démo d'un produit, c'est ce que tu fais quand ça rate et ce que ça coûte quand ça marche. Chaque requête renvoie **tout** l'historique au modèle : sans troncature (ou résumé des vieux messages), le coût croît avec la conversation et tu finis par déborder la fenêtre de contexte. `maxOutputTokens` borne la sortie ; les retries intégrés absorbent les erreurs transitoires, mais garde un timeout global. Enfin, active le **prompt caching** quand ton provider le prend en charge (Anthropic le propose via `providerOptions`) : le system prompt et les définitions d'outils, identiques à chaque appel, coûtent alors une fraction du prix après le premier passage.
 
 ## À retenir
 
 :::cheatsheet
 - title: "Une API, N providers"
   desc: "Changer Anthropic / OpenAI / Google = changer la ligne model. Zéro lock-in d'API propriétaire."
-- title: "streamText (serveur)"
-  desc: "convertToModelMessages(messages) en entrée, toUIMessageStreamResponse() en sortie : streaming câblé."
-- title: "useChat (client)"
-  desc: "messages, sendMessage, status, stop, regenerate — React, Vue, Svelte, Angular. L'input reste ton state."
+- title: "streamText + useChat"
+  desc: "Serveur : convertToModelMessages puis toUIMessageStreamResponse(). Client : messages, sendMessage, status, stop — React, Vue, Svelte, Angular. L'input reste ton state."
 - title: "Tool calling"
   desc: "tool({ inputSchema: zod, execute }) + stopWhen: stepCountIs(n). Valide tout, confirme le destructif."
 - title: "Structured output"
