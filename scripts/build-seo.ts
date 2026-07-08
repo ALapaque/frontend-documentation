@@ -15,6 +15,7 @@ import { CATALOGUE } from '../src/content/generated/catalogue';
 import { COMPARE_LIST } from '../src/content/generated/compare-list';
 import { BLOG_LIST } from '../src/content/generated/blog-list';
 import { SITE_URL, SITE_NAME, SITE_TAGLINE } from '../src/app/core/site';
+import { FRAMEWORK_LABEL, SECTIONS } from '../src/app/core/levels';
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..');
 const PUBLIC = join(ROOT, 'public');
@@ -25,16 +26,6 @@ const FONT_FILES = [
   join(ROOT, 'node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf'),
 ];
 
-const FRAMEWORK_LABEL: Record<string, string> = {
-  angular: 'Angular',
-  react: 'React',
-  vue: 'Vue',
-  web: 'Web',
-  css: 'CSS',
-  typescript: 'TypeScript',
-  tooling: 'Outils',
-};
-const SECTIONS = ['angular', 'react', 'vue', 'web', 'css', 'typescript', 'tooling'];
 const LEVEL_LABEL: Record<string, string> = {
   junior: 'Junior',
   medior: 'Medior',
