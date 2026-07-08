@@ -28,6 +28,7 @@ const TAGLINE: Record<Framework, string> = {
   typescript: 'Types, génériques, inférence, utility types. Le langage qui tient le code à grande échelle.',
   tooling: 'Vite, Rolldown, Vitest, Biome, monorepo. La chaîne qui build, teste et lint.',
   architecture: 'Monorepo, DDD, TDD, FDD, slices verticales. Les patterns qui tiennent à l\'échelle, côté front.',
+  ia: 'LLM, agents, MCP, IA dans le navigateur. L\'IA côté front, sans hype.',
 };
 
 @Component({

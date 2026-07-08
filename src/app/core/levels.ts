@@ -1,6 +1,6 @@
 export type Level = 'junior' | 'medior' | 'senior' | 'next';
 export type JsFramework = 'angular' | 'react' | 'vue';
-export type Fundamental = 'web' | 'css' | 'typescript' | 'tooling' | 'architecture';
+export type Fundamental = 'web' | 'css' | 'typescript' | 'tooling' | 'architecture' | 'ia';
 /** A content section: the three JS frameworks plus the platform fundamentals. */
 export type Framework = JsFramework | Fundamental;
 
@@ -44,7 +44,7 @@ export const LEVEL_META: Record<Level, LevelMeta> = {
 /** The three JS frameworks, used for the main nav and landing cards. */
 export const FRAMEWORKS: readonly JsFramework[] = ['angular', 'react', 'vue'] as const;
 /** Platform fundamentals — top-level sections that share the level model. */
-export const FUNDAMENTALS: readonly Fundamental[] = ['web', 'css', 'typescript', 'tooling', 'architecture'] as const;
+export const FUNDAMENTALS: readonly Fundamental[] = ['web', 'css', 'typescript', 'tooling', 'architecture', 'ia'] as const;
 /** Every content section (frameworks + fundamentals). */
 export const SECTIONS: readonly Framework[] = [...FRAMEWORKS, ...FUNDAMENTALS];
 
@@ -57,6 +57,7 @@ export const FRAMEWORK_LABEL: Record<Framework, string> = {
   typescript: 'TypeScript',
   tooling: 'Outils',
   architecture: 'Architecture',
+  ia: 'IA',
 };
 
 export function isLevel(value: string): value is Level {

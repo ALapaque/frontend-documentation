@@ -33,6 +33,18 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
+    id: 'ia-section-2026-07',
+    date: '2026-07-08',
+    title: 'Nouvelle section : IA',
+    note: "L'IA côté front, sans hype : comprendre les LLM, coder avec un agent, construire un chat streaming, l'AI SDK, MCP, les patterns UX et l'IA locale dans le navigateur.",
+    modules: [
+      { framework: 'ia', level: 'junior', slug: 'llm-basics' },
+      { framework: 'ia', level: 'medior', slug: 'chat-streaming-ui' },
+      { framework: 'ia', level: 'senior', slug: 'mcp' },
+      { framework: 'ia', level: 'senior', slug: 'browser-ai' },
+    ],
+  },
+  {
     id: 'angular-22-released-2026-06',
     date: '2026-06-10',
     title: 'Angular 22 est sorti',

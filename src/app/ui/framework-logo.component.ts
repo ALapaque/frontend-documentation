@@ -73,6 +73,13 @@ import type { Framework } from '../core/levels';
           <path d="M3 17l9 4 9-4" stroke="#00e5c0" />
         </svg>
       }
+      @case ('ia') {
+        <svg viewBox="0 0 24 24" role="img" aria-hidden="true" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4L12 3z" stroke="#c9a0ff" />
+          <path d="M18.5 14l.9 2.3 2.1.7-2.1.7-.9 2.3-.9-2.3-2.1-.7 2.1-.7.9-2.3z" stroke="#8de2a1" />
+          <path d="M5.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7.7-1.8z" stroke="#ffb088" />
+        </svg>
+      }
       @case ('typescript') {
         <svg viewBox="0 0 256 256" role="img" aria-hidden="true">
           <rect width="256" height="256" rx="28" fill="#3178C6" />
