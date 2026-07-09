@@ -6,7 +6,7 @@ level: "medior"
 order: 1
 duration: 15
 prerequisites: ["bundlers", "package-managers"]
-updated: 2026-05-23
+updated: 2026-07-08
 seoTitle: "Vite 8 — Rolldown, Oxc, dev server ESM (Guide Medior)"
 seoDescription: "Vite 8 en 2026 : Rolldown comme bundler unifié, Oxc sous le capot, dev server ESM natif, HMR, config et build de prod. Le pourquoi du mécanisme."
 ogVariant: "gold"
@@ -112,6 +112,14 @@ parallélisables et gourmandes en allocation mémoire. Un moteur natif (Rust)
 parallélise sur tous les cœurs sans le coût du garbage collector de Node, là où
 un bundler en JS reste largement mono-thread. Unifier sur un seul moteur élimine
 en prime la classe de bugs où esbuild et Rollup transpilaient différemment.
+
+:::callout{type="info"}
+**Vite 8 est sorti** — et les chiffres mesurés confirment la promesse : des
+builds de prod **1,6× à 7,7× plus rapides** que Vite 7 selon les projets. Dans
+la foulée, VoidZero a lancé **Vite+** (alpha, mars 2026) : un CLI unique qui
+regroupe Vite, Vitest, Oxlint, Oxfmt, Rolldown et tsdown — la toolchain
+complète derrière une seule commande. On y consacrera un module dédié.
+:::
 
 ## La config : `vite.config.ts`
 
