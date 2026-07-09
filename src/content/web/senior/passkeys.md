@@ -31,7 +31,7 @@ Le principe cryptographique tient en une phrase : **à l'enregistrement, l'authe
 Pourquoi c'est **résistant au phishing** : l'authentificateur ne signe un challenge que pour l'`rpId` auquel la clé est rattachée, et le navigateur vérifie que l'origine de la page correspond avant même de solliciter la clé. Un site `exemp1e.com` qui imite le tien ne peut ni sélectionner ni faire signer une passkey créée pour `exemple.com`. Le lien clé ↔ origine est appliqué par le navigateur, pas par la vigilance de l'utilisateur. C'est la différence de nature avec un mot de passe (ou même un code OTP), qu'un humain fatigué recopiera sur n'importe quelle page qui le lui demande.
 
 :::callout{type="info"}
-Deux notions à distinguer. Une **assertion** est ce que l'authentificateur renvoie à l'authentification (une signature). Une **attestation** est ce qu'il renvoie à l'enregistrement (la clé publique + éventuellement une preuve du modèle d'authentificateur). Pour la majorité des sites grand public, tu ne vérifies pas l'attestation en détail — elle sert surtout aux contextes réglementés (banque, entreprise) qui veulent restreindre les modèles autorisés.
+Deux notions à distinguer : une **attestation** est ce que l'authentificateur renvoie à l'enregistrement (la clé publique + éventuellement une preuve de son modèle), une **assertion** est ce qu'il renvoie à l'authentification (une signature). Pour la majorité des sites grand public, tu ne vérifies pas l'attestation en détail — elle sert surtout aux contextes réglementés (banque, entreprise) qui restreignent les modèles autorisés.
 :::
 
 ## Enregistrement : `navigator.credentials.create()`
@@ -39,11 +39,10 @@ Deux notions à distinguer. Une **assertion** est ce que l'authentificateur renv
 L'enregistrement crée la paire de clés et remonte la clé publique à ton serveur. Le front n'invente rien : il reçoit des options *générées par le serveur* (dont le challenge), les passe à l'API, puis renvoie le résultat.
 
 ```js
-// 1. Le serveur génère les options, dont un challenge aléatoire lié à la session.
+// Le serveur génère les options (dont un challenge aléatoire lié à la session) ;
+// le front décode les champs binaires (base64url) en ArrayBuffer.
 const opts = await fetch('/webauthn/register/options', { method: 'POST' })
   .then((r) => r.json());
-
-// 2. Le front décode les champs binaires (base64url) en ArrayBuffer.
 opts.challenge = base64urlToBuffer(opts.challenge);
 opts.user.id = base64urlToBuffer(opts.user.id);
 
@@ -167,9 +166,8 @@ La vérification serveur du **challenge** et de l'**origine** n'est pas optionne
 const caps = await PublicKeyCredential.getClientCapabilities();
 caps.conditionalGet;                     // proposer l'autofill de passkeys ?
 caps.userVerifyingPlatformAuthenticator; // Face ID / Windows Hello dispo ?
-caps.hybridTransport;                    // scan cross-appareil (QR + Bluetooth) ?
 caps.relatedOrigins;                     // Related Origin Requests géré ?
-caps.conditionalCreate;                  // enregistrement silencieux possible ?
+// aussi : hybridTransport, conditionalCreate, signal*…
 ```
 
 **Credentials découvrables (resident keys).** Une passkey découvrable stocke assez d'information dans l'authentificateur pour permettre un login *sans identifiant* : l'utilisateur arrive sur ta page, clique dans le champ, choisit son compte. C'est ce que débloque `residentKey: 'required'` à l'enregistrement et `allowCredentials: []` à l'authentification.
@@ -187,20 +185,16 @@ Les passkeys ne sont pas « un mot de passe plus long » : elles changent la nat
 :::cheatsheet
 - title: "Clé privée locale, publique au serveur"
   desc: "La privée ne quitte jamais l'appareil ; une fuite de ta base n'expose que du public."
-- title: "create() = enregistrement"
-  desc: "navigator.credentials.create → attestation ; challenge, rp, user, pubKeyCredParams."
-- title: "get() = authentification"
-  desc: "navigator.credentials.get → assertion signée ; le serveur vérifie avec la clé publique."
+- title: "Deux appels"
+  desc: "create() → attestation (enregistrement) ; get() → assertion signée (authentification)."
 - title: "Résistant au phishing"
   desc: "Clé liée à l'rpId ; un faux domaine ne peut pas la faire signer."
 - title: "Sécurité côté serveur"
   desc: "Challenge unique + vérif de l'origine et du rpId au retour, jamais côté front."
 - title: "Conditional UI"
   desc: "mediation: 'conditional' + autocomplete='webauthn' pour l'autofill non bloquant."
-- title: "getClientCapabilities()"
-  desc: "Détecte conditionalGet, relatedOrigins, etc. avant d'adapter l'UI."
 - title: "Découvrables + Signal API"
   desc: "residentKey pour le login sans identifiant ; Signal API pour resynchroniser."
 - title: "Toujours un repli"
-  desc: "Chemin de récupération pour appareil perdu ou navigateur non compatible."
+  desc: "getClientCapabilities() pour détecter, + chemin de récupération si appareil perdu."
 :::
