@@ -26,14 +26,8 @@ d'état, mais il faut comprendre le modèle pour ne pas le court-circuiter.
 `$fetch` est l'instance globale d'[ofetch](https://github.com/unjs/ofetch) :
 parsing JSON, gestion d'erreur, et un raccourci côté serveur — un `$fetch` vers
 une route Nitro locale appelle le handler directement, sans aller-retour HTTP.
-C'est l'outil parfait pour une **mutation** (POST, PATCH) dans un gestionnaire
-d'événement, ou un appel imbriqué depuis une server route.
-
-```ts
-async function like(postId: string) {
-  await $fetch(`/api/posts/${postId}/like`, { method: 'POST' });
-}
-```
+C'est l'outil parfait pour une **mutation** (`$fetch(url, { method: 'POST' })`)
+dans un gestionnaire d'événement, ou un appel imbriqué depuis une server route.
 
 Le problème apparaît dès qu'on s'en sert **seul** pour charger la donnée d'une
 page au top-level du `setup` : rien ne relie `$fetch` au payload. Le serveur
@@ -43,10 +37,10 @@ Personne ne transfère le résultat de l'un à l'autre.
 ## `useAsyncData` / `useFetch` : le transfert d'état
 
 C'est le rôle des deux composables. Ils exécutent la fonction async **côté
-serveur**, sérialisent le résultat dans `nuxtApp.payload.data[clé]` (via
-`devalue`, qui gère `Date`, `Map`, `Set`, `RegExp` et les refs Nuxt), puis, à
-l'hydratation, le client **lit le payload au lieu de refetcher**. Une seule
-requête réseau pour le rendu serveur et son hydratation.
+serveur**, sérialisent le résultat dans `nuxtApp.payload.data[clé]` (via `devalue`,
+qui gère `Date`, `Map`, `Set`, `RegExp` et les refs Nuxt), puis, à l'hydratation,
+le client **lit le payload au lieu de refetcher** — une seule requête pour le
+rendu et son hydratation.
 
 :::compare
 ::bad
@@ -73,14 +67,13 @@ const { data: post } = await useFetch(`/api/posts/${route.params.id}`)
 
 `useFetch` n'est que du **sucre** : `useFetch(url)` équivaut à peu près à
 `useAsyncData(url, () => $fetch(url))`, avec une clé dérivée de l'URL. Passe à
-`useAsyncData` dès que la logique est custom (client d'un CMS, SDK, `Promise.all`
-de plusieurs endpoints sous une clé explicite) — là, tu écris le handler.
+`useAsyncData` dès que la logique est custom (CMS, SDK, `Promise.all` de plusieurs
+endpoints sous une clé explicite) — là, tu écris le handler.
 
 ## La clé, cœur de la déduplication
 
-La **clé** est l'identité de la donnée dans le payload et le cache : elle
-retrouve le résultat sérialisé à l'hydratation, et déduplique les appels
-concurrents.
+La **clé** est l'identité de la donnée dans le payload et le cache : elle retrouve
+le résultat sérialisé à l'hydratation et déduplique les appels concurrents.
 
 - `useFetch` génère sa clé depuis l'URL + les options.
 - `useAsyncData` prend la clé en **premier argument**. Sans clé (handler direct),
@@ -90,9 +83,9 @@ concurrents.
   elle change, Nuxt réexécute et met en cache chaque résultat par valeur.
 
 Depuis Nuxt 4, tous les appels partageant la **même clé** partagent les mêmes
-refs `data`, `status` et `error` : trois composants qui demandent `'user'` en
-même temps ne déclenchent qu'**une** requête et voient le même objet. Au démontage
-du dernier consommateur, Nuxt nettoie automatiquement l'entrée du cache.
+refs `data`, `status` et `error` : trois composants qui demandent `'user'` en même
+temps ne déclenchent qu'**une** requête et voient le même objet. Au démontage du
+dernier consommateur, Nuxt nettoie automatiquement l'entrée du cache.
 
 :::callout{type="warn"}
 Une clé explicite doit être **stable** et **unique par donnée**. Deux `useFetch`
@@ -137,10 +130,9 @@ const { data } = await useAsyncData('post-list', () => $fetch('/api/posts'), {
 Depuis Nuxt 4, `getCachedData` est appelé à **chaque** déclenchement — pas
 seulement au montage — et reçoit un contexte dont `cause` vaut `'initial'`,
 `'watch'`, `'refresh:manual'` ou `'refresh:hook'`. Tu peux ainsi resservir le
-cache en navigation mais forcer un vrai refetch au clic « actualiser », ou coder
-un `staleTime` maison (stocke un timestamp, renvoie `undefined` au-delà du seuil).
-L'option `dedupe` gère les appels concurrents sur une clé : `'cancel'` annule la
-requête en vol, `'defer'` attend celle déjà en cours.
+cache en navigation mais forcer un refetch au clic « actualiser », ou coder un
+`staleTime` maison. L'option `dedupe` gère les appels concurrents sur une clé :
+`'cancel'` annule la requête en vol, `'defer'` attend celle déjà en cours.
 
 ## Quand passer à Pinia Colada
 
@@ -154,19 +146,19 @@ passer à [Pinia Colada](https://pinia-colada.esm.dev/).
 Son module Nuxt gère le SSR : `useQuery` s'appuie sur `onServerPrefetch`, donc la
 requête se résout côté serveur **sans `await` explicite** (là où `useAsyncData`
 suspend via le `await`). On y gagne `useQuery` pour les lectures, `useMutation`
-pour les écritures, une invalidation fine — et Nuxt s'oriente vers cet écosystème
-comme socle de sa future couche de données.
+pour les écritures et une invalidation fine — Nuxt s'oriente d'ailleurs vers cet
+écosystème comme socle de sa future couche de données.
 
 :::callout{type="info"}
-Ne mélange pas les rôles : `useAsyncData` sert à **fetcher et mettre en cache**,
-pas à déclencher des effets de bord (appeler une action Pinia dans le handler te
-vaudra des réexécutions surprises, parfois avec des valeurs nulles).
+Ne mélange pas les rôles : `useAsyncData` **fetch et met en cache**, il ne
+déclenche pas d'effets de bord — appeler une action Pinia dans le handler vaut
+des réexécutions surprises, parfois avec des valeurs nulles.
 :::
 
 ## Un mot sur la structure `app/`
 
 Nuxt 4 déplace le code applicatif (pages, composants, composables, `useState`)
-dans un dossier `app/` — nouveau `srcDir` — tandis que `server/` (routes Nitro,
+dans un dossier `app/` — nouveau `srcDir` — tandis que `server/` (routes Nitro
 appelées par `$fetch`) reste à la racine : la frontière rendu/serveur devient
 lisible dans l'arborescence, sans rien changer aux composables ci-dessus.
 
@@ -175,8 +167,8 @@ lisible dans l'arborescence, sans rien changer aux composables ci-dessus.
 `$fetch` seul pour charger une page = double fetch en SSR. `useFetch` /
 `useAsyncData` fetchent côté serveur, sérialisent sous une **clé** dans le payload
 et hydratent le client sans refetch. La clé est l'identité de la donnée : stable,
-unique, réactive au besoin. `getCachedData` couvre la navigation client ; au-delà,
-Pinia Colada offre un vrai cache. Et `useState` reste l'outil d'un état SSR-safe.
+unique, réactive au besoin. `getCachedData` couvre la navigation ; au-delà, Pinia
+Colada offre un vrai cache. `useState`, lui, gère l'état partagé SSR-safe.
 
 :::cheatsheet
 - title: "$fetch"
