@@ -60,7 +60,7 @@ recevoir les nouvelles props et se re-rend, simplement à plus basse priorité.
 
 C'est la vraie différence avec un `display: none` artisanal. Quand le sous-arbre
 passe en `hidden`, React exécute les **cleanups** de tous ses effets
-(souscriptions fermées, intervalles arrêtés), puis les ré-exécute au retour en
+(souscriptions fermées, intervalles arrêtés), puis les réexécute au retour en
 `visible`. Exactement le cycle que tu écrirais à la main… sans l'écrire.
 
 :::compare
