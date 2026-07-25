@@ -33,6 +33,21 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
+    id: 'ia-avancee-plateforme-2026-07',
+    date: '2026-07-25',
+    title: 'IA avancée, temps réel et TypeScript 7 stable',
+    note: "L'IA passe au niveau supérieur : RAG, agents, evals et sécurité. Côté plateforme, un module sur le temps réel (SSE, WebSocket, WebTransport) et contrast-color(). TypeScript 7.0 est stable — l'article est à jour, avec la mise en garde pour Vue, Svelte et Astro.",
+    modules: [
+      { framework: 'ia', level: 'medior', slug: 'rag' },
+      { framework: 'ia', level: 'senior', slug: 'ai-agents' },
+      { framework: 'ia', level: 'senior', slug: 'ai-evals' },
+      { framework: 'ia', level: 'senior', slug: 'ai-security' },
+      { framework: 'web', level: 'senior', slug: 'temps-reel' },
+      { framework: 'css', level: 'senior', slug: 'contrast-color' },
+      { framework: 'typescript', level: 'next', slug: 'typescript-7' },
+    ],
+  },
+  {
     id: 'ia-section-2026-07',
     date: '2026-07-08',
     title: 'Nouvelle section : IA',
