@@ -6,9 +6,9 @@ level: "senior"
 order: 11
 duration: 16
 prerequisites: ["conditional-types"]
-updated: 2026-07-09
+updated: 2026-07-25
 seoTitle: "Performance TypeScript — diagnostiquer et corriger un type-check lent"
-seoDescription: "Quand tsc rame : mesurer avec --extendedDiagnostics et --generateTrace, repérer les types conditionnels et mappés qui explosent, préférer interface pour le cache, borner la récursivité. Rendre le type-check rapide, même avant TS 7."
+seoDescription: "Quand tsc rame : mesurer avec --extendedDiagnostics et --generateTrace, repérer les types conditionnels et mappés qui explosent, préférer interface pour le cache, borner la récursivité. Rendre le type-check rapide, avant comme après le passage à TS 7."
 ogVariant: "iris"
 related:
   - { framework: "typescript", slug: "conditional-types" }
@@ -18,7 +18,7 @@ related:
 Un type-check qui prend 40 s pourrit la DX : l'éditeur gèle sur chaque frappe, la
 CI traîne. La cause tient rarement à la taille du code — le plus souvent, ce sont
 quelques types trop « intelligents » qui font exploser le travail du compilateur.
-Avant même d'attendre le compilateur natif (TS 7), tu peux mesurer où part le
+Même avec le compilateur natif (TS 7), tu as tout intérêt à mesurer où part le
 temps et corriger l'algorithmique de tes types.
 
 ## Mesurer d'abord, jamais optimiser à l'aveugle
@@ -162,17 +162,17 @@ modules courts limitent la surface recalculée à chaque édition.
 
 ## Et le compilateur natif (TS 7) ?
 
-Le portage natif de TypeScript (le compilateur en Go, cap sur TS 7.0) vise un
-type-check environ 10× plus rapide. C'est énorme — mais c'est un gain sur le
+Le compilateur natif (le portage Go) est **stable depuis juillet 2026** et livre
+un type-check 8× à 12× plus rapide. C'est énorme — mais c'est un gain sur le
 **facteur constant**. Un type quadratique reste quadratique : le portage divise
 le temps par un facteur fixe, il ne change pas la classe de complexité de tes
 types.
 
 :::callout{type="warn"}
-N'attends pas TS 7 pour ignorer un type qui coûte 8 s : il coûtera peut-être
-0,8 s au lieu de 8, mais un `DeepMerge` récursif sur une union géante restera le
-point chaud du projet. Mesure et corrige aujourd'hui ; le natif viendra en bonus
-par-dessus un code déjà sain.
+Passer en TS 7 ne dispense pas de corriger un type qui coûte 8 s : il coûtera
+peut-être 0,8 s au lieu de 8, mais un `DeepMerge` récursif sur une union géante
+restera le point chaud du projet. Mesure et corrige quand même ; le natif est un
+bonus par-dessus un code déjà sain.
 :::
 
 ## À retenir
@@ -181,8 +181,8 @@ Ne devine jamais : `--extendedDiagnostics` donne le chiffre (instanciations),
 `--generateTrace` + `analyze-trace` donnent le coupable. Les explosions viennent
 presque toujours de conditionnels distribués, de types mappés profonds et de
 récursions non bornées. Préfère `interface extends` aux grosses intersections,
-factorise les types intermédiaires, annote les frontières. TS 7 accélérera tout,
-mais ne te dispensera pas d'écrire des types au coût raisonnable.
+factorise les types intermédiaires, annote les frontières. TS 7 accélère tout,
+mais ne dispense pas d'écrire des types au coût raisonnable.
 
 :::cheatsheet
 - title: "--extendedDiagnostics"
@@ -200,5 +200,5 @@ mais ne te dispensera pas d'écrire des types au coût raisonnable.
 - title: "Annoter les retours publics"
   desc: "Coupe la ré-inférence en cascade chez les consommateurs."
 - title: "TS 7 (natif)"
-  desc: "~10× plus rapide, mais facteur constant : ton quadratique reste quadratique."
+  desc: "8x a 12x plus rapide, mais facteur constant : ton quadratique reste quadratique."
 :::
