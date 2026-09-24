@@ -6,9 +6,9 @@ level: "senior"
 order: 4
 duration: 17
 prerequisites: ["ai-sdk", "mcp"]
-updated: 2026-07-25
+updated: 2026-09-24
 seoTitle: "Agents IA — boucle think-act-observe, outils, mémoire et garde-fous"
-seoDescription: "Ce qui distingue un agent d'un simple appel LLM : la boucle think-act-observe, des outils bien conçus, la gestion de la mémoire et du contexte, l'orchestration multi-agents, et les garde-fous (budget, approbation humaine) sans lesquels un agent part en vrille."
+seoDescription: "Ce qui distingue un agent d'un simple appel LLM : la boucle think-act-observe, l'abstraction ToolLoopAgent, des outils bien conçus, la gestion du contexte, l'approbation d'outil (needsApproval) et les garde-fous sans lesquels un agent part en vrille."
 ogVariant: "sage"
 related:
   - { framework: "ia", slug: "ai-sdk" }
@@ -50,6 +50,63 @@ se trompe peut boucler indéfiniment sur le même outil, brûler ton budget en
 quelques minutes et saturer ton API. Fixe **toujours** un nombre maximal d'étapes,
 et de préférence aussi un plafond de tokens et un délai.
 :::
+
+## Ne réécris pas la boucle : l'abstraction `Agent`
+
+La boucle ci-dessus est utile à comprendre, pas forcément à écrire. Depuis l'AI
+SDK 6, `Agent` est une **interface**, et `ToolLoopAgent` en fournit
+l'implémentation prête pour la production : elle appelle le modèle, exécute les
+outils demandés, réinjecte les résultats et recommence.
+
+```ts
+import { ToolLoopAgent } from 'ai';
+
+export const agentPanier = new ToolLoopAgent({
+  model: 'anthropic/claude-sonnet-4.5',
+  instructions: 'Tu assistes le service client sur les commandes.',
+  tools: { chercherCommande, rembourser },
+  // stopWhen: stepCountIs(20) par défaut
+});
+
+const resultat = await agentPanier.generate({
+  prompt: 'Le client 4021 veut un remboursement sur sa dernière commande.',
+});
+```
+
+L'agent se définit **une fois** et se réutilise partout, avec `generate()` ou
+`stream()`. La borne d'arrêt existe par défaut (`stepCountIs(20)`) — mais reste à
+ajuster : 20 étapes sur un modèle coûteux, c'est déjà une facture.
+
+:::callout{type="tip"}
+`Agent` étant une interface, d'autres implémentations couvrent des besoins
+différents — notamment l'**exécution durable et reprenable**, où l'état de la
+boucle survit à un redémarrage de processus. C'est ce qu'il faut viser dès qu'un
+agent travaille plusieurs minutes : sans durabilité, un déploiement en cours de
+tâche perd tout.
+:::
+
+## L'approbation d'outil, désormais native
+
+Le garde-fou le plus important — faire valider les actions irréversibles par un
+humain — ne demande plus de plomberie maison. Il se déclare **sur l'outil** :
+
+```ts
+export const rembourser = tool({
+  description: 'Rembourse une commande.',
+  inputSchema: z.object({ commandeId: z.string(), montant: z.number() }),
+  needsApproval: true,                     // toujours demander
+  execute: async ({ commandeId, montant }) => effectuerRemboursement(commandeId, montant),
+});
+
+// ou conditionnellement, selon les arguments :
+needsApproval: async ({ montant }) => montant > 100,
+```
+
+**Pourquoi la forme conditionnelle change tout.** Exiger une approbation sur
+*chaque* appel fatigue l'utilisateur, qui finit par tout valider sans lire — le
+garde-fou devient décoratif. Conditionner l'approbation au **risque réel** (un
+montant, une commande destructive, un périmètre élargi) garde l'attention humaine
+là où elle compte.
 
 ## Un outil est une API pour un lecteur non fiable
 
@@ -192,6 +249,10 @@ n'ajoute de la structure que quand tu peux prouver qu'elle sert.
   desc: "Chaque tour repaie les précédents. Résume, tronque les résultats, externalise la mémoire."
 - title: "Un agent d'abord"
   desc: "Multi-agents = latence et débogage. Beaucoup de sous-agents sont en fait de simples fonctions."
+- title: "ToolLoopAgent"
+  desc: "L'implémentation prête pour la prod de l'interface Agent. Définir une fois, generate() ou stream()."
+- title: "needsApproval"
+  desc: "Approbation déclarée sur l'outil, idéalement conditionnée au risque réel plutôt que systématique."
 - title: "Droits dans le code"
   desc: "Jamais dans le prompt. Moindre privilège, approbation humaine sur l'irréversible, idempotence."
 :::

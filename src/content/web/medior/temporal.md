@@ -6,7 +6,7 @@ level: "medior"
 order: 12
 duration: 16
 prerequisites: ["internationalization"]
-updated: 2026-07-09
+updated: 2026-09-24
 seoTitle: "Temporal API — remplacer Date : immutabilité, fuseaux et durées sans piège"
 seoDescription: "La Temporal API corrige 25 ans de pièges de Date : objets immuables, types distincts (PlainDate, ZonedDateTime, Duration), gestion explicite des fuseaux et calendriers, arithmétique de dates fiable. Le modèle et le support en 2026."
 ogVariant: "iris"
@@ -151,6 +151,14 @@ Temporal a atteint le **stade 4** de TC39 en mars 2026 : l'API fait désormais p
 - **Chrome** a suivi avec la version 144 (janvier 2026).
 - **Edge** l'expose en beta, **Safari** l'a dans sa Technology Preview — pas encore en stable.
 - Sur mobile, seul Firefox le gère nativement pour l'instant.
+- Côté serveur, **Node 26** (mai 2026, LTS en octobre) active **Temporal par défaut**.
+
+:::callout{type="tip"}
+La conséquence pratique est une asymétrie à assumer : sur un projet SSR ou
+full-stack, tu peux utiliser Temporal **nativement côté serveur** dès Node 26,
+alors que le navigateur réclame encore un polyfill. Si tu formates des dates au
+rendu serveur, le gain est immédiat et sans coût de bundle.
+:::
 
 :::callout{type="warn"}
 En clair : tu ne peux pas encore compter sur Temporal natif partout, surtout sur mobile hors Firefox. Vérifie ta cible réelle avant de t'en passer d'un polyfill.
@@ -178,5 +186,5 @@ Un polyfill de dates ajoute du poids au bundle — pèse-le. Si ton audience est
 - title: "Affichage = Intl"
   desc: "toLocaleString délègue à Intl pour l'humain ; toString() produit de l'ISO 8601 pour stocker."
 - title: "Support 2026"
-  desc: "ES2026, natif dans Firefox 139+ et Chrome 144+, Edge/Safari en cours ; polyfill @js-temporal/polyfill sinon."
+  desc: "ES2026, natif Firefox 139+, Chrome 144+ et Node 26 ; Edge/Safari en cours, polyfill sinon."
 :::

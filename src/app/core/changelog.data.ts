@@ -33,6 +33,20 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
+    id: 'react-19-3-router-resources-2026-09',
+    date: '2026-09-24',
+    title: 'React 19.3 et les Router Resources Angular',
+    note: "React 19.3 stabilise <ViewTransition> et ajoute les Fragment refs et browser() : un module dédié fait le tour. Côté Angular, les Router Resources remplacent les resolvers par resource(), en parallèle au lieu du séquentiel. Les modules React Compiler, Vue 3.6, Node et agents IA sont à jour.",
+    modules: [
+      { framework: 'react', level: 'next', slug: 'react-19-3' },
+      { framework: 'angular', level: 'medior', slug: 'router-resources' },
+      { framework: 'react', level: 'medior', slug: 'view-transition' },
+      { framework: 'react', level: 'senior', slug: 'compiler' },
+      { framework: 'vue', level: 'next', slug: 'vue-3-6' },
+      { framework: 'ia', level: 'senior', slug: 'ai-agents' },
+    ],
+  },
+  {
     id: 'ia-avancee-plateforme-2026-07',
     date: '2026-07-25',
     title: 'IA avancée, temps réel et TypeScript 7 stable',
