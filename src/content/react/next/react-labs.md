@@ -3,12 +3,12 @@ title: "React — ce qui arrive"
 slug: "react-labs"
 framework: "react"
 level: "next"
-order: 1
+order: 2
 duration: 14
 prerequisites: ["concurrent-features", "compiler"]
-updated: 2026-05-23
+updated: 2026-09-24
 seoTitle: "React 2026 — Compiler v1 stable, Activity, useEffectEvent, ViewTransition"
-seoDescription: "Le front React mi-2026 : Compiler v1.0 stable, Activity et useEffectEvent livrés (19.2), <ViewTransition> encore expérimental, et les CVE RSC de déc. 2025 à patcher."
+seoDescription: "Le front React fin 2026 : Compiler v1.0 stable puis réécrit en Rust, Activity et useEffectEvent livrés (19.2), ViewTransition stabilisé en 19.3, et les CVE RSC de déc. 2025 à patcher."
 ogVariant: "iris"
 related:
   - { framework: "angular", slug: "angular-22" }
@@ -19,7 +19,8 @@ related:
 React n'annonce pas de « v20 ». La feuille de route avance par **primitives**
 ajoutées aux versions 19.x et par les expérimentations React Labs. État mi-2026 :
 **19.2** a livré `<Activity>` et `useEffectEvent`, le **Compiler est passé v1.0
-stable**, et `<ViewTransition>` reste expérimental.
+stable**, et **19.3** (septembre 2026) a stabilisé `<ViewTransition>` tout en
+ajoutant les Fragment refs et `browser()` — voir `/react/next/react-19-3`.
 :::
 
 ## React Compiler v1.0 — stable
@@ -83,11 +84,12 @@ useEffect(() => {
 }, [roomId]); // ne reconnecte que si roomId change
 ```
 
-## `<ViewTransition>` — transitions animées (toujours expérimental)
+## `<ViewTransition>` — transitions animées (stable en 19.3)
 
 API React pour coordonner des transitions animées entre états d'UI, au-dessus de
-l'API navigateur View Transitions. Toujours **expérimentale** mi-2026 — pas dans
-une release stable. À tester en canary, pas à mettre en prod.
+l'API navigateur View Transitions. Longtemps expérimentale, elle est **stable
+depuis React 19.3** (septembre 2026), aux côtés de `addTransitionType`. Le module
+dédié détaille déclencheurs et pièges : `/react/medior/view-transition`.
 
 ## Sécurité : les CVE RSC de décembre 2025
 
@@ -112,8 +114,8 @@ d'exécution serveur. Patche d'abord, audite ensuite.
   desc: "Cache/restaure un sous-arbre en préservant son état ; dé-priorise le rendu caché."
 - title: "useEffectEvent (19.2)"
   desc: "Sépare la réaction event du setup d'effet ; hors deps."
-- title: "<ViewTransition> (exp.)"
-  desc: "Transitions animées entre états. Toujours expérimental mi-2026."
+- title: "<ViewTransition> (19.3)"
+  desc: "Transitions animées entre états. Stable depuis septembre 2026."
 - title: "CVE RSC (déc. 2025)"
   desc: "RCE en 19.0.0–19.2.2 sur RSC/Server Functions. Patcher en 19.2.3+."
 :::

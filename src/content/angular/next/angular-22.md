@@ -6,7 +6,7 @@ level: "next"
 order: 1
 duration: 16
 prerequisites: ["signals", "signal-forms", "zoneless"]
-updated: 2026-06-10
+updated: 2026-09-24
 seoTitle: "Angular 22 (juin 2026) — Signal Forms et Resources stables, OnPush par défaut, horizon v23"
 seoDescription: "Angular 22 est sorti le 3 juin 2026 : Signal Forms, Resources (httpResource) et Angular ARIA stables, OnPush par défaut, HttpClient en fetch, hydratation incrémentale par défaut, TypeScript 6 requis. Le bilan complet et l'horizon v23."
 ogVariant: "iris"
@@ -145,10 +145,19 @@ Si tu lis un billet qui annonce l'un des deux comme stable en 22, méfie-toi.
 
 ## Horizon v23
 
-La v23 (~fin 2026) devrait viser la **stabilisation du selectorless**, le
-**`@boundary`** en stable, et la poursuite du nettoyage des reliquats Zone dans
-l'écosystème. Le sens de l'histoire ne change pas : moins de RxJS imposé, plus
-de signals.
+La v23 (~novembre 2026) poursuit la consolidation des signals plutôt que
+l'ouverture de nouveaux fronts : stabilisation des **Router Resources** (le
+chargement de données de route piloté par `resource()`, en developer preview
+depuis la 22.2 — voir `/angular/medior/router-resources`), `@boundary`, et le
+nettoyage des reliquats Zone.
+
+:::callout{type="warn"}
+Le **selectorless** a glissé : l'équipe le repousse à **2027** (v23 ou v24) pour
+donner la priorité à la stabilisation de l'infrastructure Signals. Ne planifie
+rien dessus pour cette année.
+:::
+
+Le sens de l'histoire ne change pas : moins de RxJS imposé, plus de signals.
 
 :::callout{type="tip"}
 Pour migrer sereinement : vérifie d'abord **TypeScript 6 + Node 22** (c'est le

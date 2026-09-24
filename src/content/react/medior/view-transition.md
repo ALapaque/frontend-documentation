@@ -6,9 +6,9 @@ level: "medior"
 order: 11
 duration: 14
 prerequisites: ["suspense-basics"]
-updated: 2026-07-08
+updated: 2026-09-24
 seoTitle: "React ViewTransition — animer les changements d'état avec l'API View Transitions"
-seoDescription: "Le composant <ViewTransition> branche React sur l'API View Transitions du navigateur : animer l'apparition, la disparition et le déplacement d'éléments entre deux états, sans bibliothèque d'animation. Statut, API et pièges."
+seoDescription: "Le composant <ViewTransition> branche React sur l'API View Transitions du navigateur : animer l'apparition, la disparition et le déplacement d'éléments entre deux états, sans bibliothèque d'animation. Stable depuis React 19.3 : API, déclencheurs et pièges."
 ogVariant: "gold"
 related:
   - { framework: "react", slug: "concurrent-features" }
@@ -20,10 +20,10 @@ sondages State of React. Son parti pris : plutôt que de réimplémenter un mote
 d'animation en JavaScript, React se **branche sur l'API View Transitions native**
 du navigateur. Tu déclares *quoi* animer, le navigateur anime.
 
-Statut mi-2026 : `<ViewTransition>` et `addTransitionType` sont disponibles
-**uniquement dans les canaux Canary et Expérimental** — pas dans React 19.2
-stable. L'équipe les juge éprouvés en production (Next.js App Router les expose
-derrière le flag `experimental.viewTransition`), mais l'API peut encore changer.
+Statut : `<ViewTransition>` et `addTransitionType` sont **stables depuis React
+19.3** (9 septembre 2026). Après une longue période en canaux Canary et
+Expérimental, l'API est livrée dans le paquet `react` standard — plus de flag, ni
+d'installation particulière.
 
 ## Le principe
 
@@ -40,7 +40,7 @@ direct reste instantané, sans animation. Quatre déclencheurs existent : `enter
 `share` (un même `name` disparaît d'un côté et réapparaît de l'autre).
 
 ```tsx
-import { ViewTransition } from "react"; // canary / experimental uniquement
+import { ViewTransition } from "react"; // stable depuis React 19.3
 ```
 
 **Pourquoi.** Les Transitions sont non bloquantes et non urgentes : React peut y
@@ -179,8 +179,8 @@ pour toi quand une mise à jour passe par une Transition, et `<ViewTransition>`
 te donne des points d'accroche CSS déclaratifs sur ce mécanisme natif.
 
 :::cheatsheet
-- title: "Statut mi-2026"
-  desc: "Canary / Experimental uniquement — absent de React 19.2 stable ; API encore susceptible de changer."
+- title: "Statut : stable"
+  desc: "Livré dans React 19.3 (septembre 2026). Importable depuis react, sans flag ni canal Canary."
 - title: "Déclenchement"
   desc: "Uniquement via une Transition : startTransition, useTransition, révélation de Suspense, useDeferredValue."
 - title: "Props d'activation"

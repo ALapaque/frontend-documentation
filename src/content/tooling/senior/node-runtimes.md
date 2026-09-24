@@ -6,7 +6,7 @@ level: "senior"
 order: 5
 duration: 15
 prerequisites: ["dev-environment"]
-updated: 2026-07-09
+updated: 2026-09-24
 seoTitle: "Node vs Deno vs Bun en 2026 — TypeScript natif, APIs web et choix de runtime"
 seoDescription: "Les trois runtimes JavaScript ont convergé : TypeScript exécuté nativement, APIs web-standard, gestion de paquets intégrée. Ce qui distingue encore Node, Deno 2 et Bun, et comment choisir selon le contexte."
 ogVariant: "sage"
@@ -73,12 +73,22 @@ valeurs, décorateurs legacy) ne passent pas sans `--experimental-transform-type
 C'est voulu : ça pousse vers la syntaxe effaçable, portable entre runtimes.
 :::
 
-L'autre atout est **la stabilité LTS**. La ligne LTS (Node 24 en 2026) garantit
-des correctifs de sécurité sur plusieurs années, un cycle de release prévisible, et
-une compat que les hébergeurs et images Docker suivent au doigt. Pour de la prod,
-c'est décisif : tu ne veux pas que ton runtime soit la variable qui bouge. Node
+L'autre atout est **la stabilité LTS**. La ligne LTS garantit des correctifs de
+sécurité sur plusieurs années, un cycle de release prévisible, et une compat que
+les hébergeurs et images Docker suivent au doigt. En 2026, **Node 24** porte la
+LTS courante et **Node 26** (sorti en mai) y bascule en **octobre**. Pour de la
+prod, c'est décisif : tu ne veux pas que ton runtime soit la variable qui bouge. Node
 reste ainsi **la cible par défaut de la production** — le choix qu'il faut
 justifier de ne *pas* faire, pas l'inverse.
+
+:::callout{type="info"}
+**Node 26** (mai 2026, LTS en octobre) apporte deux choses qui se voient depuis
+le front : la **Temporal API activée par défaut** — plus de polyfill de dates
+côté serveur (voir `/web/medior/temporal`) — et V8 14.6, qui amène
+`Map.prototype.getOrInsert()` / `getOrInsertComputed()` et `Iterator.concat()`.
+Plusieurs API dépréciées de longue date sont retirées : lis les notes de version
+avant de monter une base ancienne.
+:::
 
 ## Deno 2 : sécurité, TypeScript de première classe, compat npm
 

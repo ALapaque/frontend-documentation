@@ -6,9 +6,9 @@ level: "next"
 order: 1
 duration: 13
 prerequisites: ["reactivity-internals", "vapor-mode"]
-updated: 2026-05-23
+updated: 2026-09-24
 seoTitle: "Vue 3.6 — Vapor mode, réactivité alien-signals, Rolldown"
-seoDescription: "Vue 3.6 : Vapor mode (compile-to-DOM, sans VDOM) mûrit vers le stable, cœur réactif réécrit sur alien-signals, intégration Vite/Rolldown resserrée."
+seoDescription: "Vue 3.6 en Release Candidate : Vapor mode (compile-to-DOM, sans VDOM) feature-complete et API gelée, cœur réactif réécrit sur alien-signals, intégration Vite/Rolldown resserrée. Stable visé à l'automne 2026."
 ogVariant: "iris"
 related:
   - { framework: "angular", slug: "angular-22" }
@@ -16,10 +16,11 @@ related:
 ---
 
 :::callout{type="info"}
-Vue 3.6 introduit **Vapor mode** et un cœur réactif réécrit. Mi-2026, Vapor
-**mûrit vers le stable** : feature-complete et utilisable, mais opt-in et encore
-en stabilisation côté écosystème (devtools, libs tierces). Active-le par îlots,
-pas en bascule globale aveugle.
+Vue 3.6 introduit **Vapor mode** et un cœur réactif réécrit. La branche est
+passée en **Release Candidate** (`3.6.0-rc.x`) durant l'été 2026 : Vapor est
+feature-complete et l'API est gelée, le stable est visé pour l'automne. Le
+chantier restant est l'écosystème (devtools, bibliothèques tierces), pas le
+cœur. Active-le par îlots, pas en bascule globale aveugle.
 :::
 
 ## Vapor mode : compile-to-DOM, sans virtual DOM
@@ -104,7 +105,7 @@ compilation Vapor de bout en bout.
 - title: "Vite / Rolldown"
   desc: "Couplage build/runtime renforcé, alignement sur le bundler Rust Rolldown."
 - title: "Statut"
-  desc: "3.6 livrée ; Vapor mûrit vers le stable, encore opt-in."
+  desc: "3.6 en Release Candidate ; Vapor feature-complete et API gelée, stable visé à l'automne. Opt-in."
 :::
 
 :::callout{type="info"}
