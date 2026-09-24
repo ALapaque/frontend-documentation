@@ -6,7 +6,7 @@ level: "medior"
 order: 12
 duration: 13
 prerequisites: ["signals"]
-updated: 2026-07-08
+updated: 2026-09-24
 seoTitle: "linkedSignal Angular — état local qui se réinitialise quand sa source change"
 seoDescription: "linkedSignal comble le trou entre computed (lecture seule) et signal (déconnecté) : un état local inscriptible qui se resynchronise quand sa source change. Le pattern sélection-dans-une-liste, l'option computation avec previous, et les pièges."
 ogVariant: "gold"
@@ -104,6 +104,30 @@ personnaliser la comparaison des valeurs *produites* — utile quand la
 computation renvoie des objets.
 :::
 
+## Le setter custom : écrire vers la source (22.1)
+
+Par défaut, écrire dans un `linkedSignal` ne change que sa propre valeur : la
+source reste intacte, jusqu'au prochain recalcul qui écrasera l'écriture. Depuis
+Angular 22.1, une option **`set`** permet de définir ce qui se passe *en amont*.
+
+```ts
+readonly selected = linkedSignal(() => this.items()[0], {
+  // écrit vers le signal source à ta façon
+  set: (item: Item) => {
+    const items = this.items();
+    if (items.indexOf(item) < 0) {
+      this.items.set([item, ...items]);   // absent de la liste : on l'y ajoute
+    }
+  },
+});
+```
+
+**Pourquoi c'est utile.** Le cas typique est la sélection d'une valeur qui
+n'existe pas encore dans la liste — un tag créé à la volée, une option saisie
+librement. Sans `set`, tu écris la sélection, la source l'ignore, et le prochain
+recalcul la fait disparaître. Avec `set`, l'écriture **remonte** jusqu'à la
+source, et le lien reste cohérent dans les deux sens.
+
 ## linkedSignal, computed ou effect + set ?
 
 | Besoin | Outil |
@@ -180,4 +204,6 @@ référence en amont.
   desc: "Anti-pattern : double propagation, état intermédiaire, timing fragile."
 - title: "Pièges"
   desc: "État local uniquement, computation pure, égalité référentielle → option equal."
+- title: "set : écrire vers la source"
+  desc: "Option ajoutée en 22.1 : l'écriture remonte à la source au lieu d'être écrasée au recalcul."
 :::

@@ -26,10 +26,12 @@ Angular 22.2 introduit une alternative bâtie sur les signals : la propriété
 **`resources`** d'une route, qui branche `resource()` directement sur le routeur.
 
 :::callout{type="warn"}
-**Developer preview** depuis la 22.2. L'API est utilisable et documentée, mais
-peut encore bouger avant la stabilisation (visée pour la v23). Le retour
-d'expérience est activement collecté sur le dépôt Angular — évite de bâtir une
-migration massive dessus pour l'instant.
+**Developer preview** depuis la 22.2 (septembre 2026). L'API est utilisable et
+documentée, mais peut encore bouger avant sa stabilisation, attendue en **v23 —
+c'est-à-dire juin 2027**, depuis qu'Angular est passé à une major par an. Le
+retour d'expérience est activement collecté sur le dépôt Angular : c'est une
+fenêtre longue, pendant laquelle des signatures peuvent changer. Évite de bâtir
+une migration massive dessus pour l'instant.
 :::
 
 ## Activer et déclarer
@@ -195,6 +197,34 @@ changement de l'une d'elles relance le `loader`. Le rechargement cesse d'être u
 action à déclencher pour devenir une conséquence de l'état — c'est exactement la
 promesse des signals, appliquée à la couche routage.
 
+## Rediriger depuis une resource
+
+La 22.2 apporte un complément direct : **`RedirectCommand` peut être levé** —
+depuis un guard, un resolver, et donc aussi depuis le `loader` d'une resource.
+
+```ts
+resources: (ctx) => {
+  const router = inject(Router);
+  const service = inject(UtilisateurService);
+  return {
+    utilisateur: resource({
+      params: () => ctx.params()['id'],
+      loader: async ({ params: id }) => {
+        const u = await service.getUtilisateur(id);
+        if (!u) throw new RedirectCommand(router.parseUrl('/introuvable'));
+        return u;
+      },
+    }),
+  };
+},
+```
+
+**Pourquoi c'est mieux qu'un `router.navigate()` dans le loader.** Lever une
+commande laisse le routeur **annuler proprement** la navigation en cours et en
+démarrer une autre, au lieu de superposer deux navigations concurrentes. C'est le
+même modèle que SvelteKit ou Next.js : la redirection est une *valeur levée*, pas
+un effet de bord glissé au milieu d'un chargement.
+
 ## Ce qu'il faut savoir avant d'y aller
 
 - Les guards restent les guards : les resources ne remplacent **ni** `canActivate`,
@@ -228,6 +258,8 @@ de près, en gardant en tête le statut developer preview.
   desc: "Toutes les routes appariées chargent ensemble. La navigation attend le max, plus la somme."
 - title: "reload() ou signal"
   desc: "ActivatedRoute.resources['x'].reload(), ou muter un signal lu par params. Sans renavigation."
+- title: "RedirectCommand levable"
+  desc: "throw new RedirectCommand(...) depuis un loader : le routeur annule proprement au lieu de superposer."
 - title: "Developer preview"
-  desc: "Depuis la 22.2, stabilisation visée en v23. Utilisable, mais l'API peut encore bouger."
+  desc: "Depuis la 22.2 ; stabilisation en v23, soit juin 2027 (cadence annuelle). L'API peut encore bouger."
 :::

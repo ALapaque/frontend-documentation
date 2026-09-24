@@ -7,8 +7,8 @@ order: 1
 duration: 16
 prerequisites: ["signals", "signal-forms", "zoneless"]
 updated: 2026-09-24
-seoTitle: "Angular 22 (juin 2026) — Signal Forms et Resources stables, OnPush par défaut, horizon v23"
-seoDescription: "Angular 22 est sorti le 3 juin 2026 : Signal Forms, Resources (httpResource) et Angular ARIA stables, OnPush par défaut, HttpClient en fetch, hydratation incrémentale par défaut, TypeScript 6 requis. Le bilan complet et l'horizon v23."
+seoTitle: "Angular 22 — Signal Forms et Resources stables, @boundary en 22.2, cadence annuelle"
+seoDescription: "Angular 22 : Signal Forms, Resources et Angular ARIA stables, OnPush par défaut, HttpClient en fetch. Ce que les minors 22.1 et 22.2 ont ajouté (@boundary, Router Resources, RedirectCommand levable), et le passage à une major par an — v23 en juin 2027."
 ogVariant: "iris"
 related:
   - { framework: "react", slug: "react-labs" }
@@ -114,17 +114,51 @@ Vite déjà en place et offre un feedback en millisecondes.
   desc: "TS ≤ 5.9 n'est plus pris en charge. À vérifier avant ng update."
 :::
 
-## Selectorless et @boundary : pas encore
+## Selectorless et @boundary : où ils en sont
 
-Deux morceaux très attendus **ne sont pas** dans la 22 :
+Deux morceaux très attendus **ne sont pas** dans la 22.0 :
 
 - Le **selectorless** (utiliser un composant dans le template via son import
   TS, sans sélecteur string ni liste `imports`) reste **expérimental**.
-- Le bloc **`@boundary`** (frontières d'erreur dans les templates : un composant
-  qui plante affiche un fallback au lieu d'emporter la page) est annoncé pour
-  **v22.1 ou v23**, en developer preview.
+- Le bloc **`@boundary`** est arrivé depuis, en **22.2** (septembre 2026), en
+  developer preview — voir la section suivante.
 
-Si tu lis un billet qui annonce l'un des deux comme stable en 22, méfie-toi.
+Si tu lis un billet qui annonce l'un des deux comme stable en 22.0, méfie-toi.
+
+## Ce que les minors ont apporté depuis
+
+La 22.0 n'est pas la fin de l'histoire : deux minors ont livré l'essentiel des
+nouveautés de l'année.
+
+**`@boundary` (22.2, developer preview).** Les frontières d'erreur de template :
+un composant qui plante affiche un repli au lieu d'emporter la page.
+
+```html
+@boundary {
+  <app-graphique />
+} @error (let err; when estErreurDonnees(err)) {
+  <p>Données indisponibles.</p>
+} @error {
+  <p>Oups : {{ $error.message }}</p>
+  <button (click)="$reset()">Réessayer</button>
+}
+```
+
+Plusieurs blocs `@error` peuvent se succéder, filtrés par `when` ; `$error` porte
+l'erreur (aliasable avec `let`), et `$reset()` retente le rendu. C'est l'équivalent
+Angular des Error Boundaries de React, mais déclaré dans le template.
+
+**Router Resources (22.2, developer preview).** Le chargement de données de route
+piloté par `resource()`, en parallèle au lieu du séquentiel des resolvers — module
+dédié : `/angular/medior/router-resources`.
+
+**Le reste, en stable.** `RedirectCommand` peut désormais être **levé** depuis un
+guard, un resolver ou une resource ; `withExperimentalAutoCleanupInjectors` se
+stabilise en **`withAutoCleanupInjectors`** ; `strictUnclaimedEventNames` signale
+les bindings d'événement mal orthographiés (le `(clik)` qui ne disait rien) ; en
+Signal Forms, `hidden()` s'utilise sans condition `when`. Côté outillage, le
+type-check et le bundling esbuild tournent en parallèle (**~12 %** de build en
+moins), et le CLI passe à **Vitest v5**.
 
 ## Le reste
 
@@ -139,22 +173,36 @@ Si tu lis un billet qui annonce l'un des deux comme stable en 22, méfie-toi.
   desc: "La stratégie par défaut des nouveaux composants. CheckAlways devient l'exception."
 - title: "Vitest — runner par défaut"
   desc: "Karma retiré ; migration migrate-karma-to-vitest fournie."
+- title: "@boundary — 22.2 (dev preview)"
+  desc: "Frontières d'erreur dans le template : blocs @error filtrés par when, $error et $reset()."
+- title: "Cadence annuelle"
+  desc: "Une major par an en juin depuis la 22.1 : v23 en juin 2027, support porté à 2 ans."
 - title: "WebMCP — exp."
   desc: "Déclarer des outils IA depuis l'app (declareExperimentalWebMcpTool) ; DevTools pour graphes signals/DI."
 :::
 
-## Horizon v23
-
-La v23 (~novembre 2026) poursuit la consolidation des signals plutôt que
-l'ouverture de nouveaux fronts : stabilisation des **Router Resources** (le
-chargement de données de route piloté par `resource()`, en developer preview
-depuis la 22.2 — voir `/angular/medior/router-resources`), `@boundary`, et le
-nettoyage des reliquats Zone.
+## Horizon v23 : juin 2027, pas cet automne
 
 :::callout{type="warn"}
-Le **selectorless** a glissé : l'équipe le repousse à **2027** (v23 ou v24) pour
-donner la priorité à la stabilisation de l'infrastructure Signals. Ne planifie
-rien dessus pour cette année.
+**Angular est passé à une version majeure par an.** Annoncé avec la 22.1 (juillet
+2026), le nouveau rythme fixe les majors en **juin** : la **v23 sort en juin
+2027**, la v24 en juin 2028. En contrepartie, chaque major est **maintenue deux
+ans** au lieu de dix-huit mois. Si tu as planifié une montée de version « v23 à
+l'automne 2026 » sur l'ancien cycle semestriel, c'est à refaire.
+:::
+
+Conséquence pratique : ce sont les **minors**, tous les deux mois environ, qui
+portent désormais les nouveautés — la 22.1 et la 22.2 en sont la démonstration.
+Surveille-les plutôt que d'attendre la prochaine major.
+
+La v23 poursuivra la consolidation des signals plutôt que l'ouverture de
+nouveaux fronts : stabilisation des **Router Resources** et de **`@boundary`**,
+tous deux en developer preview depuis la 22.2, et nettoyage des reliquats Zone.
+
+:::callout{type="info"}
+Le **selectorless** a glissé encore plus loin : l'équipe le repousse à la v23 ou
+la v24 — donc **2027 au plus tôt** — pour donner la priorité à la stabilisation
+de l'infrastructure Signals. Ne planifie rien dessus.
 :::
 
 Le sens de l'histoire ne change pas : moins de RxJS imposé, plus de signals.
