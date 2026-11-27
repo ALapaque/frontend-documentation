@@ -110,15 +110,14 @@ architectures par sécurité décroissante, selon ce qu'un tel script peut empor
    le navigateur        tous les jetons côté JS
 ```
 
-**1. BFF.** Le backend du front devient le client OAuth, et un client
-*confidentiel* : il s'authentifie auprès de l'AS, ce qu'un navigateur ne peut pas
-faire. Il garde les jetons derrière une session par cookie et relaie chaque appel
-d'API. Un XSS peut encore envoyer des requêtes depuis la page, mais n'a rien à
-voler ni à rejouer ailleurs : c'est le choix « fortement recommandé » pour les
-apps métier, sensibles ou à données personnelles. Le prix : un service à opérer,
-que tout le trafic d'API traverse, et une défense CSRF **obligatoire**
-(`SameSite=Strict`, plus un en-tête statique exigé sur chaque requête). Ce composant
-façonne aussi tes données : voir
+**1. BFF.** Le backend du front devient le client OAuth, un client *confidentiel*
+qui s'authentifie auprès de l'AS. Il garde les jetons derrière une session par
+cookie et relaie chaque appel d'API. Un XSS peut encore envoyer des requêtes depuis
+la page, mais n'a rien à voler ni à rejouer ailleurs : c'est le choix « fortement
+recommandé » pour les apps métier, sensibles ou à données personnelles. Le prix :
+un service à opérer, que tout le trafic d'API traverse, et une défense CSRF
+**obligatoire** (`SameSite=Strict`, plus un en-tête statique exigé sur chaque
+requête). Côté données, ce composant est décrit dans
 [BFF et contrats typés](/architecture/senior/bff-contrats-types).
 
 **2. Backend médiateur de tokens.** Le backend obtient les jetons et garde le
@@ -129,8 +128,7 @@ complet est impossible.
 **3. Client OAuth dans le navigateur.** La SPA, client *public*, gère tout : simple,
 sans serveur, exposée à tout. Le pire : l'attaquant n'a pas besoin de trouver tes
 jetons. Son script lance **son propre** flux dans une iframe cachée, sur la session
-ouverte chez l'AS, et repart avec des jetons neufs. La RFC le déconseille pour les
-apps métier ou sensibles.
+ouverte chez l'AS, et repart avec des jetons neufs. Déconseillé pour ces mêmes apps.
 
 :::callout{type="tip"}
 Front et API sur le même domaine ? La RFC (§7.1) le dit sans détour : OAuth est
@@ -175,13 +173,12 @@ La **rotation** borne les dégâts d'un refresh token volé : à chaque usage, l
 émet un nouveau et invalide l'ancien. Si un jeton invalidé revient, deux parties le
 partagent, et l'AS révoque le jeton actif (RFC 9700, §4.14.2). La RFC 10017 exige
 la rotation **ou** un jeton lié à une clé du client (DPoP, RFC 9449), et une durée
-de vie bornée que la rotation ne prolonge pas : dans son exemple, 10 minutes pour
-l'access token, 8 heures pour le refresh token. Rien de cela n'arrête l'iframe
-cachée, où l'attaquant obtient ses propres jetons.
+de vie bornée que la rotation ne prolonge pas (son exemple : 10 minutes d'access
+token, 8 heures de refresh token). Rien de cela n'arrête l'iframe cachée.
 
 ## Intégration front : wrapper, guards, onglets
 
-Avec un BFF, le `::good` ci-dessus est toute l'intégration : il renouvelle les
+Avec un BFF, le bon exemple ci-dessus est toute l'intégration : il renouvelle les
 jetons côté serveur, et un `401` signifie « session terminée ». Dès que l'access
 token vit dans la page, il te faut un renouvellement **à vol unique** :
 
@@ -223,8 +220,7 @@ wrapper devient un [interceptor](/angular/medior/interceptors-guards).
   laisse les guards rediriger. Ergonomie seulement : c'est l'API qui refuse.
 - **Déconnexion multi-onglets.** Le logout détruit la session côté serveur **et**
   révoque le refresh token, puis prévient les autres onglets, sinon ils affichent
-  une session morte : `new BroadcastChannel('auth')`, `postMessage()` d'un côté,
-  `onmessage` et redirection de l'autre.
+  une session morte : `BroadcastChannel`, `postMessage()` ici, `onmessage` là-bas.
 
 ## Passkeys, FedCM et cookies tiers
 
@@ -235,11 +231,11 @@ wrapper devient un [interceptor](/angular/medior/interceptors-guards).
   Chrome les garde : Google a confirmé le 22 avril 2025 qu'il laissait ce choix à
   l'utilisateur. Conçois comme s'ils n'existaient pas : pas d'iframe silencieuse,
   et un BFF sur le **même site** que le front, sinon son cookie est un cookie tiers.
-- **FedCM.** L'API *Federated Credential Management* confie le « Se connecter
-  avec… » au navigateur : il affiche le sélecteur de compte et interroge l'IdP,
-  sans redirection ni cookie tiers. Tu passes `identity.providers` (un `configURL`
-  et un `clientId` par IdP) à `navigator.credentials.get()`, et tu reçois un
-  `token` que ton backend valide avant d'ouvrir la session.
+- **FedCM.** *Federated Credential Management* confie le « Se connecter avec… » au
+  navigateur : il affiche le sélecteur de compte et interroge l'IdP, sans
+  redirection ni cookie tiers. `navigator.credentials.get()` reçoit
+  `identity.providers` (`configURL`, `clientId`) et renvoie un `token`, que ton
+  backend valide avant d'ouvrir la session.
 
 :::callout{type="warn"}
 **Statut en novembre 2026.** FedCM n'existe que dans les navigateurs Chromium

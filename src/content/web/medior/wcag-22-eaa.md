@@ -49,9 +49,8 @@ exceptions, et aucune n'est un chèque en blanc.
 - **Contenus exclus** : médias préenregistrés et fichiers bureautiques publiés avant
   le 28 juin 2025, contenus de tiers que tu ne finances, ne développes ni ne
   contrôles, archives figées depuis cette date, cartes en ligne (sous condition).
-- **Charge disproportionnée** (article 14) : une dérogation à évaluer, à
-  **documenter**, puis à réévaluer quand le service change et au moins tous les
-  cinq ans.
+- **Charge disproportionnée** (article 14) : à évaluer, à **documenter**, puis à
+  réévaluer quand le service change et au moins tous les cinq ans.
 - **Contrats en cours** (article 32) : un contrat de service conclu avant le 28 juin
   2025 peut se poursuivre tel quel jusqu'à son terme, au plus cinq ans après.
 
@@ -81,7 +80,7 @@ W3C l'écrit : un contenu conforme à WCAG 2.2 l'est aussi à WCAG 2.1 et 2.0.
 ## Ce que WCAG 2.2 ajoute
 
 WCAG 2.2 ajoute **neuf critères** à la 2.1 et en retire un (4.1.1 Analyse
-syntaxique, obsolète). Trois sont de niveau AAA, les six autres entrent dans ta cible.
+syntaxique, obsolète). Trois sont de niveau AAA, six entrent dans ta cible A et AA.
 
 | Critère | Niveau | Ce qu'il exige |
 | --- | --- | --- |
@@ -112,8 +111,8 @@ html {
 
 `scroll-padding` réduit la zone que le navigateur considère comme visible quand il
 amène un élément à l'écran : c'est la technique C43 du W3C. Le critère AA n'échoue
-que si le composant est **entièrement** caché. Une barre de cookies non modale qui
-recouvre le focus est un échec documenté : rends-la modale ou réserve sa place.
+que si le composant est **entièrement** caché : une barre de cookies non modale qui
+le recouvre en entier est un échec documenté. Rends-la modale ou réserve sa place.
 
 ### Pointeur : cibles de 24 px, alternative au glisser
 
@@ -124,9 +123,9 @@ recouvre le focus est un échec documenté : rends-la modale ou réserve sa plac
 
 **Taille de cible.** Le seuil se mesure en pixels CSS sur la zone cliquable, pas sur
 le dessin. Exceptions principales : le lien dans une phrase, le contrôle natif non
-redimensionné, et la petite cible assez isolée pour qu'un cercle de 24 px centré sur
-elle ne croise aucune autre cible. Idée reçue : « il faut 44 px ». C'est le seuil du
-critère 2.5.5, de niveau AAA.
+redimensionné, et la petite cible isolée, quand un cercle de 24 px centré sur elle
+ne croise ni une autre cible ni le cercle d'une voisine trop petite. Idée reçue :
+« il faut 44 px ». C'est le seuil du critère 2.5.5, de niveau AAA.
 
 **Glisser.** Le piège : croire qu'un raccourci clavier suffit. Le critère exige une
 alternative **au pointeur**, sans glisser, car un écran tactile n'a pas de clavier.
@@ -136,7 +135,8 @@ Liste triable : boutons monter et descendre. Carrousel : précédent et suivant.
 ### Authentification : pas de test cognitif à la connexion
 
 Retenir un mot de passe, recopier un code, résoudre un puzzle : ce sont des **tests
-de fonction cognitive**. WCAG les tolère seulement avec une aide ou une alternative.
+de fonction cognitive**. WCAG ne les admet qu'avec une aide ou une alternative ; au
+niveau AA, la reconnaissance d'objets reste tolérée.
 
 :::compare
 ::bad
@@ -169,9 +169,9 @@ connexion par e-mail, ou passkeys (voir `/web/senior/passkeys`).
 
 **Saisie redondante.** Dans un même processus (un tunnel de commande), une
 information déjà saisie est préremplie ou proposée au choix : la case « Identique à
-l'adresse de livraison » en est l'exemple type. Idée reçue : « le navigateur remplit
-tout seul, donc c'est bon ». Non : le W3C précise que c'est au site de fournir la
-donnée. Exceptions : la sécurité (confirmer un mot de passe), une donnée périmée.
+l'adresse de livraison » est un classique. Idée reçue : « le navigateur remplit tout
+seul, donc c'est bon ». Non : le W3C précise que c'est au site de fournir la donnée.
+Exceptions : une ressaisie exigée par la sécurité, une donnée qui n'est plus valide.
 
 **Aide cohérente.** Le critère n'oblige pas à proposer une aide. Mais si un lien de
 contact, un chat ou une FAQ apparaît sur plusieurs pages, il garde le même ordre par
