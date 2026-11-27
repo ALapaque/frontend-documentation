@@ -26,7 +26,6 @@ as repeint la page sans jamais **dire au navigateur** qu'elle sait être sombre.
 Ce silence commence à se voir. D'après WebKit, près de 40 % des chargements de page
 viennent d'utilisateurs en mode sombre, et 10 % seulement des chargements le prennent
 en charge. Safari teste donc un mode qui assombrit lui-même les pages restées muettes.
-Autant décider toi-même.
 
 ## `color-scheme` : annoncer ce que la page sait faire
 
@@ -56,11 +55,7 @@ C'est le maillon qui manque au theming par `data-theme` vu dans
 [custom properties](/css/senior/custom-properties) : sous `[data-theme="dark"]`, la
 page est sombre, mais les scrollbars, `<select>` et `<input type="date">` restent
 clairs. Les contrôles natifs ne lisent pas tes tokens, ils suivent le schéma de
-l'élément. Une déclaration suffit :
-
-```css
-[data-theme="dark"] { color-scheme: dark; --bg: #111; --fg: #eee; }
-```
+l'élément : ajoute `color-scheme: dark` à ce bloc et ils s'alignent.
 
 :::callout{type="warn"}
 N'annonce que ce que tu tiens. Avec `color-scheme: light dark` et un `background: white`
@@ -166,9 +161,9 @@ Ces quelques lignes synchrones ne coûtent rien ; un module différé arriverait
 premier rendu. Avec une CSP stricte, ce script demande un `nonce` ou un hash.
 
 :::callout{type="tip"}
-Autre voie en SSR : stocker le choix dans un **cookie**, que le serveur lit pour rendre
-`<html data-theme="dark">` directement. Plus aucun script, mais le HTML varie d'un
-utilisateur à l'autre : il ne se met plus en cache partagé tel quel.
+Autre voie en SSR : un **cookie**, que le serveur lit pour rendre directement
+`<html data-theme="dark">`. Plus de script, mais un HTML qui varie par utilisateur :
+il ne se met plus en cache partagé tel quel.
 :::
 
 ## Images et médias
@@ -209,8 +204,7 @@ bouger d'ici la version stable.
 Quand l'utilisateur l'active, avec un système en apparence sombre, Safari assombrit
 lui-même les pages claires. La décision se prend en deux temps :
 
-1. La page déclare `color-scheme: light dark` (balise `<meta>` ou CSS) : Safari ne
-   touche à **rien**.
+1. La page déclare `color-scheme: light dark` (`<meta>` ou CSS) : il ne touche à rien.
 2. Sinon, il analyse les couleurs. Fond sombre et texte clair : rien ne change. Page
    claire : elle est transformée.
 
@@ -221,11 +215,8 @@ jamais modifié. Ton code ne peut pas le détecter : JavaScript relit les couleu
 d'origine, pas les couleurs transformées.
 
 Un theming par `data-theme` sans `color-scheme` tombe en plein dedans : thème clair
-affiché, système sombre, page réécrite par une heuristique. Pour refuser :
-
-```html
-<meta name="color-scheme" content="light only">
-```
+affiché, système sombre, page réécrite par une heuristique. Pour refuser, annonce
+`<meta name="color-scheme" content="light only">`.
 
 `color-scheme: light only` fait la même chose en CSS, sur `:root` ou sur un seul
 élément (une carte, un aperçu de document) ; Safari reconnaît `only` depuis la bêta 2
@@ -249,16 +240,12 @@ disponibles, couvrent les besoins de contraste.
   box-shadow: 0 0 0 3px var(--focus);
   outline: 2px solid transparent; /* invisible ici, repeint en couleurs forcées */
 }
-
-@media (forced-colors: active) {
-  .onglet[aria-selected="true"] { border-block-end: 3px solid Highlight; }
-}
 ```
 
 Tout état porté par une ombre ou un seul fond s'efface en couleurs forcées : double-le
 d'une bordure ou d'un `outline`, et nomme les couleurs système (`Canvas`, `CanvasText`,
-`Highlight`, `ButtonText`). Elles suivent aussi `color-scheme`, donc elles marchent
-partout. Le reste du sujet est dans [accessibilité](/web/senior/accessibility).
+`Highlight`, `ButtonText`) dans un `@media (forced-colors: active)`. Elles suivent
+aussi `color-scheme`. Le reste est dans [accessibilité](/web/senior/accessibility).
 
 ## À retenir
 
