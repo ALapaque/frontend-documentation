@@ -29,6 +29,7 @@ const TAGLINE: Record<Framework, string> = {
   tooling: 'Vite, Rolldown, Vitest, Biome, monorepo. La chaîne qui build, teste et lint.',
   architecture: 'Monorepo, DDD, TDD, FDD, slices verticales. Les patterns qui tiennent à l\'échelle, côté front.',
   ia: 'LLM, agents, MCP, IA dans le navigateur. L\'IA côté front, sans hype.',
+  javascript: 'Closures, promesses, event loop, itérateurs. Le langage sous les frameworks, mécanismes et pièges.',
 };
 
 @Component({

@@ -24,6 +24,7 @@ const TAGLINE: Record<Framework, string> = {
   tooling: 'Vite, Vitest, Biome.',
   architecture: 'Monorepo, DDD, TDD, slices.',
   ia: 'LLM, agents, MCP, UX de l\'IA.',
+  javascript: 'Closures, promesses, event loop.',
 };
 
 /** Glass Reverie landing — pastel mesh + glass cards + iridescent chrome word.
@@ -73,7 +74,7 @@ const TAGLINE: Record<Framework, string> = {
             <span class="stat-lbl label-mono">Articles</span>
           </div>
           <div class="stat">
-            <span class="stat-num" data-count="9">0</span>
+            <span class="stat-num" data-count="10">0</span>
             <span class="stat-lbl label-mono">Sections</span>
           </div>
           <div class="stat">
