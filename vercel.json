@@ -3,6 +3,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist/frontend-documentation/browser",
   "framework": null,
+  "redirects": [
+    { "source": "/css/next/css-2026", "destination": "/css/next/css-2027", "permanent": true },
+    { "source": "/web/next/web-platform-2026", "destination": "/web/next/web-platform-2027", "permanent": true },
+    { "source": "/tooling/next/tooling-2026", "destination": "/tooling/next/tooling-2027", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/og/(.*)",

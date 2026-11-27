@@ -133,9 +133,9 @@ export const CHANGELOG: readonly ChangelogEntry[] = [
     title: "L'horizon 2026 des fondamentaux",
     note: "Ce qui arrive côté plateforme web, CSS et outillage : Temporal, if(), Rolldown et le reste.",
     modules: [
-      { framework: 'web', level: 'next', slug: 'web-platform-2026' },
-      { framework: 'css', level: 'next', slug: 'css-2026' },
-      { framework: 'tooling', level: 'next', slug: 'tooling-2026' },
+      { framework: 'web', level: 'next', slug: 'web-platform-2027' },
+      { framework: 'css', level: 'next', slug: 'css-2027' },
+      { framework: 'tooling', level: 'next', slug: 'tooling-2027' },
     ],
   },
   {
