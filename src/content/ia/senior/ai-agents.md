@@ -6,13 +6,14 @@ level: "senior"
 order: 4
 duration: 17
 prerequisites: ["ai-sdk", "mcp"]
-updated: 2026-09-24
+updated: 2026-11-27
 seoTitle: "Agents IA — boucle think-act-observe, outils, mémoire et garde-fous"
-seoDescription: "Ce qui distingue un agent d'un simple appel LLM : la boucle think-act-observe, l'abstraction ToolLoopAgent, des outils bien conçus, la gestion du contexte, l'approbation d'outil (needsApproval) et les garde-fous sans lesquels un agent part en vrille."
+seoDescription: "Ce qui distingue un agent d'un simple appel LLM : la boucle think-act-observe, l'abstraction ToolLoopAgent, des outils bien conçus, la gestion du contexte, l'approbation d'outil (toolApproval) et les garde-fous sans lesquels un agent part en vrille."
 ogVariant: "sage"
 related:
   - { framework: "ia", slug: "ai-sdk" }
   - { framework: "ia", slug: "mcp" }
+  - { framework: "ia", slug: "ai-sdk-7" }
 ---
 
 Un appel LLM classique est une fonction : une entrée, une sortie, terminé. Un
@@ -28,12 +29,12 @@ les effets de bord.
 ## La boucle think-act-observe
 
 ```ts
-import { generateText, stepCountIs } from 'ai';
+import { generateText, isStepCount } from 'ai';
 
 const { text, steps } = await generateText({
-  model: openai('gpt-5'),
+  model: openai('gpt-6-astra'),
   tools: { chercherCommande, rembourser },
-  stopWhen: stepCountIs(8),   // borne DURE : sans elle, la boucle peut ne pas finir
+  stopWhen: isStepCount(8),   // borne DURE : sans elle, la boucle peut ne pas finir
   prompt: 'Le client 4021 veut un remboursement sur sa dernière commande.',
 });
 ```
@@ -48,7 +49,9 @@ quand **ta** borne l'arrête.
 La borne d'arrêt n'est pas une option de confort. Sans `stopWhen`, un agent qui
 se trompe peut boucler indéfiniment sur le même outil, brûler ton budget en
 quelques minutes et saturer ton API. Fixe **toujours** un nombre maximal d'étapes,
-et de préférence aussi un plafond de tokens et un délai.
+et de préférence aussi un plafond de tokens et un délai. Le délai est natif :
+l'option `timeout` borne l'appel entier (`totalMs`), chaque étape (`stepMs`) ou
+chaque exécution d'outil (`toolMs`).
 :::
 
 ## Ne réécris pas la boucle : l'abstraction `Agent`
@@ -62,10 +65,10 @@ outils demandés, réinjecte les résultats et recommence.
 import { ToolLoopAgent } from 'ai';
 
 export const agentPanier = new ToolLoopAgent({
-  model: 'anthropic/claude-sonnet-4.5',
+  model: 'anthropic/claude-sonnet-5.5',
   instructions: 'Tu assistes le service client sur les commandes.',
   tools: { chercherCommande, rembourser },
-  // stopWhen: stepCountIs(20) par défaut
+  // stopWhen: isStepCount(20) par défaut
 });
 
 const resultat = await agentPanier.generate({
@@ -74,39 +77,57 @@ const resultat = await agentPanier.generate({
 ```
 
 L'agent se définit **une fois** et se réutilise partout, avec `generate()` ou
-`stream()`. La borne d'arrêt existe par défaut (`stepCountIs(20)`) — mais reste à
+`stream()`. La borne d'arrêt existe par défaut (`isStepCount(20)`) — mais reste à
 ajuster : 20 étapes sur un modèle coûteux, c'est déjà une facture.
 
 :::callout{type="tip"}
-`Agent` étant une interface, d'autres implémentations couvrent des besoins
-différents — notamment l'**exécution durable et reprenable**, où l'état de la
-boucle survit à un redémarrage de processus. C'est ce qu'il faut viser dès qu'un
-agent travaille plusieurs minutes : sans durabilité, un déploiement en cours de
-tâche perd tout.
+`ToolLoopAgent` tourne en mémoire : si le processus tombe, la tâche en cours est
+perdue. Pour une **exécution durable et reprenable**, où l'état de la boucle
+survit à un redémarrage de processus, l'AI SDK fournit `WorkflowAgent` (paquet
+`@ai-sdk/workflow`) : chaque exécution d'outil y devient une étape durable. C'est
+ce qu'il faut viser dès qu'un agent travaille plusieurs minutes : sans
+durabilité, un déploiement en cours de tâche perd tout. Attention, ce n'est pas
+un remplacement à l'identique : `WorkflowAgent` n'implémente pas l'interface
+`Agent`, et ses options diffèrent de celles de `ToolLoopAgent`.
 :::
 
 ## L'approbation d'outil, désormais native
 
 Le garde-fou le plus important — faire valider les actions irréversibles par un
-humain — ne demande plus de plomberie maison. Il se déclare **sur l'outil** :
+humain — ne demande plus de plomberie maison. Depuis l'AI SDK 7, il se déclare
+avec `toolApproval`, **sur l'appel ou sur l'agent** :
 
 ```ts
 export const rembourser = tool({
   description: 'Rembourse une commande.',
   inputSchema: z.object({ commandeId: z.string(), montant: z.number() }),
-  needsApproval: true,                     // toujours demander
   execute: async ({ commandeId, montant }) => effectuerRemboursement(commandeId, montant),
 });
 
+export const agentPanier = new ToolLoopAgent({
+  model: 'anthropic/claude-sonnet-5.5',
+  instructions: 'Tu assistes le service client sur les commandes.',
+  tools: { chercherCommande, rembourser },
+  toolApproval: { rembourser: 'user-approval' },   // toujours demander
+});
+
 // ou conditionnellement, selon les arguments :
-needsApproval: async ({ montant }) => montant > 100,
+toolApproval: {
+  rembourser: async ({ montant }) => (montant > 100 ? 'user-approval' : undefined),
+},
 ```
+
+Quand `rembourser` est appelé, l'agent n'exécute pas l'outil : il émet une demande
+d'approbation et attend la réponse. `needsApproval`, qui se déclarait sur l'outil
+en v6, fonctionne encore mais est déprécié (renvoi à `/ia/next/ai-sdk-7`).
 
 **Pourquoi la forme conditionnelle change tout.** Exiger une approbation sur
 *chaque* appel fatigue l'utilisateur, qui finit par tout valider sans lire — le
 garde-fou devient décoratif. Conditionner l'approbation au **risque réel** (un
 montant, une commande destructive, un périmètre élargi) garde l'attention humaine
-là où elle compte.
+là où elle compte. Et comme la règle vit sur l'appel ou sur l'agent, tu peux la
+faire varier d'une requête à l'autre — selon les droits de l'utilisateur, par
+exemple.
 
 ## Un outil est une API pour un lecteur non fiable
 
@@ -205,8 +226,8 @@ que le modèle **ne peut pas franchir lui-même** :
   et suspendre la boucle.
 - **Moindre privilège** : les outils exposés portent les droits de
   l'utilisateur courant, pas ceux d'un compte de service tout-puissant.
-- **Budget et délai** : plafond d'étapes, de tokens, de temps. Journalisé et
-  alarmé.
+- **Budget et délai** : plafond d'étapes (`stopWhen`), de tokens, de temps
+  (`timeout`). Journalisé et alarmé.
 - **Idempotence** : un agent peut réessayer. Un outil de paiement doit porter une
   clé d'idempotence, sinon un retry facture deux fois.
 
@@ -240,7 +261,7 @@ n'ajoute de la structure que quand tu peux prouver qu'elle sert.
 - title: "think-act-observe"
   desc: "Le modèle choisit un outil, le runtime l'exécute, le résultat repart au modèle. Jusqu'à la borne."
 - title: "stopWhen obligatoire"
-  desc: "Borne d'étapes + plafond de tokens + délai. Sans ça, une boucle en erreur brûle le budget."
+  desc: "Borne d'étapes + plafond de tokens + délai (option timeout : total, étape, outil). Sans ça, une boucle en erreur brûle le budget."
 - title: "L'outil est un prompt"
   desc: "Nom, description et schéma sont ce que le modèle voit. Enum plutôt que string libre."
 - title: "Erreurs pédagogiques"
@@ -250,9 +271,9 @@ n'ajoute de la structure que quand tu peux prouver qu'elle sert.
 - title: "Un agent d'abord"
   desc: "Multi-agents = latence et débogage. Beaucoup de sous-agents sont en fait de simples fonctions."
 - title: "ToolLoopAgent"
-  desc: "L'implémentation prête pour la prod de l'interface Agent. Définir une fois, generate() ou stream()."
-- title: "needsApproval"
-  desc: "Approbation déclarée sur l'outil, idéalement conditionnée au risque réel plutôt que systématique."
+  desc: "L'implémentation prête pour la prod de l'interface Agent. Définir une fois, generate() ou stream(). Pour du durable : WorkflowAgent."
+- title: "toolApproval"
+  desc: "Approbation déclarée sur l'appel ou l'agent ('user-approval' ou fonction par outil), conditionnée au risque réel. needsApproval est déprécié."
 - title: "Droits dans le code"
   desc: "Jamais dans le prompt. Moindre privilège, approbation humaine sur l'irréversible, idempotence."
 :::

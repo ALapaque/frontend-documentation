@@ -6,7 +6,7 @@ level: "medior"
 order: 8
 duration: 15
 prerequisites: ["selectors"]
-updated: 2026-07-09
+updated: 2026-11-27
 seoTitle: "Styliser les formulaires en CSS moderne — accent-color, field-sizing, select personnalisable"
 seoDescription: "Enfin styliser les contrôles natifs sans les réécrire en JS : accent-color pour cases et radios, field-sizing pour des champs qui s'adaptent, et le <select> personnalisable (appearance: base-select, ::picker) qui remplace les combobox maison."
 ogVariant: "gold"
@@ -190,10 +190,21 @@ Ces primitives n'ont pas toutes la même maturité :
 
 - `accent-color`, `caret-color`, `::selection` : largement gérés, sûrs partout.
 - `::details-content` : Baseline depuis 2025, sûr sur les versions récentes.
-- `field-sizing: content` : Chrome, Edge et Safari ; Firefox ne le gère pas encore.
+- `field-sizing: content` : Baseline « Newly available » depuis le 16 juin 2026
+  (Chrome 123, Safari 26.2, Firefox 152) ; garde un repli pour les versions d'avant.
 - `<select>` personnalisable (`base-select`, `::picker`, `selectedcontent`,
-  `::checkmark`) : d'abord Chrome/Edge (135+), Safari en cours ; pas encore
-  Baseline début 2026.
+  `::checkmark`) : Chrome/Edge 135+ et Safari 27 (septembre 2026) ; dans Firefox,
+  encore derrière des préférences (depuis la 149). Pas encore Baseline en
+  novembre 2026.
+
+:::callout{type="info"}
+Safari 27 applique à `appearance: base-select` de nouveaux styles par défaut, revus
+pendant sa bêta. WebKit les a proposés au CSS Working Group, et les autres moteurs
+ne s'y sont pas encore alignés : le rendu de départ diffère donc d'un navigateur à
+l'autre. Pose explicitement les styles qui comptent pour toi. Safari 27.2 ajoute
+aussi `::field-content`, pour styliser le texte de l'option choisie quand tu ne
+fournis pas de `<selectedcontent>` — propre à Safari en novembre 2026.
+:::
 
 La dégradation est gratuite : un `<select>` sans support de `base-select` reste un
 `<select>` natif pleinement fonctionnel — l'utilisateur voit simplement le rendu
@@ -221,7 +232,8 @@ du système.
 Le réflexe « masquer et reconstruire en JS » n'est plus la norme. On teinte, on
 dimensionne et on habille les contrôles **natifs**, en préservant leur
 accessibilité sans la moindre ligne de script. Les briques matures (`accent-color`,
-`::details-content`) sont utilisables tout de suite ; le `<select>` personnalisable
+`::details-content`) sont utilisables tout de suite, et `field-sizing` est Baseline
+depuis juin 2026 ; le `<select>` personnalisable
 se pose derrière `@supports`, sûr grâce à sa dégradation vers le contrôle natif.
 
 :::cheatsheet

@@ -33,6 +33,26 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: readonly ChangelogEntry[] = [
   {
+    id: 'veille-javascript-horizons-2026-11',
+    date: '2026-11-27',
+    title: 'Section JavaScript, horizons 2027 et 19 nouveaux articles',
+    note: "Le langage a enfin sa section : closures, promesses, event loop. Les horizons CSS, Web et Outils passent en édition 2027. Côté actualité : AI SDK 7, MCP sans état, TypeScript 7.1, Nuxt 5 et les frontières d'erreur d'Angular. Côté fondamentaux : responsive design, mode sombre, authentification, WCAG 2.2 et sécurité des dépendances npm. Vingt-neuf articles existants ont aussi été corrigés.",
+    modules: [
+      { framework: 'javascript', level: 'junior', slug: 'scope-closures' },
+      { framework: 'javascript', level: 'junior', slug: 'promises-async-await' },
+      { framework: 'javascript', level: 'medior', slug: 'event-loop' },
+      { framework: 'ia', level: 'next', slug: 'ai-sdk-7' },
+      { framework: 'ia', level: 'next', slug: 'mcp-2026' },
+      { framework: 'typescript', level: 'next', slug: 'typescript-7-1' },
+      { framework: 'vue', level: 'next', slug: 'nuxt-5' },
+      { framework: 'angular', level: 'medior', slug: 'error-boundaries' },
+      { framework: 'react', level: 'senior', slug: 'nextjs-app-router' },
+      { framework: 'tooling', level: 'medior', slug: 'npm-supply-chain-security' },
+      { framework: 'web', level: 'senior', slug: 'auth-sessions-oauth' },
+      { framework: 'css', level: 'junior', slug: 'responsive-design' },
+    ],
+  },
+  {
     id: 'react-19-3-router-resources-2026-09',
     date: '2026-09-24',
     title: 'React 19.3 et les Router Resources Angular',
@@ -133,9 +153,9 @@ export const CHANGELOG: readonly ChangelogEntry[] = [
     title: "L'horizon 2026 des fondamentaux",
     note: "Ce qui arrive côté plateforme web, CSS et outillage : Temporal, if(), Rolldown et le reste.",
     modules: [
-      { framework: 'web', level: 'next', slug: 'web-platform-2026' },
-      { framework: 'css', level: 'next', slug: 'css-2026' },
-      { framework: 'tooling', level: 'next', slug: 'tooling-2026' },
+      { framework: 'web', level: 'next', slug: 'web-platform-2027' },
+      { framework: 'css', level: 'next', slug: 'css-2027' },
+      { framework: 'tooling', level: 'next', slug: 'tooling-2027' },
     ],
   },
   {

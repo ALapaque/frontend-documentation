@@ -6,7 +6,7 @@ level: "medior"
 order: 10
 duration: 16
 prerequisites: ["events"]
-updated: 2026-07-09
+updated: 2026-11-27
 seoTitle: "View Transitions API — transitions same-document et cross-document (MPA)"
 seoDescription: "Animer le passage entre deux états du DOM avec la View Transitions API : document.startViewTransition, view-transition-name, l'arbre de pseudo-éléments à personnaliser en CSS, et les transitions cross-document pour les sites multipages."
 ogVariant: "iris"
@@ -129,8 +129,10 @@ window.addEventListener("pageswap", (e) => {
 ```
 
 :::callout{type="info"}
-Le support est désormais large. Les transitions **same-document** sont disponibles dans les navigateurs à moteur Chromium depuis 2023 ; les transitions **cross-document** (`@view-transition`) ont atteint le statut **Baseline** début 2026, prises en charge par les versions récentes de Chrome, Edge, Safari et Firefox. Le `if (!document.startViewTransition)` reste un bon réflexe : sans prise en charge, la mutation s'applique sans animation, ce qui est un dégradé acceptable.
+Le support dépend du type de transition. Les transitions **same-document** sont **Baseline** depuis le 14 octobre 2025 (Chrome 111, Safari 18, Firefox 144). Les transitions **cross-document** (`@view-transition`) ne le sont pas encore : en novembre 2026, Chrome et Edge 126+ et Safari 18.2+ les gèrent, mais Firefox 161 (stable) ne les active que dans Nightly. L'activation par défaut arrive avec Firefox 162, en bêta, dont la sortie est prévue le 8 décembre 2026 ; d'ici là, la navigation s'y fait simplement sans animation. Côté same-document, le `if (!document.startViewTransition)` reste un bon réflexe : sans prise en charge, la mutation s'applique sans animation, ce qui est un dégradé acceptable.
 :::
+
+Dernière brique en date : les view transitions **à portée d'élément**. `element.startViewTransition()` limite la transition à un sous-arbre, et plusieurs transitions peuvent tourner en parallèle sur des éléments distincts. En novembre 2026, seul Chromium les gère (Chrome 147+).
 
 ## La promesse retournée : finished, ready, updateCallbackDone
 

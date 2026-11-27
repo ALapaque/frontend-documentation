@@ -6,16 +6,17 @@ level: "medior"
 order: 2
 duration: 15
 prerequisites: ["chat-streaming-ui"]
-updated: 2026-07-08
+updated: 2026-11-27
 seoTitle: "AI SDK (Vercel) — streamText, useChat, tool calling, structured output"
 seoDescription: "Le standard de facto pour brancher un LLM dans une app front : streamText côté serveur, useChat côté client, tool calling typé, structured output avec Zod, multi-provider (Anthropic, OpenAI, Google) sans réécriture."
 ogVariant: "gold"
 related:
   - { framework: "ia", slug: "chat-streaming-ui" }
   - { framework: "ia", slug: "mcp" }
+  - { framework: "ia", slug: "ai-sdk-7" }
 ---
 
-Tu sais coder le streaming d'un chat à la main — SSE, `ReadableStream`, parsing des chunks (article *chat-streaming-ui*). C'est le bon réflexe pour comprendre ce qui circule. Mais en production, tu réécrirais à chaque projet la même plomberie : format de stream, état des messages, boucle d'appels d'outils. En 2026, l'**AI SDK** (le paquet `ai`, créé par Vercel, open source) est devenu le standard de facto pour ça : une API unique au-dessus des providers, le streaming câblé de bout en bout, des outils typés avec Zod. Le SDK en est à sa version majeure 7 (sortie début juillet 2026), mais la forme d'API décrite ici — `streamText`, `useChat`, `tool`, `generateObject` — est stable depuis la v5. Deux couches : **AI SDK Core** (côté serveur, agnostique du framework) et **AI SDK UI** (les hooks côté client).
+Tu sais coder le streaming d'un chat à la main — SSE, `ReadableStream`, parsing des chunks (article *chat-streaming-ui*). C'est le bon réflexe pour comprendre ce qui circule. Mais en production, tu réécrirais à chaque projet la même plomberie : format de stream, état des messages, boucle d'appels d'outils. En 2026, l'**AI SDK** (le paquet `ai`, créé par Vercel, open source) est devenu le standard de facto pour ça : une API unique au-dessus des providers, le streaming câblé de bout en bout, des outils typés avec Zod. Le SDK en est à sa version majeure 7 (sortie le 25 juin 2026) : ESM uniquement, Node.js 22 minimum. Les briques décrites ici — `streamText`, `useChat`, `tool` — existent depuis la v5, mais la v7 renomme plusieurs options : les extraits ci-dessous sont en forme v7 (le détail de la migration est dans l'article *ai-sdk-7*). Deux couches : **AI SDK Core** (côté serveur, agnostique du framework) et **AI SDK UI** (les hooks côté client).
 
 ## Pourquoi une abstraction provider
 
@@ -25,8 +26,8 @@ Chaque fournisseur de modèles a son API propriétaire : formats de messages, pa
 import { streamText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic"; // ou @ai-sdk/openai, @ai-sdk/google...
 const result = streamText({
-  model: anthropic("claude-sonnet-4-5"),
-  // model: openai("gpt-5"), model: google("gemini-2.5-pro") — rien d'autre ne change
+  model: anthropic("claude-sonnet-5-5"),
+  // model: openai("gpt-6-astra"), model: google("gemini-4-argon") — rien d'autre ne change
   prompt: "Résume ce ticket en une phrase.",
 });
 ```
@@ -38,24 +39,27 @@ const result = streamText({
 Côté serveur, `streamText` lance la génération et rend un résultat streamable. Dans un route handler (Next.js ici, mais n'importe quel serveur JS fait l'affaire), tu convertis les messages UI reçus du client, puis tu renvoies la réponse au format de stream du SDK.
 
 ```ts app/api/chat/route.ts
-import { streamText, convertToModelMessages, type UIMessage } from "ai";
+import {
+  streamText, convertToModelMessages, toUIMessageStream,
+  createUIMessageStreamResponse, type UIMessage,
+} from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
   const result = streamText({
-    model: anthropic("claude-sonnet-4-5"),
-    system: "Tu es un assistant concis. Réponds en français.",
-    messages: convertToModelMessages(messages),
+    model: anthropic("claude-sonnet-5-5"),
+    instructions: "Tu es un assistant concis. Réponds en français.",
+    messages: await convertToModelMessages(messages),
   });
-  return result.toUIMessageStreamResponse();
+  return createUIMessageStreamResponse({ stream: toUIMessageStream({ stream: result.stream }) });
 }
 ```
 
-**Pourquoi.** Le SDK distingue deux représentations : `UIMessage` (l'état complet côté client — texte, appels d'outils, métadonnées) et `ModelMessage` (la version épurée envoyée au modèle). `convertToModelMessages` fait le pont, et `toUIMessageStreamResponse()` renvoie une réponse HTTP en SSE que le client du SDK sait consommer — exactement la plomberie que tu codais à la main, en une ligne. Note : la v7 renomme certaines options (`system` devient `instructions`) et fait évoluer les helpers de réponse ; la forme montrée ici est celle documentée en v5/v6, encore présente en v7, et un codemod officiel (`npx @ai-sdk/codemod`) automatise la migration — vérifie la doc de **ta** version installée.
+**Pourquoi.** Le SDK distingue deux représentations : `UIMessage` (l'état complet côté client — texte, appels d'outils, métadonnées) et `ModelMessage` (la version épurée envoyée au modèle). `convertToModelMessages` fait le pont ; `toUIMessageStream` transforme le flux du modèle en flux de messages UI, et `createUIMessageStreamResponse` l'emballe dans une réponse HTTP en SSE que le client du SDK sait consommer — exactement la plomberie que tu codais à la main, en une ligne. Note : dans du code v5/v6, tu verras `system` (devenu `instructions`) et `result.toUIMessageStreamResponse()`. Les deux fonctionnent encore en v7, mais sont dépréciés, et le helper de réponse sera retiré à la prochaine majeure. Un codemod officiel (`npx @ai-sdk/codemod v7`) automatise la migration — vérifie la doc de **ta** version installée.
 
 ## useChat côté client
 
-Côté client, `useChat` gère l'état du chat : liste des messages, statut (`ready`, `submitted`, `streaming`, `error`), arrêt (`stop`) et relance (`regenerate`). Le même hook existe pour Vue, Svelte et Angular (`@ai-sdk/vue`, `@ai-sdk/svelte`, `@ai-sdk/angular`), avec la même API depuis la v5. Attention : depuis la v5, le hook ne gère plus le champ de saisie — c'est ton state à toi.
+Côté client, `useChat` gère l'état du chat : liste des messages, statut (`ready`, `submitted`, `streaming`, `error`), arrêt (`stop`) et relance (`regenerate`). Hors React, la forme varie : `@ai-sdk/vue` expose un composable `useChat` depuis la v7 (sa classe `Chat` y est dépréciée), tandis que `@ai-sdk/svelte` et `@ai-sdk/angular` exposent une classe `Chat`, avec le même état (`messages`, `status`, `error`). Attention : depuis la v5, le hook ne gère plus le champ de saisie — c'est ton state à toi.
 
 ```tsx
 import { useChat } from "@ai-sdk/react";
@@ -84,12 +88,12 @@ export function Chat() {
 Un outil, c'est une fonction que tu déclares et que **le modèle décide** d'appeler. Le SDK boucle pour toi : le modèle demande l'outil, le SDK exécute ton `execute`, renvoie le résultat au modèle, qui formule sa réponse finale.
 
 ```ts
-import { streamText, tool, stepCountIs, convertToModelMessages } from "ai";
+import { streamText, tool, isStepCount, convertToModelMessages } from "ai";
 import { z } from "zod";
 const result = streamText({
-  model: anthropic("claude-sonnet-4-5"),
-  messages: convertToModelMessages(messages),
-  stopWhen: stepCountIs(5), // autorise la boucle outil -> résultat -> réponse (5 étapes max)
+  model: anthropic("claude-sonnet-5-5"),
+  messages: await convertToModelMessages(messages),
+  stopWhen: isStepCount(5), // autorise la boucle outil -> résultat -> réponse (5 étapes max)
   tools: {
     meteo: tool({
       description: "Donne la météo actuelle pour une ville.",
@@ -100,7 +104,7 @@ const result = streamText({
 });
 ```
 
-**Pourquoi.** `inputSchema` (un schéma Zod) sert trois fois : il documente l'outil pour le modèle, il **valide** les arguments générés avant d'exécuter ton code, et il type `execute` — `ville` est un `string`, garanti. Sans `stopWhen`, la génération s'arrête après le premier appel d'outil ; avec, le SDK renvoie le résultat au modèle jusqu'à obtenir une vraie réponse.
+**Pourquoi.** `inputSchema` (un schéma Zod) sert trois fois : il documente l'outil pour le modèle, il **valide** les arguments générés avant d'exécuter ton code, et il type `execute` — `ville` est un `string`, garanti. Sans `stopWhen`, la génération s'arrête après le premier appel d'outil ; avec, le SDK renvoie le résultat au modèle jusqu'à obtenir une vraie réponse. `isStepCount` est le nom v7 ; `stepCountIs`, l'ancien, reste exporté comme alias.
 
 :::callout{type="warn"}
 Les arguments d'un outil sont **générés par un modèle**, donc non fiables par nature : valide-les comme une entrée utilisateur (le schéma Zod aide, mais vérifie aussi les droits et les bornes métier). Et ne branche jamais un outil destructif — suppression, paiement, envoi d'e-mail — sans confirmation humaine explicite avant `execute`.
@@ -108,7 +112,7 @@ Les arguments d'un outil sont **générés par un modèle**, donc non fiables pa
 
 ## Structured output
 
-Quand tu veux des **données** et pas de la prose — remplir un formulaire, extraire des tags, trier des tickets — n'espère pas un JSON propre en le demandant dans le prompt. `generateObject` contraint la sortie avec un schéma Zod.
+Quand tu veux des **données** et pas de la prose — remplir un formulaire, extraire des tags, trier des tickets — n'espère pas un JSON propre en le demandant dans le prompt. `generateText` avec `Output.object()` (`Output` s'importe depuis `ai`) contraint la sortie avec un schéma Zod.
 
 :::compare
 ::bad
@@ -119,23 +123,25 @@ const data = JSON.parse(text); // casse : bloc markdown, virgule en trop, phrase
 ::
 ::good
 ```ts
-const { object } = await generateObject({
-  model: anthropic("claude-sonnet-4-5"),
-  schema: z.object({ tags: z.array(z.string()).max(5), priorite: z.enum(["basse", "haute"]) }),
+const { output } = await generateText({
+  model: anthropic("claude-sonnet-5-5"),
+  output: Output.object({
+    schema: z.object({ tags: z.array(z.string()).max(5), priorite: z.enum(["basse", "haute"]) }),
+  }),
   prompt: `Classe ce ticket de support : ${ticket}`,
 });
 ```
 ::
 :::
 
-**Pourquoi.** À gauche, tu pries : le modèle peut entourer le JSON de markdown, inventer un champ, oublier une virgule — et `JSON.parse` explose en production. À droite, le SDK passe le schéma au mode de sortie structurée du provider, valide le résultat contre Zod, et rend un `object` **typé** (`priorite: "basse" | "haute"`) ou une erreur nette. Pour streamer un objet en cours de construction (un formulaire qui se remplit en direct), `streamObject` expose un `partialObjectStream`.
+**Pourquoi.** À gauche, tu pries : le modèle peut entourer le JSON de markdown, inventer un champ, oublier une virgule — et `JSON.parse` explose en production. À droite, le SDK passe le schéma au mode de sortie structurée du provider, valide le résultat contre Zod, et rend un `output` **typé** (`priorite: "basse" | "haute"`) ou une erreur nette. Pour streamer un objet en cours de construction (un formulaire qui se remplit en direct), `streamText` avec la même option `output` expose un `partialOutputStream`. `generateObject` et `streamObject`, que tu croiseras dans du code plus ancien, sont dépréciés.
 
 ## Production
 
 ```ts
 const result = streamText({
-  model: anthropic("claude-sonnet-4-5"),
-  messages: convertToModelMessages(messages.slice(-20)), // tronque l'historique
+  model: anthropic("claude-sonnet-5-5"),
+  messages: await convertToModelMessages(messages.slice(-20)), // tronque l'historique
   maxOutputTokens: 1024, maxRetries: 2,     // borne la sortie ; retente sur 429 / 5xx
   abortSignal: AbortSignal.timeout(30_000), // un provider qui rame ne bloque pas ton UI
   onError: ({ error }) => report(error),    // sinon l'erreur meurt en silence dans le stream
@@ -150,11 +156,11 @@ const result = streamText({
 - title: "Une API, N providers"
   desc: "Changer Anthropic / OpenAI / Google = changer la ligne model. Zéro lock-in d'API propriétaire."
 - title: "streamText + useChat"
-  desc: "Serveur : convertToModelMessages puis toUIMessageStreamResponse(). Client : messages, sendMessage, status, stop — React, Vue, Svelte, Angular. L'input reste ton state."
+  desc: "Serveur : convertToModelMessages puis toUIMessageStream + createUIMessageStreamResponse. Client : messages, sendMessage, status, stop — hook en React, composable en Vue, classe Chat en Svelte et Angular. L'input reste ton state."
 - title: "Tool calling"
-  desc: "tool({ inputSchema: zod, execute }) + stopWhen: stepCountIs(n). Valide tout, confirme le destructif."
+  desc: "tool({ inputSchema: zod, execute }) + stopWhen: isStepCount(n). Valide tout, confirme le destructif."
 - title: "Structured output"
-  desc: "generateObject / streamObject + schéma Zod : du JSON typé et validé, pas un « réponds en JSON » dans le prompt."
+  desc: "generateText / streamText + Output.object({ schema }) : du JSON typé et validé, pas un « réponds en JSON » dans le prompt."
 - title: "Production"
   desc: "maxOutputTokens, maxRetries, timeout, historique tronqué, prompt caching : borne les coûts et les pannes."
 :::

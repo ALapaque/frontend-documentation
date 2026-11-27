@@ -12,7 +12,7 @@ seoDescription: "CSS gagne de vraies fonctions personnalisées avec @function et
 ogVariant: "gold"
 related:
   - { framework: "css", slug: "custom-properties" }
-  - { framework: "css", slug: "css-2026" }
+  - { framework: "css", slug: "css-2027" }
 ---
 
 Une custom property **stocke** une valeur, mais ne **calcule pas de logique** :
@@ -23,9 +23,9 @@ avec un avantage que Sass ne pourra jamais avoir : c'est **dynamique au runtime*
 Là où Sass est figé à la compilation, une `@function` CSS réagit aux variables,
 aux media queries et aux container queries pendant que la page vit.
 
-Cet article approfondit les `@function` et les mixins. Pour le panorama 2026
-complet (avec `if()`, `sibling-index()`, masonry…), voir
-[l'horizon 2026](/css/next/css-2026).
+Cet article approfondit les `@function` et les mixins. Pour le panorama de ce qui
+est livré et de ce qui arrive (`if()`, `sibling-index()`, Grid Lanes…), voir
+[l'horizon 2027](/css/next/css-2027).
 
 ## `@function` : de vraies fonctions dans CSS
 
@@ -128,9 +128,9 @@ terminée par `else`.
 
 `if()` gère trois types de conditions : `style()` (sur une custom property),
 `media()` et `supports()`. C'est le complément naturel de `@function` : l'une
-produit la valeur, l'autre arbitre entre plusieurs. On approfondit `if()` — cas
-d'usage et pièges — dans [l'horizon 2026](/css/next/css-2026) ; retiens ici qu'elle
-vit dans la même vague « logique native » que `@function`.
+produit la valeur, l'autre arbitre entre plusieurs. Sa prise en charge, moteur
+par moteur, est suivie dans [l'horizon 2027](/css/next/css-2027) ; retiens ici
+qu'elle vit dans la même vague « logique native » que `@function`.
 
 ## Mixins : `@mixin` et `@apply`, encore une proposition
 
@@ -236,7 +236,7 @@ restent une **proposition** à ne pas mettre en production.
 - title: "Runtime vs Sass"
   desc: "`@function` réagit aux custom properties, media et container queries. Sass est figé au build."
 - title: "if(style(--x: v): a; else: b)"
-  desc: "Choisit une valeur selon `style()`, `media()` ou `supports()`. Détaillé dans css-2026."
+  desc: "Choisit une valeur selon `style()`, `media()` ou `supports()`. Prise en charge suivie dans css-2027."
 - title: "@mixin --m { … } / @apply --m"
   desc: "Réutilise un bloc de déclarations. PROPOSITION, non implémentée en stable (Canary + flag)."
 - title: "Statut 2026"

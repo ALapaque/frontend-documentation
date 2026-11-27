@@ -313,3 +313,57 @@ comparatifs (lue depuis `ContentService.compareTopics`), prerendue. Les liens
 « Comparer » (header) et « Comparatifs cross-framework » (hub) pointent désormais
 vers `/compare` au lieu d'un topic en dur. Catalogue : 8 → **15 comparatifs**,
 85 → **93 routes**.
+
+## 2026-11-27 — Veille de novembre : section JavaScript, horizons 2027, lot 1
+
+Analyse complète de la base (231 articles) croisée avec les versions publiées sur
+npm et les sources officielles : 114 thèmes identifiés, classés en quatre lots, et
+65 articles à corriger. Cette livraison traite les corrections confirmées et le
+lot 1.
+
+### Section JavaScript (10ᵉ section)
+
+Aucun article n'enseignait le langage : closures, promesses et event loop étaient
+supposés acquis partout. Décision : une section `javascript` propre plutôt que des
+articles rangés dans `web/`, placée entre CSS et TypeScript. Même câblage que la
+section IA (type `Fundamental`, libellé, accroches, logo, liste du compilateur).
+Premiers modules : `scope-closures`, `promises-async-await` (junior), `event-loop`
+(medior). `web/medior/es-modules` et `web/medior/temporal` restent dans `web/`.
+
+### Horizons 2026 remplacés, pas conservés
+
+Les trois articles `next/` de CSS, Web et Outils décrivaient comme à venir des
+choses livrées. Plutôt que de les corriger ligne à ligne, ils sont **supprimés** et
+remplacés par `css-2027`, `web-platform-2027` et `tooling-2027`. Les anciennes URL
+sont redirigées en 301 dans `vercel.json`, et les renvois internes mis à jour.
+Convention pour la suite : un horizon par an et par section, l'ancien est retiré
+quand son contenu est livré.
+
+### Corrections : double vérification avant d'écrire
+
+Un article n'a été corrigé que si le problème avait été confirmé par un second
+passage indépendant sur source primaire (passage cité, source rouverte). 29
+articles corrigés. Les articles seulement « datés » ou « mineurs », non
+recontrôlés, restent à traiter.
+
+### Lot 1 : 19 articles
+
+Rattrapage d'actualité (`ai-sdk-7`, `mcp-2026`, `typescript-7-1`, `nuxt-5`,
+`error-boundaries`, trois horizons) et trous de cursus (`component-testing`,
+`nextjs-app-router`, `npm-supply-chain-security`, `auth-sessions-oauth`,
+`wcag-22-eaa`, `responsive-design`, `dark-mode`, `agentic-coding-workflow`, trois
+modules JavaScript). Le niveau `next` de la section IA est ouvert à cette occasion.
+
+Chaque rédacteur a relu sur source primaire les API, versions et dates qu'il
+écrivait ; les statuts non stables sont signalés dans des encadrés datés. Une
+relecture factuelle indépendante de chaque article était prévue et n'a pas pu être
+menée : elle reste à faire, en priorité sur les articles `next/`.
+
+### Reporté
+
+- Lots 2 à 4 (95 thèmes).
+- Section Accessibilité : à arbitrer quand cinq ou six modules existeront ;
+  `wcag-22-eaa` est rangé dans `web/` en attendant.
+- Sections Tests, côté serveur, pratiques d'équipe, Svelte/Solid/Astro : écartées
+  pour l'instant, les sujets utiles vont dans les sections existantes.
+

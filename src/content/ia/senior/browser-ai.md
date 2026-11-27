@@ -12,7 +12,7 @@ seoDescription: "Faire tourner de l'IA côté client : WebGPU comme socle, trans
 ogVariant: "crimson"
 related:
   - { framework: "ia", slug: "llm-basics" }
-  - { framework: "web", slug: "web-platform-2026" }
+  - { framework: "web", slug: "web-platform-2027" }
 ---
 
 Tout ne mérite pas un appel API. Classifier un avis, calculer des embeddings pour une recherche, transcrire un mémo vocal : des modèles de quelques dizaines de Mo font ça très bien, directement dans l'onglet de l'utilisateur. L'inférence y est **gratuite**, **privée** et **offline**.

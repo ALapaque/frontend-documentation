@@ -97,7 +97,7 @@ Une `<Suspense>` boundary **par dépendance** indépendante. Skeleton avec les *
 </Page>
 ```
 
-`use()` côté client pour transformer une promesse en valeur synchrone — voir le module [concurrent-features](/react/medior/concurrent-features).
+`use()` côté client pour transformer une promesse en valeur synchrone — voir le module [concurrent-features](/react/senior/concurrent-features).
 
 ## Tests : Testing Library, pas Enzyme
 

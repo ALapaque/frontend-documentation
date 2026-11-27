@@ -6,7 +6,7 @@ level: "medior"
 order: 12
 duration: 16
 prerequisites: ["internationalization"]
-updated: 2026-09-24
+updated: 2026-11-27
 seoTitle: "Temporal API — remplacer Date : immutabilité, fuseaux et durées sans piège"
 seoDescription: "La Temporal API corrige 25 ans de pièges de Date : objets immuables, types distincts (PlainDate, ZonedDateTime, Duration), gestion explicite des fuseaux et calendriers, arithmétique de dates fiable. Le modèle et le support en 2026."
 ogVariant: "iris"
@@ -145,13 +145,13 @@ La bonne division du travail : Temporal **modélise et calcule** le temps, `Intl
 
 ## Support en 2026 et polyfill
 
-Temporal a atteint le **stade 4** de TC39 en mars 2026 : l'API fait désormais partie de **ES2026**, sa forme est figée. Côté navigateurs, l'adoption est réelle mais pas universelle.
+Temporal a atteint le **stade 4** de TC39 en mars 2026 : sa forme est figée, et TC39 prévoit sa publication dans **ES2027**. Côté navigateurs, l'adoption est réelle mais pas universelle.
 
 - **Firefox** a shippé le premier, dès la version 139 (mai 2025), activé par défaut.
-- **Chrome** a suivi avec la version 144 (janvier 2026).
-- **Edge** l'expose en beta, **Safari** l'a dans sa Technology Preview — pas encore en stable.
-- Sur mobile, seul Firefox le gère nativement pour l'instant.
-- Côté serveur, **Node 26** (mai 2026, LTS en octobre) active **Temporal par défaut**.
+- **Chrome** a suivi avec la version 144 (janvier 2026), et **Edge** 144 avec lui.
+- **Safari** ferme la marche : en novembre 2026, Temporal figure dans Safari 27.3, encore en bêta — pas encore en stable, donc pas encore Baseline.
+- Sur mobile, Chrome Android (144) et Firefox Android le gèrent nativement ; il manque Safari sur iOS.
+- Côté serveur, **Node 26** (mai 2026, LTS en octobre) active **Temporal par défaut** ; **Deno 2.7** et **Bun 1.4** le gèrent aussi.
 
 :::callout{type="tip"}
 La conséquence pratique est une asymétrie à assumer : sur un projet SSR ou
@@ -161,7 +161,7 @@ rendu serveur, le gain est immédiat et sans coût de bundle.
 :::
 
 :::callout{type="warn"}
-En clair : tu ne peux pas encore compter sur Temporal natif partout, surtout sur mobile hors Firefox. Vérifie ta cible réelle avant de t'en passer d'un polyfill.
+En clair : tu ne peux pas encore compter sur Temporal natif partout, surtout sur Safari, iOS compris. Vérifie ta cible réelle avant de t'en passer d'un polyfill.
 :::
 
 Deux polyfills officiels comblent le manque : **`@js-temporal/polyfill`**, maintenu par les champions de la proposition (la référence), et **`temporal-polyfill`** de l'équipe FullCalendar, plus léger et plus rapide. Les deux détectent l'implémentation native et s'effacent quand elle existe.
@@ -186,5 +186,5 @@ Un polyfill de dates ajoute du poids au bundle — pèse-le. Si ton audience est
 - title: "Affichage = Intl"
   desc: "toLocaleString délègue à Intl pour l'humain ; toString() produit de l'ISO 8601 pour stocker."
 - title: "Support 2026"
-  desc: "ES2026, natif Firefox 139+, Chrome 144+ et Node 26 ; Edge/Safari en cours, polyfill sinon."
+  desc: "ES2027, natif Firefox 139+, Chrome/Edge 144+, Node 26, Deno 2.7, Bun 1.4 ; Safari 27.3 en bêta (nov. 2026), polyfill sinon."
 :::

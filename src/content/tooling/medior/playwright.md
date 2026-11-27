@@ -6,7 +6,7 @@ level: "medior"
 order: 5
 duration: 16
 prerequisites: ["vitest"]
-updated: 2026-07-09
+updated: 2026-11-27
 seoTitle: "Playwright — tests E2E sans flakiness : auto-waiting, locators et Trace Viewer"
 seoDescription: "Playwright rend les tests end-to-end fiables : auto-waiting qui tue le flaky, locators par rôle accessible, web-first assertions qui réessaient, fixtures isolées et Trace Viewer pour déboguer un échec de CI image par image."
 ogVariant: "sage"
@@ -185,14 +185,23 @@ paiement, checkout).
 
 Playwright gère aussi d'autres besoins sans changer d'outil :
 
-- **Component testing** : monter un composant React/Vue/Svelte isolé dans un vrai
-  navigateur (`@playwright/experimental-ct-*`), quand jsdom ne suffit pas.
+- **Component testing** : monter un composant isolé dans un vrai navigateur, quand
+  jsdom ne suffit pas. Depuis la 1.62 (juillet 2026), ça passe par des *stories* :
+  une story fige le composant dans un scénario, une page *galerie* servie par ton
+  dev server l'affiche, et la fixture `mount()` de `@playwright/test` la monte par
+  son id. Les paquets `@playwright/experimental-ct-*` ne sont plus mis à jour
+  depuis la 1.63 : suis le guide de migration si tu en dépends.
 - **Exécution parallèle** : les fichiers sont répartis sur plusieurs *workers* par
   défaut ; l'isolation par contexte rend ce parallélisme sûr.
 - **Agents (2026)** : `npx playwright init-agents` installe un trio *planner /
   generator / healer* branché sur le **serveur MCP** de Playwright ; le healer
   répare un locator cassé par un renommage. Un accélérateur, pas un remplacement de
   ton jugement sur *quoi* tester.
+- **Rapports ciblés** : depuis la 1.65, l'option `onlyFailures` des reporters HTML,
+  JSON et JUnit ne garde que les échecs, les tests flaky et les tests interrompus.
+- **Outils WebMCP** : depuis la 1.64, `page.webmcp` donne accès aux outils qu'une
+  page déclare via l'API navigateur WebMCP, encore expérimentale, pour les tester
+  comme le reste de l'app.
 
 ## À retenir
 

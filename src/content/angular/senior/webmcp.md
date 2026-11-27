@@ -6,7 +6,7 @@ level: "senior"
 order: 13
 duration: 15
 prerequisites: ["signals", "signal-forms"]
-updated: 2026-07-08
+updated: 2026-11-27
 seoTitle: "WebMCP dans Angular 22 — declareExperimentalWebMcpTool, formulaires et agents"
 seoDescription: "Angular 22 embarque un support expérimental de WebMCP : exposer les capacités d'une page aux agents IA — outils déclarés (declareExperimentalWebMcpTool), formulaires auto-exposés (provideExperimentalWebMcpForms), et les questions de sécurité qui vont avec."
 ogVariant: "crimson"
@@ -35,11 +35,22 @@ Sans WebMCP, l'agent pilote ta page en aveugle — scraping du DOM, sélecteurs 
 
 WebMCP transpose le modèle [MCP](/ia/senior/mcp) — outils déclarés, entrées
 décrites par schéma, résultats structurés — **dans la page**, via la nouvelle API
-`navigator.modelContext`. L'agent découvre des outils typés au lieu de deviner des boutons.
+`document.modelContext`. L'agent découvre des outils typés au lieu de deviner des boutons.
+
+:::callout{type="warn"}
+Le point d'entrée a bougé : `navigator.modelContext`, déprécié en Chrome 150, est
+supprimé depuis Chrome 152. Un exemple qui l'utilise encore est périmé — c'est
+`document.modelContext`, à tester avant usage (détection de fonctionnalité).
+Avec les API Angular ci-dessous, tu ne l'appelles pas toi-même.
+:::
 
 Côté navigateurs, la proposition est portée par des ingénieurs de Google et de
 Microsoft dans un groupe communautaire du W3C — ce n'est **pas** un standard, ni
-même sur la voie de normalisation — et se teste en origin trial Chrome depuis mi-2026.
+même sur la voie de normalisation — et se teste en origin trial à partir de Chrome 149.
+
+L'API navigateur existe en deux saveurs : impérative
+(`document.modelContext.registerTool()`) et **déclarative** — deux attributs HTML,
+`toolname` et `tooldescription`, posés sur un `<form>` en font un outil.
 
 ## declareExperimentalWebMcpTool : déclarer un outil
 
@@ -128,9 +139,10 @@ n'offre pas déjà. Et `inputSchema` documente sans valider : valide dans `execu
 
 Tout est expérimental, des deux côtés. Les API Angular sont préfixées
 `Experimental` et peuvent changer **hors versions majeures** ; côté navigateur,
-seul Chrome propose l'origin trial (unique agent consommateur à ce jour : Gemini
-dans Chrome), et le polyfill `@mcp-b/webmcp-polyfill` permet de développer sans
-flag. La bonne posture mi-2026 : prototype sur une feature non critique, mesure
+seul Chrome propose l'origin trial, à partir de Chrome 149 (unique agent
+consommateur à l'été 2026 : Gemini dans Chrome), l'API bouge encore d'une version
+de Chrome à l'autre, et le polyfill `@mcp-b/webmcp-polyfill` permet de développer
+sans flag. La bonne posture fin 2026 : prototype sur une feature non critique, mesure
 ce que ça change pour un agent réel, suis la spec du groupe W3C et les RFC
 Angular — mais ne construis pas de produit dessus.
 
@@ -138,7 +150,7 @@ Angular — mais ne construis pas de produit dessus.
 
 :::cheatsheet
 - title: "WebMCP = MCP dans la page"
-  desc: "La page déclare des outils typés via navigator.modelContext ; l'agent appelle au lieu de scraper."
+  desc: "La page déclare des outils typés via document.modelContext ; l'agent appelle au lieu de scraper."
 - title: "declareExperimentalWebMcpTool"
   desc: "Outil lié au contexte d'injection : créé et retiré avec lui. Service root pour un outil global."
 - title: "provideExperimentalWebMcpForms"
@@ -146,5 +158,5 @@ Angular — mais ne construis pas de produit dessus.
 - title: "Sécurité : pense API publique"
   desc: "Consentement, confirmation du destructif, prompt injection, permissions minimales — et inputSchema documente sans valider : valide dans execute."
 - title: "Expérimental, vraiment"
-  desc: "API mouvantes hors majeures, origin trial Chrome. Prototyper oui, livrer non."
+  desc: "API mouvantes hors majeures, origin trial à partir de Chrome 149. Prototyper oui, livrer non."
 :::

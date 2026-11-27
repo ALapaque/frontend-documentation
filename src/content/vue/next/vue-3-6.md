@@ -6,9 +6,9 @@ level: "next"
 order: 1
 duration: 13
 prerequisites: ["reactivity-internals", "vapor-mode"]
-updated: 2026-09-24
+updated: 2026-11-27
 seoTitle: "Vue 3.6 — Vapor mode, réactivité alien-signals, Rolldown"
-seoDescription: "Vue 3.6 en Release Candidate : Vapor mode (compile-to-DOM, sans VDOM) feature-complete et API gelée, cœur réactif réécrit sur alien-signals, intégration Vite/Rolldown resserrée. Stable visé à l'automne 2026."
+seoDescription: "Vue 3.6 toujours en Release Candidate fin novembre 2026 (rc.16) : Vapor mode (compile-to-DOM, sans VDOM) feature-complete, activé via createVaporApp ou vaporInteropPlugin, cœur réactif réécrit sur alien-signals, intégration Vite/Rolldown resserrée. Pas de date de sortie stable annoncée."
 ogVariant: "iris"
 related:
   - { framework: "angular", slug: "angular-22" }
@@ -16,11 +16,12 @@ related:
 ---
 
 :::callout{type="info"}
-Vue 3.6 introduit **Vapor mode** et un cœur réactif réécrit. La branche est
-passée en **Release Candidate** (`3.6.0-rc.x`) durant l'été 2026 : Vapor est
-feature-complete et l'API est gelée, le stable est visé pour l'automne. Le
-chantier restant est l'écosystème (devtools, bibliothèques tierces), pas le
-cœur. Active-le par îlots, pas en bascule globale aveugle.
+Vue 3.6 introduit **Vapor mode** et un cœur réactif réécrit. La branche est en
+**Release Candidate** depuis le 18 juillet 2026 et y est toujours fin novembre :
+seize RC publiées (`3.6.0-rc.16` le 20 novembre), `latest` pointe encore sur la
+3.5 (`3.5.46`) et aucune date de sortie stable n'est annoncée à ce jour. Vapor
+est feature-complete, mais les RC enchaînent les correctifs — et la rc.2 a
+introduit une rupture. Active-le par îlots, pas en bascule globale aveugle.
 :::
 
 ## Vapor mode : compile-to-DOM, sans virtual DOM
@@ -38,6 +39,30 @@ const count = ref(0)
 </script>
 <template><button @click="count++">{{ count }}</button></template>
 ```
+
+L'attribut `vapor` ne suffit pas : il faut aussi le bon runtime au montage. Une
+app entièrement Vapor démarre avec `createVaporApp()`, sans embarquer le
+runtime virtual DOM :
+
+```ts
+import { createVaporApp } from 'vue'
+import App from './App.vue'
+
+createVaporApp(App).mount('#app')
+```
+
+Une app VDOM existante, créée avec `createApp()`, doit installer
+`vaporInteropPlugin` pour accueillir des composants Vapor :
+
+```ts
+import { createApp, vaporInteropPlugin } from 'vue'
+import App from './App.vue'
+
+createApp(App).use(vaporInteropPlugin).mount('#app')
+```
+
+Côté SFC, `<script vapor>` est un raccourci de `<script setup vapor>`, et
+l'attribut peut aussi se poser sur `<template vapor>`.
 
 :::compare
 ::bad
@@ -66,15 +91,49 @@ pour trouver le minimum à patcher, parce qu'il ne sait pas *a priori* ce qui a
 changé. Avec une réactivité fine, cette ignorance disparaît — le compilateur
 relie chaque binding à son signal et n'émet que la mise à jour exacte. On
 supprime le coût du render + diff, et on baisse les allocations (pas de vnodes).
-Limite connue : la parité avec le VDOM est quasi complète, **`<Suspense>`**
-restant le point sensible — un composant Vapor peut vivre dans un `<Suspense>`
-VDOM, mais Vapor seul ne le gère pas encore pleinement.
 
 :::callout{type="tip"}
-100 % opt-in et **mixable** : un composant Vapor peut vivre dans un arbre VDOM
-et inversement (`vapor` sur le `<script setup>`). Migre par îlots les sous-arbres
-sensibles à la perf ; le reste de l'app ne bouge pas.
+100 % opt-in et **mixable** : une fois `vaporInteropPlugin` installé, un
+composant Vapor peut vivre dans un arbre VDOM et inversement (`vapor` sur le
+`<script setup>`). Migre par îlots les sous-arbres sensibles à la perf ; le
+reste de l'app ne bouge pas.
 :::
+
+## Ce que Vapor ne prend pas en charge
+
+Vapor couvre volontairement un **sous-ensemble** de Vue. Les notes de la rc.1
+listent ce qui n'est pas pris en charge, ou ne s'applique pas :
+
+- l'**Options API** ;
+- `app.config.globalProperties` ;
+- `getCurrentInstance()`, qui renvoie `null` dans un composant Vapor ;
+- les événements de cycle de vie par élément (`@vue:xxx`) ;
+- `v-memo` ;
+- `$el`, `$props`, `$attrs`, `$slots` et `$refs` sur une ref de template de
+  composant.
+
+`<Suspense>` reste côté VDOM : pas de prise en charge en mode Vapor seul, mais
+un composant Vapor peut vivre dans un `<Suspense>` VDOM.
+
+Autre différence à connaître : depuis la rc.2, les écouteurs d'événements sont
+attachés directement aux éléments, comme en VDOM. La délégation au niveau
+`document` devient opt-in, avec le modificateur `.delegate`
+(`@click.delegate="onClick"`).
+
+## Depuis la rc.1 : ce qui a bougé
+
+- **rc.2 (22 juillet)** : délégation d'événements en opt-in, option
+  `compilerOptions.eventDelegation` supprimée. Une rupture en pleine RC.
+- **rc.11 (10 octobre)** : le compilateur avertit quand `v-memo` est ignoré.
+- **rc.13 (23 octobre)** : le code d'interop est éliminé du bundle quand
+  `vaporInteropPlugin` n'est pas utilisé.
+- **rc.14 (30 octobre)** : hooks devtools pour les composants Vapor.
+- **Le reste, jusqu'à la rc.16** : surtout des correctifs (hydratation, slots,
+  transitions, `KeepAlive`, Suspense en interop) et des optimisations.
+
+L'écosystème suit : Nuxt 4.6 (5 octobre 2026) prend en charge Vapor en mode
+interop (`vue: { vapor: true }` dans `nuxt.config.ts`), et Vue Router a ajouté
+un mode Vapor en 5.5.2 (26 novembre 2026).
 
 ## Cœur réactif réécrit sur alien-signals
 
@@ -99,18 +158,22 @@ compilation Vapor de bout en bout.
 
 :::cheatsheet
 - title: "Vapor mode"
-  desc: "Compile-to-DOM sans VDOM ; updates ciblées par binding. Parité VDOM sauf Suspense. Opt-in par composant."
+  desc: "Compile-to-DOM sans VDOM ; updates ciblées par binding. Sous-ensemble de Vue, sans Options API. Opt-in par composant."
+- title: "Activation"
+  desc: "Attribut vapor sur script ou template, puis createVaporApp() ou vaporInteropPlugin dans une app createApp()."
 - title: "Réactivité alien-signals"
   desc: "Refonte interne de @vue/reactivity : moins d'allocations, mémoire en baisse. API inchangée."
 - title: "Vite / Rolldown"
   desc: "Couplage build/runtime renforcé, alignement sur le bundler Rust Rolldown."
 - title: "Statut"
-  desc: "3.6 en Release Candidate ; Vapor feature-complete et API gelée, stable visé à l'automne. Opt-in."
+  desc: "Fin novembre 2026 : 3.6.0-rc.16, latest = 3.5.46. Vapor feature-complete, pas de date de sortie stable."
 :::
 
 :::callout{type="info"}
-Pour te préparer : rien à réécrire. L'intérêt de Vapor est d'être **invisible**
-côté code — l'API et les SFC ne changent pas. Tu actives `vapor` là où la perf
-compte, tu valides que tes libs tierces du sous-arbre sont compatibles, et le
-reste continue sur VDOM.
+Pour te préparer : rien à réécrire tant que tes composants sont en
+`<script setup>` et restent dans le sous-ensemble pris en charge. L'intérêt de
+Vapor est d'être **invisible** côté code — l'API et les SFC ne changent pas. Tu
+installes `vaporInteropPlugin`, tu actives `vapor` là où la perf compte, tu
+valides que tes libs tierces du sous-arbre sont compatibles, et le reste
+continue sur VDOM.
 :::

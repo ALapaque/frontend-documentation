@@ -6,9 +6,9 @@ level: "medior"
 order: 4
 duration: 13
 prerequisites: ["linting-formatting"]
-updated: 2026-07-09
+updated: 2026-11-27
 seoTitle: "Oxlint et Oxfmt — linter et formateur en Rust, 50 à 100× plus rapides qu'ESLint"
-seoDescription: "Oxlint et Oxfmt (projet Oxc) remplacent ESLint et Prettier par des outils Rust massivement parallèles : lint d'un gros repo en secondes, migration depuis ESLint, statut du lint type-aware, et place dans la toolchain VoidZero."
+seoDescription: "Oxlint et Oxfmt (projet Oxc) remplacent ESLint et Prettier par des outils Rust massivement parallèles : lint d'un gros repo en secondes, migration depuis ESLint, lint type-aware stable depuis juillet 2026, et place dans la toolchain VoidZero."
 ogVariant: "sage"
 related:
   - { framework: "tooling", slug: "linting-formatting" }
@@ -86,31 +86,45 @@ instantané, tu peux le lancer à chaque frappe sans casser le flow — c'est to
 l'intérêt de la vitesse, pas juste un chiffre sur un graphe.
 :::
 
-## Le lint type-aware : la pièce manquante se met en place
+## Le lint type-aware : la pièce manquante est en place
 
 Certaines règles très utiles exigent de connaître les **types** :
 `no-floating-promises` (un `await` oublié), `no-misused-promises`, `no-unsafe-*`.
 Impossible à trancher à la syntaxe seule : il faut résoudre tout le graphe de types.
 C'est historiquement le domaine réservé de **typescript-eslint**, et sa lenteur.
 
-En 2026, Oxlint attaque ce terrain avec **tsgolint**, un moteur bâti sur
-**typescript-go** (le portage Go du compilateur, cap sur TypeScript 7 / « Corsa »).
+En 2026, Oxlint occupe ce terrain avec **tsgolint**, un moteur bâti sur
+**typescript-go** — le portage Go du compilateur, devenu **TypeScript 7**.
 Oxlint gère la découverte des fichiers, la config et la sortie ; tsgolint exécute
 les règles type-aware et renvoie les diagnostics sémantiques.
 
 ```bash
-oxlint --type-aware   # active le lint type-aware (encore en préversion)
+npm install -D oxlint oxlint-tsgolint@latest
+oxlint --type-aware                # règles type-aware
+oxlint --type-aware --type-check   # + erreurs du compilateur TypeScript
 ```
 
-**59 des 61 règles** type-aware de typescript-eslint sont couvertes, et des dépôts
-qui demandaient ~1 minute finissent en **moins de 10 secondes**.
+Ce pan est **stable** depuis le 22 juillet 2026 (tsgolint v7, calé sur TypeScript
+7.0.2). À cette date, **59 des 61 règles** type-aware de typescript-eslint étaient
+couvertes ; la doc en annonce 60 sur 62 en novembre 2026. Le benchmark officiel
+mesure **12 à 18× plus rapide** qu'ESLint + typescript-eslint sur quatre gros
+dépôts : le code de VS Code passe de 83 s à 7 s.
 
-:::callout{type="warn"}
-Ce pan est en **alpha** début 2026, pas encore stable. Le modèle raisonnable est
-**hybride** : Oxlint pour le gros du lint syntaxique (rapide, mûr), et tu gardes
-typescript-eslint — ou un simple `tsc --noEmit` en CI — pour le résiduel type-aware
-tant que la préversion n'est pas figée.
+:::callout{type="tip"}
+Avec `--type-check`, le lint et le typecheck partagent **une seule analyse**
+TypeScript, au lieu de la refaire dans une commande à part. Tu peux aussi poser
+`"options": { "typeAware": true, "typeCheck": true }` dans le `.oxlintrc.json`
+racine. Une nuance : `--type-check` ne signale que les fichiers qu'Oxlint lint.
+Pour couvrir tout le projet, fichiers ignorés compris, il faut encore un
+`tsc --noEmit`.
 :::
+
+Depuis le 17 novembre 2026, Oxlint accepte un second backend : **tsrs**, le
+portage Rust de TypeScript. Tu installes `tsrs` à la place de `oxlint-tsgolint`,
+Oxlint le détecte tout seul, et les flags ne changent pas. L'annonce donne
+jusqu'à **5×** la vitesse de tsgolint pour environ 70 % de mémoire en moins. Il
+est encore jeune (le paquet npm est en bêta en novembre 2026) : compare les
+diagnostics sur ton dépôt avant de basculer la CI.
 
 ## Oxfmt : le formateur de la famille
 
@@ -124,9 +138,11 @@ npx oxfmt            # formate tout le dépôt, écriture en place
 npx oxfmt --check    # vérifie sans réécrire (utile en CI)
 ```
 
-Il ne se limite pas à JS/TS : JSX, TSX, JSON, YAML, TOML, CSS/SCSS/Less, Markdown,
-GraphQL, Vue et d'autres. Il intègre aussi le **tri des imports** et Tailwind, là
-où Prettier réclame des plugins. Des projets réels tournent déjà dessus :
+Il ne se limite pas à JS/TS : JSON, YAML, TOML, CSS/SCSS/Less, GraphQL, Vue, et
+aussi **Markdown** et **HTML**, tous formatés **nativement** en Rust. Angular,
+Svelte, Astro ou MDX passent encore par un Prettier embarqué dans le paquet. Il
+intègre aussi le **tri des imports** et Tailwind, là où Prettier réclame des
+plugins. Des projets réels tournent déjà dessus :
 `vuejs/core`, `vercel/turborepo`, `getsentry/sentry-javascript`. « Bêta » n'est pas
 « instable » : au basculement, fais **un seul gros commit de reformatage**, isolé
 du reste, pour ne pas polluer les revues suivantes.
@@ -162,7 +178,8 @@ oxlint . && eslint . --rulesdir ./eslint-residuel
 :::
 
 La bonne trajectoire est **graduelle** : Oxlint absorbe l'écrasante majorité des
-règles syntaxiques, tu ne laisses à ESLint que le résiduel (surtout le type-aware).
+règles, type-aware compris, et tu ne laisses à ESLint que le résiduel (une règle
+maison, un plugin sans équivalent).
 Avec les plugins JS d'Oxlint en alpha, l'équipe Oxc estime que ~80 % des
 utilisateurs d'ESLint peuvent basculer et voir « ça marche » sans y retoucher. Côté
 format, `oxfmt` remplace Prettier en gardant `.prettierignore` comme repère.
@@ -177,14 +194,16 @@ Le détail de cette convergence est dans `tooling/senior/rust-toolchain`.
 - **Oxlint** : mûr, rapide, adoptable **maintenant** sur les règles syntaxiques.
 - **Oxfmt** : en bêta, largement compatible Prettier — adoptable, en gardant en
   tête un ajustement mineur au moment du basculement.
-- **Type-aware** : en alpha — teste-le, mais reste en hybride pour la CI jusqu'à
-  sa stabilisation.
+- **Type-aware** : stable depuis juillet 2026 avec tsgolint — adoptable, avec
+  `--type-check` pour fusionner lint et typecheck. Le backend tsrs, plus rapide,
+  est encore en bêta en novembre 2026.
 
 ## À retenir
 
 Oxlint lint 50 à 100× plus vite qu'ESLint parce qu'il partage un seul AST Rust et
-parallélise par fichier. Adopte-le dès aujourd'hui pour le syntaxique, migre avec
-`@oxlint/migrate`, et garde le type-aware en hybride le temps que l'alpha se pose.
+parallélise par fichier. Adopte-le dès aujourd'hui, migre avec `@oxlint/migrate`,
+et active le type-aware, stable depuis juillet 2026 : `--type-aware --type-check`
+fait le lint et le typecheck en une seule analyse.
 Oxfmt (bêta) remplace Prettier avec >95 % de compatibilité pour ~30× la vitesse.
 Le tout s'aligne sur la toolchain VoidZero autour de Vite.
 
@@ -194,7 +213,7 @@ Le tout s'aligne sur la toolchain VoidZero autour de Vite.
 - title: "npx oxlint@latest"
   desc: "Essai immédiat, sans installation. Catégorie correctness active par défaut."
 - title: "Type-aware (tsgolint)"
-  desc: "59/61 règles typescript-eslint via typescript-go. Alpha : reste en hybride."
+  desc: "Stable depuis juillet 2026, 60/62 règles typescript-eslint. --type-check : lint + typecheck en une analyse. Backend tsrs en bêta."
 - title: "Oxfmt"
   desc: "Formateur Rust, bêta 2026. 100% conformité Prettier, >95% sortie, ~30× plus vite."
 - title: "@oxlint/migrate"

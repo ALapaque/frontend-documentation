@@ -6,7 +6,7 @@ level: "senior"
 order: 3
 duration: 15
 prerequisites: ["transforms"]
-updated: 2026-05-23
+updated: 2026-11-27
 seoTitle: "CSS — Scroll-driven animations natives, scroll() et view()"
 seoDescription: "animation-timeline: scroll() et view(), scroll-timeline et named timelines, ranges, pourquoi c'est sur le compositor vs listeners JS, support 2026 et fallback @supports."
 ogVariant: "crimson"
@@ -160,10 +160,12 @@ le scroll sont la **même** valeur. C'est la différence entre « réagir au scr
 
 ## Support 2026, `@supports` et `prefers-reduced-motion`
 
-En 2026, les scroll-driven animations sont stables dans les navigateurs Chromium et
-Firefox ; Safari les a livrées plus récemment et un parc d'anciens navigateurs
-subsiste. Le motif est une **amélioration progressive** : un rendu correct sans
-animation, enrichi seulement là où c'est pris en charge.
+En novembre 2026, les scroll-driven animations sont livrées dans les trois moteurs :
+Chrome 115 d'abord, Safari 26 ensuite (septembre 2025), puis Firefox 159 (27 octobre
+2026), qui les active par défaut. Elles sont donc **Baseline « Newly available »**
+depuis le 27 octobre 2026 seulement, et un parc d'anciens navigateurs subsiste. Le
+motif reste une **amélioration progressive** : un rendu correct sans animation,
+enrichi seulement là où c'est pris en charge.
 
 ```css
 /* fallback : tout est visible par défaut, sans dépendre du scroll */
@@ -190,3 +192,10 @@ chargement, puis disparaîtrait si la keyframe `from` met `opacity: 0`. En enfer
 toute la déclaration dans `@supports (animation-timeline: view())`, les navigateurs
 non compatibles conservent l'état de base lisible (`opacity: 1`) et seuls ceux qui
 savent piloter la timeline activent l'effet — sans contenu invisible ni saut.
+
+:::callout{type="info"}
+La suite s'appelle *scroll-triggered animations* : une position de défilement n'y
+pilote plus la progression, elle **déclenche** une animation temporelle classique
+(lecture, pause, remise à zéro). En novembre 2026, elles restent propres à Chromium
+(Chrome 146+).
+:::
