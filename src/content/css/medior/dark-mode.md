@@ -42,9 +42,8 @@ et le navigateur adapte alors **tout ce qui lui appartient** :
 ```
 
 La même annonce existe en HTML : `<meta name="color-scheme" content="light dark">`.
-Garde les deux. La balise est lue avant le CSS : le premier rendu a déjà le bon fond,
-même si la feuille de style tarde. La propriété, elle, s'hérite et se redéfinit sur
-n'importe quel élément. Quatre valeurs à connaître :
+Garde les deux : la balise, lue avant le CSS, donne le bon fond dès le premier rendu ;
+la propriété s'hérite et se redéfinit sur n'importe quel élément. Quatre valeurs :
 
 - **`normal`** (défaut) — rien d'annoncé : tout ce qui est natif reste clair.
 - **`light dark`** — les deux schémas ; le navigateur suit la préférence de l'utilisateur.
@@ -68,8 +67,7 @@ sur blanc. Fond et texte se déclarent toujours **par paire**.
 Les deux écritures ne lisent pas la même chose, et tout le reste en découle.
 
 - `@media (prefers-color-scheme: dark)` lit la **préférence de l'utilisateur** (système
-  ou navigateur). Elle vaut pour tout le document et ignore la propriété `color-scheme`
-  de tes éléments.
+  ou navigateur), pour tout le document. Elle ignore la propriété `color-scheme`.
 - `light-dark(clair, sombre)` lit le **schéma utilisé par l'élément** : la préférence,
   filtrée par `color-scheme`. Elle suit donc l'héritage, sous-arbre par sous-arbre.
 
@@ -122,7 +120,7 @@ en `light-dark()`, il ne touche qu'à `color-scheme` :
 
 ```css
 :root                     { color-scheme: light dark; }  /* système */
-:root[data-theme="light"] { color-scheme: light only; }  /* only : voir Safari, plus bas */
+:root[data-theme="light"] { color-scheme: light only; }  /* only : voir plus bas */
 :root[data-theme="dark"]  { color-scheme: dark; }
 ```
 
@@ -192,9 +190,8 @@ manuelle, passe par le CSS ou par le SVG inline.
 ## Adaptive Dark Mode de Safari
 
 :::callout{type="warn"}
-**Bêta, novembre 2026.** Adaptive Dark Mode a été annoncé le 3 novembre 2026 dans
-Safari 27.3 bêta. Le comportement décrit ici vient de cette annonce et peut encore
-bouger d'ici la version stable.
+**Bêta, novembre 2026.** Annoncé le 3 novembre 2026 dans Safari 27.3 bêta : ce qui
+suit vient de cette annonce et peut encore bouger d'ici la version stable.
 :::
 
 Quand l'utilisateur l'active, avec un système en apparence sombre, Safari assombrit
@@ -207,17 +204,16 @@ lui-même les pages claires. La décision se prend en deux temps :
 La transformation inverse la luminosité en conservant la teinte, vise un contraste de
 4,5:1 pour le texte et convertit les dégradés clairs. Les images restent intactes, sauf
 les SVG et les logos bitmap noir et blanc, inversés si nécessaire ; `<canvas>` n'est
-jamais modifié. Ton code ne peut pas le détecter : JavaScript relit les couleurs d'origine.
+jamais modifié. Ton code ne le voit pas : JavaScript relit les couleurs d'origine.
 
 Un theming par `data-theme` sans `color-scheme` tombe en plein dedans : thème clair
 affiché, système sombre, page réécrite par une heuristique. Pour refuser, annonce
 `<meta name="color-scheme" content="light only">`, ou `color-scheme: light only` en
 CSS, sur `:root` ou sur un seul élément (une carte, un aperçu de document). Safari
 reconnaît `only` depuis la bêta 2 de la 27.3. À l'inverse, `color-scheme: light dark`
-posé sur un bloc te rend la main sur cette seule portion.
-
-D'où le `light only` de la bascule : pour la spécification, seul `only` interdit au
-navigateur de passer outre un choix « clair » explicite.
+posé sur un bloc te rend la main sur cette seule portion. D'où le `light only` de la
+bascule : pour la spécification, seul `only` interdit au navigateur de passer outre un
+choix « clair » explicite.
 
 ## Au-delà du sombre : contraste et couleurs forcées
 
@@ -243,10 +239,9 @@ aussi `color-scheme`. Le reste est dans [accessibilité](/web/senior/accessibili
 
 ## À retenir
 
-Le mode sombre n'est plus une palette en double : c'est une **déclaration**
-(`color-scheme`), des tokens écrits une fois (`light-dark()`) et un attribut qui ne
-change que le schéma. Tout ce qui lit la préférence système sans passer par
-`color-scheme` — `@media`, `<picture>` — ignore ta bascule.
+Le mode sombre n'est plus une palette en double : une **déclaration** (`color-scheme`),
+des tokens écrits une fois (`light-dark()`), un attribut qui ne change que le schéma.
+Ce qui lit le système directement — `@media`, `<picture>` — ignore ta bascule.
 
 :::cheatsheet
 - title: "color-scheme: light dark"

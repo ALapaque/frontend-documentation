@@ -16,16 +16,14 @@ related:
   - { framework: "angular", slug: "interceptors-guards" }
 ---
 
-Tu sais prouver une identité ([passkeys](/web/senior/passkeys)) et régler les
-attributs d'un cookie ([stockage](/web/medior/storage)). Reste le plus long : faire
-durer cette preuve. Après le login, chaque requête doit redire « c'est toujours
-moi », et l'app appelle souvent des API qui vivent sur un autre domaine.
+Tu sais prouver une identité ([passkeys](/web/senior/passkeys)) et régler un
+cookie ([stockage](/web/medior/storage)). Reste le plus long : faire durer cette
+preuve, requête après requête, jusqu'à des API qui vivent sur un autre domaine.
 
-Trois questions structurent le sujet : **où vit la preuve de session**, **qui peut
-la lire**, **comment tu la révoques**. Le débat « cookie ou JWT dans le
-`localStorage` » a duré dix ans. En août 2026, l'IETF l'a tranché : la RFC 10017
-(BCP 212, « OAuth 2.0 for Browser-Based Applications ») classe les architectures
-par niveau de sécurité. Cet article suit ce fil, du cookie de session au BFF.
+Trois questions structurent le sujet : **où vit la preuve**, **qui peut la lire**,
+**comment tu la révoques**. Le débat « cookie ou JWT dans le `localStorage` » a
+duré dix ans. En août 2026, l'IETF l'a tranché : la RFC 10017 (BCP 212, « OAuth 2.0
+for Browser-Based Applications ») classe les architectures par niveau de sécurité.
 
 ## Cookie de session ou JWT : où vit l'état
 
@@ -45,18 +43,15 @@ Un cookie `HttpOnly` reste invisible au script, mais un XSS peut quand même
 *envoyer* des requêtes avec lui : il empêche le vol de la session, pas son usage
 depuis la page. Un JWT lisible par le JS part chez l'attaquant et sert ailleurs
 jusqu'à `exp`. Donc : durée de vie courte pour tout jeton sans état, et cookie
-durci pour la session.
+durci pour la session, par exemple
+`__Host-session=…; Secure; HttpOnly; SameSite=Strict; Path=/`.
 
-```text
-Set-Cookie: __Host-session=…; Secure; HttpOnly; SameSite=Strict; Path=/
-```
-
-C'est la liste de la RFC 10017 (§6.1.3.2) : `Secure` et `HttpOnly` obligatoires ;
-`SameSite=Strict`, `Path=/`, pas de `Domain` et un préfixe recommandés. `__Host-`
-interdit le partage entre sous-domaines. La RFC cite `__Host-Http-`, qui atteste en
-plus que le cookie vient d'un en-tête `Set-Cookie` : Chrome 140 et Firefox 143
-l'appliquent, pas Safari (novembre 2026). `SameSite` seul ne couvre pas tout le
-CSRF : voir [Sécurité front](/web/senior/security).
+La RFC 10017 (§6.1.3.2) rend `Secure` et `HttpOnly` obligatoires et recommande
+`SameSite=Strict`, `Path=/`, pas de `Domain` et un préfixe : `__Host-` interdit le
+partage entre sous-domaines. Elle cite `__Host-Http-`, qui atteste en plus que le
+cookie vient d'un en-tête `Set-Cookie` : Chrome 140 et Firefox 143 l'appliquent,
+pas Safari (novembre 2026). `SameSite` seul ne couvre pas tout le CSRF : voir
+[Sécurité front](/web/senior/security).
 
 ## OAuth 2 et OIDC : déléguer l'accès, prouver l'identité
 
@@ -70,36 +65,34 @@ l'identité : avec le scope `openid`, l'AS renvoie aussi un `id_token`.
 - **`access_token`** : pour l'**API**. Opaque pour le client, même quand c'est un
   JWT (RFC 9068) : ne le décode pas pour piloter l'UI.
 - **`id_token`** : un JWT pour le **client**, qui dit qui s'est authentifié et
-  quand. Ne l'envoie jamais à une API en guise de laissez-passer.
+  quand. Ne l'envoie jamais à une API en guise de sésame.
 - **`refresh_token`** : obtient de nouveaux access tokens sans l'utilisateur. C'est
   le jeton le plus précieux des trois.
 
 Un seul flux est admis dans un navigateur, **Authorization Code + PKCE** :
 
 ```text
-1. App → AS   GET /authorize?response_type=code&client_id=…&redirect_uri=…
-                  &scope=openid%20profile&state=…
-                  &code_challenge=…&code_challenge_method=S256
+1. App → AS   GET /authorize?response_type=code&client_id=…&redirect_uri=…&state=…
+                  &scope=openid&code_challenge=…&code_challenge_method=S256
 2. AS         authentifie l'utilisateur (mot de passe, passkey, MFA)
 3. AS → App   302 redirect_uri?code=…&state=…
 4. App → AS   POST /token  grant_type=authorization_code&code=…&code_verifier=…
 5. AS → App   { access_token, refresh_token, id_token }
 ```
 
-**PKCE** (RFC 7636) lie les étapes 1 et 4. Le client tire un `code_verifier`
+**PKCE** (RFC 7636) lie les étapes 1 et 4 : le client tire un `code_verifier`
 aléatoire, n'envoie que son hash SHA-256 (`code_challenge`) à l'étape 1, puis
-révèle le verifier à l'étape 4 : un code intercepté dans l'URL ne vaut rien sans
-lui. `state` protège le retour de redirection contre le CSRF. L'**implicit flow**,
-qui livrait l'access token dans le fragment d'URL, est terminé : la RFC 9700
-(BCP 240, janvier 2025) le déconseille, la RFC 10017 l'interdit aux apps
-navigateur. Le *password grant* est interdit par les deux.
+révèle le verifier à l'étape 4. Un code intercepté ne vaut rien sans lui ; `state`
+protège le retour contre le CSRF. L'**implicit flow**, qui livrait l'access token
+dans le fragment d'URL, est terminé : la RFC 9700 (BCP 240, janvier 2025) le
+déconseille, la RFC 10017 l'interdit aux apps navigateur, et les deux interdisent
+le *password grant*.
 
 :::callout{type="warn"}
 **Statut en novembre 2026.** OAuth 2.1 n'est toujours pas une RFC : c'est un
 Internet-Draft (`draft-ietf-oauth-v2-1-17`, 30 octobre 2026, expiration le 4 mai
 2027). Il consolide ce qui précède : PKCE par défaut, ni implicit ni password
-grant, redirect URI comparées à l'identique. En revue d'architecture, cite les RFC
-9700 et 10017, qui sont publiées.
+grant, redirect URI comparées à l'identique. Cite plutôt les RFC 9700 et 10017.
 :::
 
 ## Les trois architectures de la RFC 10017
@@ -120,13 +113,13 @@ architectures par sécurité décroissante, selon ce qu'un tel script peut empor
 **1. BFF.** Le backend du front devient le client OAuth, et un client
 *confidentiel* : il s'authentifie auprès de l'AS, ce qu'un navigateur ne peut pas
 faire. Il garde les jetons derrière une session par cookie et relaie chaque appel
-d'API. Un XSS peut encore envoyer des requêtes depuis la page, mais il n'y a rien à
-voler ni à rejouer ailleurs. Fortement recommandé pour les apps métier, sensibles
-ou à données personnelles. Le prix : un service à opérer, traversé par tout le
-trafic d'API, et une défense CSRF **obligatoire** puisqu'il s'authentifie par
-cookie (`SameSite=Strict`, plus un en-tête statique exigé sur chaque requête). C'est
-le composant de [BFF et contrats typés](/architecture/senior/bff-contrats-types) :
-là-bas il façonne les données, ici il détient les jetons.
+d'API. Un XSS peut encore envoyer des requêtes depuis la page, mais n'a rien à
+voler ni à rejouer ailleurs : c'est le choix « fortement recommandé » pour les
+apps métier, sensibles ou à données personnelles. Le prix : un service à opérer,
+que tout le trafic d'API traverse, et une défense CSRF **obligatoire**
+(`SameSite=Strict`, plus un en-tête statique exigé sur chaque requête). Ce composant
+façonne aussi tes données : voir
+[BFF et contrats typés](/architecture/senior/bff-contrats-types).
 
 **2. Backend médiateur de tokens.** Le backend obtient les jetons et garde le
 refresh token, mais remet l'access token au JS, qui appelle les API en direct. Pas
@@ -134,10 +127,10 @@ de proxy à opérer, mais un access token volable. La RFC ne l'admet que si un B
 complet est impossible.
 
 **3. Client OAuth dans le navigateur.** La SPA, client *public*, gère tout : simple,
-sans serveur, et exposée à tout. Le pire : l'attaquant n'a pas besoin de trouver
-tes jetons. Son script lance **son propre** flux dans une iframe cachée, sur la
-session ouverte chez l'AS, et repart avec des jetons neufs. Non recommandé pour
-les apps métier, sensibles ou à données personnelles.
+sans serveur, exposée à tout. Le pire : l'attaquant n'a pas besoin de trouver tes
+jetons. Son script lance **son propre** flux dans une iframe cachée, sur la session
+ouverte chez l'AS, et repart avec des jetons neufs. La RFC le déconseille pour les
+apps métier ou sensibles.
 
 :::callout{type="tip"}
 Front et API sur le même domaine ? La RFC (§7.1) le dit sans détour : OAuth est
@@ -151,10 +144,9 @@ Si des jetons arrivent dans le navigateur (architectures 2 et 3), où les ranger
 La section 8 de la RFC conclut sans illusion : **aucune option n'empêche
 l'exfiltration** quand du code malveillant tourne dans la page. `localStorage`,
 `sessionStorage` et IndexedDB sont lisibles par tout script de l'origine. La
-**mémoire** (variable de module) limite l'exposition au contexte courant et se
-perd au rechargement : c'est le moindre mal. Un Web Worker peut isoler le refresh
-token, pas l'access token. Un cookie posé par le JS pour y ranger un jeton est
-explicitement déconseillé.
+**mémoire** (variable de module) limite l'exposition au contexte courant et se perd
+au rechargement : c'est le moindre mal. Un Web Worker peut isoler le refresh token,
+pas l'access token. Ranger un jeton dans un cookie posé par le JS est déconseillé.
 
 :::compare
 ::bad
@@ -180,12 +172,12 @@ l'attaquant garde l'accès bien après la fermeture de l'onglet. Avec le BFF, la
 faille ne trouve rien à emporter et n'agit que tant que la page reste ouverte.
 
 La **rotation** borne les dégâts d'un refresh token volé : à chaque usage, l'AS en
-émet un nouveau et invalide l'ancien. Si un jeton invalidé revient, c'est que deux
-parties le partagent, et l'AS révoque le jeton actif (RFC 9700, §4.14.2). La RFC
-10017 exige pour les apps navigateur la rotation **ou** un jeton lié à une clé du
-client (DPoP, RFC 9449), et une durée de vie bornée que la rotation ne prolonge
-pas. Son exemple : access token de 10 minutes, refresh token de 8 heures. Ni la
-rotation ni DPoP n'arrêtent l'iframe cachée : l'attaquant y obtient ses jetons.
+émet un nouveau et invalide l'ancien. Si un jeton invalidé revient, deux parties le
+partagent, et l'AS révoque le jeton actif (RFC 9700, §4.14.2). La RFC 10017 exige
+la rotation **ou** un jeton lié à une clé du client (DPoP, RFC 9449), et une durée
+de vie bornée que la rotation ne prolonge pas : dans son exemple, 10 minutes pour
+l'access token, 8 heures pour le refresh token. Rien de cela n'arrête l'iframe
+cachée, où l'attaquant obtient ses propres jetons.
 
 ## Intégration front : wrapper, guards, onglets
 
@@ -195,9 +187,8 @@ token vit dans la page, il te faut un renouvellement **à vol unique** :
 
 ```ts
 let accessToken: string | null = null; // mémoire uniquement
-let pending: Promise<string> | null = null;
+let pending: Promise<string> | null = null; // LE renouvellement en cours, partagé
 
-// Dix requêtes en 401 au même instant → UN seul renouvellement, partagé.
 const renew = () =>
   (pending ??= fetch('/auth/token', { method: 'POST', headers: { 'X-App': '1' } })
     .then(async (res) => {
@@ -221,28 +212,25 @@ export async function api(url: string, init: RequestInit = {}) {
 Ce n'est pas qu'une optimisation. Avec la rotation, deux renouvellements parallèles
 présentent le même refresh token : le second passe pour une réutilisation, l'AS
 révoque le jeton actif et l'utilisateur est déconnecté sans raison. Ici le backend
-détient le refresh token, à lui de sérialiser. Dans un client public, c'est ton
-code, et la course se joue aussi entre onglets : sérialise avec
-`navigator.locks.request()`. Dans un framework, ce wrapper devient un
-[interceptor](/angular/medior/interceptors-guards).
+détient le refresh token, à lui de sérialiser ; dans un client public, c'est ton
+code, y compris entre onglets (`navigator.locks.request()`). Dans un framework, ce
+wrapper devient un [interceptor](/angular/medior/interceptors-guards).
 
 - **Rafraîchissement silencieux.** L'iframe cachée vers l'AS (`prompt=none`) dépend
   du cookie de l'AS en contexte tiers, que Safari et Firefox bloquent. La RFC en
   prend acte : ce sont les refresh tokens qui prolongent la session.
-- **Guards.** Au démarrage, demande l'état de session au backend
-  (`GET /auth/session`) et laisse les guards rediriger. Un guard est de
-  l'ergonomie ; le contrôle d'accès, c'est l'API qui répond `401` ou `403`.
+- **Guards.** Au démarrage, lis l'état de session (`GET /auth/session`), puis
+  laisse les guards rediriger. Ergonomie seulement : c'est l'API qui refuse.
 - **Déconnexion multi-onglets.** Le logout détruit la session côté serveur **et**
-  révoque le refresh token, puis prévient les autres onglets, qui afficheraient
-  sinon les données d'une session morte : `new BroadcastChannel('auth')`,
-  `postMessage('logout')` d'un côté, `onmessage` et redirection de l'autre.
+  révoque le refresh token, puis prévient les autres onglets, sinon ils affichent
+  une session morte : `new BroadcastChannel('auth')`, `postMessage()` d'un côté,
+  `onmessage` et redirection de l'autre.
 
 ## Passkeys, FedCM et cookies tiers
 
 - **Passkeys.** Une [passkey](/web/senior/passkeys) remplace l'étape 2 du flux,
-  l'authentification. Pas la session : une fois le challenge vérifié, le serveur
-  pose un cookie ou émet des jetons, et tout ce qui précède s'applique. Un login
-  résistant au phishing ne protège pas un cookie de session volé ensuite.
+  l'authentification, pas la session : le challenge vérifié, le serveur pose un
+  cookie ou émet des jetons, et un cookie de session volé reste exploitable.
 - **Cookies tiers.** Safari et Firefox les bloquent ou les cloisonnent par défaut.
   Chrome les garde : Google a confirmé le 22 avril 2025 qu'il laissait ce choix à
   l'utilisateur. Conçois comme s'ils n'existaient pas : pas d'iframe silencieuse,
@@ -270,9 +258,7 @@ progressive derrière `'IdentityCredential' in window`.
 - title: "id_token ≠ access_token"
   desc: "id_token : pour le client, dit qui est connecté. access_token : pour l'API, opaque pour le client. Jamais l'un à la place de l'autre."
 - title: "BFF d'abord (RFC 10017)"
-  desc: "Client confidentiel, jetons côté serveur, cookie __Host- Secure HttpOnly SameSite=Strict, défense CSRF obligatoire. Client public en dernier recours."
-- title: "Pas de jeton dans localStorage"
-  desc: "Aucun stockage navigateur ne résiste à un XSS. Mémoire au pire, rotation des refresh tokens, durée de vie bornée."
-- title: "Vol unique et logout diffusé"
-  desc: "Un seul renouvellement partagé sur 401, une seule relance. BroadcastChannel pour prévenir les autres onglets."
+  desc: "Client confidentiel, jetons côté serveur, cookie __Host- Secure HttpOnly SameSite=Strict, défense CSRF obligatoire. Aucun stockage navigateur ne résiste à un XSS."
+- title: "Rotation, vol unique, logout diffusé"
+  desc: "Refresh tokens en rotation et bornés dans le temps. Un seul renouvellement partagé sur 401, une seule relance. BroadcastChannel pour prévenir les autres onglets."
 :::
