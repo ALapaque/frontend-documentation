@@ -38,44 +38,29 @@ et le navigateur adapte alors **tout ce qui lui appartient** :
 - les couleurs système (`Canvas`, `CanvasText`, `LinkText`…), donc le texte par défaut ;
 - la valeur renvoyée par `light-dark()`.
 
-```html
-<meta name="color-scheme" content="light dark">
-```
-
 ```css
 :root { color-scheme: light dark; }
 ```
 
-Les deux écritures se complètent. La balise `<meta>` est lue avant le CSS : le premier
-rendu a déjà le bon fond, même si la feuille de style tarde. La propriété s'hérite et se
-redéfinit sur n'importe quel élément. Quatre valeurs à connaître :
+La même annonce existe en HTML : `<meta name="color-scheme" content="light dark">`.
+Garde les deux. La balise est lue avant le CSS : le premier rendu a déjà le bon fond,
+même si la feuille de style tarde. La propriété, elle, s'hérite et se redéfinit sur
+n'importe quel élément. Quatre valeurs à connaître :
 
 - **`normal`** (défaut) — rien d'annoncé : tout ce qui est natif reste clair.
 - **`light dark`** — les deux schémas ; le navigateur suit la préférence de l'utilisateur.
 - **`light`** ou **`dark`** seul — un schéma unique, quel que soit le réglage système.
 - **`only`** (`light only`) — en plus, interdit au navigateur de passer outre.
 
-:::compare
-::bad
-```css
-/* thème « à la main » : le navigateur croit toujours la page claire */
-[data-theme="dark"] { --bg: #111; --fg: #eee; }
-body { background: var(--bg); color: var(--fg); }
-/* scrollbars blanches, <select> et <input type="date"> clairs sur fond noir */
-```
-::
-::good
+C'est le maillon qui manque au theming par `data-theme` vu dans
+[custom properties](/css/senior/custom-properties) : sous `[data-theme="dark"]`, la
+page est sombre, mais les scrollbars, `<select>` et `<input type="date">` restent
+clairs. Les contrôles natifs ne lisent pas tes tokens, ils suivent le schéma de
+l'élément. Une déclaration suffit :
+
 ```css
 [data-theme="dark"] { color-scheme: dark; --bg: #111; --fg: #eee; }
-body { background: var(--bg); color: var(--fg); }
 ```
-::
-:::
-
-**Pourquoi.** Les contrôles natifs et les scrollbars ne lisent pas tes tokens : ils
-suivent le schéma de l'élément. Sans déclaration, ce schéma vaut « clair ». C'est le
-maillon qui manque au theming par `data-theme` de
-[custom properties](/css/senior/custom-properties).
 
 :::callout{type="warn"}
 N'annonce que ce que tu tiens. Avec `color-scheme: light dark` et un `background: white`
@@ -83,12 +68,13 @@ codé en dur, le texte par défaut passe en clair chez un utilisateur en sombre 
 sur blanc. Fond et texte se déclarent toujours **par paire**.
 :::
 
-## `prefers-color-scheme` ou `light-dark()` : une valeur de vérité par token
+## `prefers-color-scheme` ou `light-dark()` : une seule source de vérité
 
 Les deux écritures ne lisent pas la même chose, et tout le reste en découle.
 
 - `@media (prefers-color-scheme: dark)` lit la **préférence de l'utilisateur** (système
-  ou navigateur). Elle vaut pour tout le document et ignore ton `color-scheme`.
+  ou navigateur). Elle vaut pour tout le document et ignore la propriété `color-scheme`
+  de tes éléments.
 - `light-dark(clair, sombre)` lit le **schéma utilisé par l'élément** : la préférence,
   filtrée par `color-scheme`. Elle suit donc l'héritage, sous-arbre par sous-arbre.
 
@@ -129,14 +115,10 @@ Trois pièges reviennent en revue de code :
 - **Un token typé ne bascule plus localement.** Enregistré avec `@property` et
   `syntax: "<color>"`, il est calculé là où il est déclaré, puis hérité tel quel.
 
-Ce dernier point compte, parce que la portée locale est le vrai bonus de la fonction :
-
-```css
-.pied-de-page { color-scheme: dark; } /* toujours sombre : ses tokens basculent seuls */
-```
-
-`light-dark()` est Baseline **largement disponible** depuis le 13 novembre 2026 (Chrome
-123, Firefox 120, Safari 17.5) : plus besoin de repli dans un projet courant.
+Ce dernier point compte, car la portée locale est le vrai bonus : un simple
+`.pied-de-page { color-scheme: dark; }` rend une zone toujours sombre, et tous ses
+tokens basculent seuls. `light-dark()` est Baseline **largement disponible** depuis le
+13 novembre 2026 (Chrome 123, Firefox 120, Safari 17.5) : plus besoin de repli.
 
 ## Bascule utilisateur : trois états, aucun token dupliqué
 
@@ -144,27 +126,22 @@ Un sélecteur de thème a trois positions : **système**, clair, sombre. Avec de
 en `light-dark()`, il ne touche qu'à `color-scheme` :
 
 ```css
-:root                     { color-scheme: light dark; } /* système */
-:root[data-theme="light"] { color-scheme: light; }
+:root                     { color-scheme: light dark; }  /* système */
+:root[data-theme="light"] { color-scheme: light only; }  /* only : voir Safari, plus bas */
 :root[data-theme="dark"]  { color-scheme: dark; }
 ```
 
 ```js
 function setTheme(theme) { // "light" | "dark" | "system"
   const root = document.documentElement;
-  if (theme === "system") {
-    delete root.dataset.theme; // on rend la main au système
-    localStorage.removeItem("theme");
-  } else {
-    root.dataset.theme = theme;
-    localStorage.setItem("theme", theme);
-  }
+  if (theme === "system") delete root.dataset.theme; // on rend la main au système
+  else root.dataset.theme = theme;
+  localStorage.setItem("theme", theme);
 }
 ```
 
-« Système » se stocke par une **absence** de valeur. Si tu résous la préférence au
-premier passage pour enregistrer `"dark"`, l'utilisateur reste coincé le jour où son
-système change d'apparence.
+Ne résous jamais « système » en `"dark"` au premier passage : l'utilisateur resterait
+coincé le jour où son système change d'apparence.
 
 ### Éviter le flash au chargement
 
@@ -173,22 +150,20 @@ l'hydratation, la page s'affiche d'abord dans le thème système, puis saute. La
 un script **inline et bloquant** dans le `<head>`, avant les feuilles de style.
 
 ```html
-<head>
-  <meta name="color-scheme" content="light dark">
-  <script>
-    try {
-      const theme = localStorage.getItem("theme");
-      if (theme === "light" || theme === "dark") {
-        document.documentElement.dataset.theme = theme;
-      }
-    } catch {} // stockage bloqué : on garde le thème système
-  </script>
-  <link rel="stylesheet" href="/app.css">
-</head>
+<meta name="color-scheme" content="light dark">
+<script>
+  try {
+    const theme = localStorage.getItem("theme");
+    if (theme === "light" || theme === "dark") {
+      document.documentElement.dataset.theme = theme;
+    }
+  } catch {} // stockage bloqué : on garde le thème système
+</script>
+<link rel="stylesheet" href="/app.css">
 ```
 
-Trois lignes synchrones ne coûtent rien ; un module différé arriverait après le premier
-rendu. Avec une CSP stricte, ce script demande un `nonce` ou un hash.
+Ces quelques lignes synchrones ne coûtent rien ; un module différé arriverait après le
+premier rendu. Avec une CSP stricte, ce script demande un `nonce` ou un hash.
 
 :::callout{type="tip"}
 Autre voie en SSR : stocker le choix dans un **cookie**, que le serveur lit pour rendre
@@ -204,7 +179,7 @@ Une image ne lit pas tes tokens. Trois techniques, qui ne suivent pas toutes la 
 | --- | --- | --- |
 | SVG inline en `currentColor` | oui | oui |
 | `light-dark()` avec des images | oui | oui |
-| `<picture>` + `media` | oui | **non** |
+| `<picture>` + `<source media>` | oui | **non** |
 
 ```css
 .logo {
@@ -213,21 +188,15 @@ Une image ne lit pas tes tokens. Trois techniques, qui ne suivent pas toutes la 
 }
 ```
 
-```html
-<picture>
-  <source srcset="/schema-sombre.png" media="(prefers-color-scheme: dark)">
-  <img src="/schema-clair.png" alt="Schéma d'architecture">
-</picture>
-```
+Une icône en SVG inline avec `fill: currentColor` suit le texte sans rien faire : c'est
+la relation décrite dans [couleurs](/css/junior/colors). `light-dark()` n'accepte des
+images (`url()`, dégradés) que depuis le 14 septembre 2026 — Chrome 150, Firefox 150,
+Safari 27, Baseline *nouvellement* disponible — d'où la ligne de repli.
 
-Les icônes en SVG inline avec `fill: currentColor` suivent le texte sans rien faire :
-c'est la relation décrite dans [couleurs](/css/junior/colors). `light-dark()` accepte
-des images (`url()`, dégradés) depuis le 14 septembre 2026 seulement — Chrome 150,
-Firefox 150, Safari 27, Baseline *nouvellement* disponible — d'où la ligne de repli.
-
-Le piège est `<picture>` : sa media query lit le système, pas ton `data-theme`. Un
-utilisateur en système sombre qui choisit « clair » sur ton site reçoit l'image sombre
-sur une page claire. Avec une bascule manuelle, passe par le CSS ou par le SVG inline.
+Le piège est `<source media="(prefers-color-scheme: dark)">` dans un `<picture>` : la
+media query lit le système, pas ton `data-theme`. Un utilisateur en système sombre qui
+choisit « clair » sur ton site reçoit l'image sombre sur une page claire. Avec une
+bascule manuelle, passe par le CSS ou par le SVG inline.
 
 ## Adaptive Dark Mode de Safari
 
@@ -251,23 +220,18 @@ les SVG et les logos bitmap noir et blanc, inversés si nécessaire ; `<canvas>`
 jamais modifié. Ton code ne peut pas le détecter : JavaScript relit les couleurs
 d'origine, pas les couleurs transformées.
 
-Le theming par `data-theme` sans `color-scheme` tombe donc en plein dedans : thème
-clair affiché, système sombre, page réécrite par une heuristique. Pour refuser :
+Un theming par `data-theme` sans `color-scheme` tombe en plein dedans : thème clair
+affiché, système sombre, page réécrite par une heuristique. Pour refuser :
 
 ```html
 <meta name="color-scheme" content="light only">
 ```
 
 `color-scheme: light only` fait la même chose en CSS, sur `:root` ou sur un seul
-élément (une carte, un aperçu de document). Safari reconnaît `only` depuis la bêta 2
-de la 27.3. À l'inverse, `color-scheme: light dark` posé sur un bloc te rend la main
-sur cette seule portion. Dans la bascule, le choix explicite « clair » mérite le même
-verrou, puisque la spécification ne retient que `only` comme interdiction :
-
-```diff
-- :root[data-theme="light"] { color-scheme: light; }
-+ :root[data-theme="light"] { color-scheme: light only; }
-```
+élément (une carte, un aperçu de document) ; Safari reconnaît `only` depuis la bêta 2
+de la 27.3. À l'inverse, `color-scheme: light dark` posé sur un bloc te rend la main sur
+cette seule portion. D'où le `light only` de la bascule : pour la spécification, seul
+`only` interdit au navigateur de passer outre un choix « clair » explicite.
 
 ## Au-delà du sombre : contraste et couleurs forcées
 
@@ -288,10 +252,6 @@ disponibles, couvrent les besoins de contraste.
 
 @media (forced-colors: active) {
   .onglet[aria-selected="true"] { border-block-end: 3px solid Highlight; }
-}
-
-@media (prefers-contrast: more) {
-  :root { --border: light-dark(#000, #fff); }
 }
 ```
 
@@ -315,7 +275,7 @@ change que le schéma. Tout ce qui lit la préférence système sans passer par
 - title: "Bascule à trois états"
   desc: "`data-theme` ne change que `color-scheme`. Script inline dans le `<head>` pour éviter le flash."
 - title: "Images"
-  desc: "`currentColor` et `light-dark()` suivent la bascule ; `<picture media>` ne suit que le système."
+  desc: "`currentColor` et `light-dark()` suivent la bascule ; `<picture>` + `media` ne suit que le système."
 - title: "Adaptive Dark Mode"
   desc: "Safari 27.3 bêta (nov. 2026) assombrit les pages claires muettes. `light only` pour s'en exclure."
 - title: "forced-colors"
