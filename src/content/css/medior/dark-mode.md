@@ -138,11 +138,10 @@ function setTheme(theme) { // "light" | "dark" | "system"
 Ne résous jamais « système » en `"dark"` au premier passage : l'utilisateur resterait
 coincé le jour où son système change d'apparence.
 
-### Éviter le flash au chargement
-
-Le HTML rendu par le serveur ne connaît pas `localStorage`. Si l'attribut est posé à
-l'hydratation, la page s'affiche d'abord dans le thème système, puis saute. La parade :
-un script **inline et bloquant** dans le `<head>`, avant les feuilles de style.
+**Éviter le flash au chargement.** Le HTML rendu par le serveur ne connaît pas
+`localStorage`. Si l'attribut est posé à l'hydratation, la page s'affiche d'abord dans
+le thème système, puis saute. La parade : un script **inline et bloquant** dans le
+`<head>`, avant les feuilles de style.
 
 ```html
 <meta name="color-scheme" content="light dark">
@@ -158,13 +157,10 @@ un script **inline et bloquant** dans le `<head>`, avant les feuilles de style.
 ```
 
 Ces quelques lignes synchrones ne coûtent rien ; un module différé arriverait après le
-premier rendu. Avec une CSP stricte, ce script demande un `nonce` ou un hash.
-
-:::callout{type="tip"}
-Autre voie en SSR : un **cookie**, que le serveur lit pour rendre directement
-`<html data-theme="dark">`. Plus de script, mais un HTML qui varie par utilisateur :
-il ne se met plus en cache partagé tel quel.
-:::
+premier rendu. Avec une CSP stricte, ce script demande un `nonce` ou un hash. Autre voie
+en SSR : un **cookie**, que le serveur lit pour rendre directement
+`<html data-theme="dark">` — plus de script, mais un HTML qui varie par utilisateur et
+ne se met plus en cache partagé tel quel.
 
 ## Images et médias
 
@@ -189,9 +185,9 @@ images (`url()`, dégradés) que depuis le 14 septembre 2026 — Chrome 150, Fir
 Safari 27, Baseline *nouvellement* disponible — d'où la ligne de repli.
 
 Le piège est `<source media="(prefers-color-scheme: dark)">` dans un `<picture>` : la
-media query lit le système, pas ton `data-theme`. Un utilisateur en système sombre qui
-choisit « clair » sur ton site reçoit l'image sombre sur une page claire. Avec une
-bascule manuelle, passe par le CSS ou par le SVG inline.
+media query lit le système, pas ton `data-theme`. En système sombre, celui qui choisit
+« clair » sur ton site reçoit l'image sombre sur une page claire. Avec une bascule
+manuelle, passe par le CSS ou par le SVG inline.
 
 ## Adaptive Dark Mode de Safari
 
@@ -211,23 +207,21 @@ lui-même les pages claires. La décision se prend en deux temps :
 La transformation inverse la luminosité en conservant la teinte, vise un contraste de
 4,5:1 pour le texte et convertit les dégradés clairs. Les images restent intactes, sauf
 les SVG et les logos bitmap noir et blanc, inversés si nécessaire ; `<canvas>` n'est
-jamais modifié. Ton code ne peut pas le détecter : JavaScript relit les couleurs
-d'origine, pas les couleurs transformées.
+jamais modifié. Ton code ne peut pas le détecter : JavaScript relit les couleurs d'origine.
 
 Un theming par `data-theme` sans `color-scheme` tombe en plein dedans : thème clair
 affiché, système sombre, page réécrite par une heuristique. Pour refuser, annonce
-`<meta name="color-scheme" content="light only">`.
+`<meta name="color-scheme" content="light only">`, ou `color-scheme: light only` en
+CSS, sur `:root` ou sur un seul élément (une carte, un aperçu de document). Safari
+reconnaît `only` depuis la bêta 2 de la 27.3. À l'inverse, `color-scheme: light dark`
+posé sur un bloc te rend la main sur cette seule portion.
 
-`color-scheme: light only` fait la même chose en CSS, sur `:root` ou sur un seul
-élément (une carte, un aperçu de document) ; Safari reconnaît `only` depuis la bêta 2
-de la 27.3. À l'inverse, `color-scheme: light dark` posé sur un bloc te rend la main sur
-cette seule portion. D'où le `light only` de la bascule : pour la spécification, seul
-`only` interdit au navigateur de passer outre un choix « clair » explicite.
+D'où le `light only` de la bascule : pour la spécification, seul `only` interdit au
+navigateur de passer outre un choix « clair » explicite.
 
 ## Au-delà du sombre : contraste et couleurs forcées
 
-Clair et sombre ne sont pas les seules préférences. Deux media queries, largement
-disponibles, couvrent les besoins de contraste.
+Deux media queries, largement disponibles, couvrent les besoins de contraste.
 
 - **`prefers-contrast: more`** — l'utilisateur demande plus de contraste : renforce
   les bordures, abandonne les gris subtils. Tu gardes la main sur la palette.
