@@ -45,9 +45,8 @@ manque plus qu'une sortie :
 | `CloseWatcher` | Chrome 126, Firefox 149 | Safari 27.3 (bêta) |
 | `@view-transition` | Chrome 126, Safari 18.2 | Firefox 162 (8 déc. 2026) |
 
-Temporal, `closedby` et les transitions cross-document ont leur module
-(`/web/medior/temporal`, `/web/medior/popover-dialog`, `/web/medior/view-transitions`).
-Les deux autres noms sont nouveaux dans cette base.
+Trois ont déjà leur module : `/web/medior/temporal`, `/web/medior/popover-dialog` et
+`/web/medior/view-transitions`. Les deux autres noms sont nouveaux dans cette base.
 
 **`popover="hint"`** est le troisième type de popover, pensé pour les infobulles. Un
 popover `auto` qui s'ouvre ferme les autres `auto` ; un `hint` ne ferme que les autres
@@ -64,15 +63,13 @@ boutonFermer.onclick = () => watcher.requestClose();   // même chemin qu'Échap
 ```
 
 Safari 27.3 n'a pas de date de sortie connue ; la version stable est la 27.2 (26
-octobre). D'ici là, garde le polyfill de Temporal et le repli JS de `closedby`. Et
-« Newly available » ne dit rien des iPhone pas encore mis à jour : regarde tes
-statistiques avant de retirer un repli.
+octobre). D'ici là, garde le polyfill de Temporal et le repli JS de `closedby`, et
+consulte tes statistiques avant de les retirer : les iPhone se mettent à jour lentement.
 
 ## Les Speculation Rules sortent de Chromium
 
-Le préchargement déclaratif était le dernier des quatre chantiers à rester
-mono-moteur. Ça bouge, à deux vitesses (la syntaxe est dans
-`/web/senior/speculation-rules`) :
+Le préchargement déclaratif était le dernier chantier resté mono-moteur. Ça bouge, à
+deux vitesses (la syntaxe est dans `/web/senior/speculation-rules`) :
 
 - **Safari 27.3** : les données de compatibilité de MDN y inscrivent
   `<script type="speculationrules">` avec `prefetch`, les règles de document (`where`)
@@ -80,22 +77,22 @@ mono-moteur. Ça bouge, à deux vitesses (la syntaxe est dans
 - **Firefox** : en préversion seulement (Nightly), et partiellement — `prefetch` d'une
   liste d'URL, `eagerness` limité à `immediate` et `moderate`.
 
-Pense donc tes règles en deux étages : `prefetch` est celui que les trois moteurs
-visent, `prerender` reste un bonus Chromium.
-
 :::callout{type="warn"}
 Novembre 2026 : l'arrivée dans Safari 27.3 ne repose que sur les données de
-compatibilité. Les notes de la bêta ne citent qu'un correctif sur les « speculative
-prefetches ». Vérifie à la sortie stable, et ne compte pas sur Baseline cet hiver :
-Firefox n'en est qu'à la préversion.
+compatibilité ; les notes de la bêta ne citent qu'un correctif sur les « speculative
+prefetches ». Vérifie à la sortie stable, et ne compte pas sur Baseline cet hiver.
+Pense tes règles en deux étages : `prefetch` est celui que les trois moteurs visent,
+`prerender` reste un bonus Chromium.
 :::
 
 ## HTML déclaratif : la vague suivante
 
 `popover`, puis `command` et `commandfor`, ont montré la méthode : prendre un
 comportement que tout le monde recode en JavaScript, et en faire un attribut. Trois
-familles suivent la même voie. Toutes sont livrées dans Chrome et Edge, aucune dans
-Firefox ni Safari.
+familles suivent la même voie, livrées dans Chrome et Edge, absentes de Firefox et de
+Safari. Une quatrième est plus avancée : le `<select>` personnalisable, stable dans
+Chrome et Edge 135+ et dans Safari 27, attend Firefox, qui le garde derrière deux
+préférences depuis la 149 (voir `/css/medior/modern-form-styling`).
 
 ### `interestfor` : réagir à l'intérêt, pas au clic
 
@@ -110,8 +107,7 @@ souvent un `popover="hint"`.
 
 Le navigateur décide de ce qui compte comme « intérêt » selon le périphérique, et
 `Échap` l'annule. Tu n'écris ni `mouseenter`, ni minuterie : le délai se règle en CSS
-avec `interest-delay`, et `:interest-source` cible le déclencheur pendant l'intérêt.
-Disponible depuis Chrome 142.
+avec `interest-delay`, et `:interest-source` cible le déclencheur. Depuis Chrome 142.
 
 ### `focusgroup` : les flèches sans roving tabindex
 
@@ -154,14 +150,9 @@ geo.addEventListener("location", () => {
 ```
 
 La famille grandit vite : `<geolocation>` (Chrome 144), `<usermedia>` (151), `<camera>`
-et `<microphone>` (153), puis `<install>` (158), qui propose d'installer une
-application web à partir de son manifeste, en parallèle de `navigator.install()`. Pour
-ce dernier, Chrome Status recense une position « oppose » de WebKit : ne bâtis pas un
-parcours d'installation qui en dépend.
-
-Quatrième dossier, plus avancé : le `<select>` personnalisable (`appearance:
-base-select`) est stable dans Chrome et Edge 135+ et dans Safari 27 ; Firefox le garde
-derrière deux préférences depuis la 149. Voir `/css/medior/modern-form-styling`.
+et `<microphone>` (153), puis `<install>` (158), qui installe une application web à
+partir de son manifeste, en parallèle de `navigator.install()`. Pour ce dernier, Chrome
+Status recense une position « oppose » de WebKit : n'en fais pas dépendre un parcours.
 
 ## Rendu : canvas, transitions locales, HTML en flux
 
@@ -183,19 +174,15 @@ const ctx = canvas.getContext("2d");
 canvas.onpaint = () => {            // un descendant drawable a changé
   ctx.reset();
   ctx.drawElementImage(canvas.querySelector("form"), 100, 0);
-};
+};                                  // en 2D, clic et focus suivent la zone dessinée
 ```
-
-En contexte 2D, le navigateur réaligne le test de clic et le focus sur la zone
-dessinée : le champ reste saisissable là où tu l'as peint.
 
 :::callout{type="warn"}
 Novembre 2026 : Chrome Status et les données de compatibilité de MDN indiquent une
 activation par défaut dans Chrome 157 (3 novembre), alors que le billet de l'équipe
 Chrome du 29 septembre décrivait un origin trial prolongé jusqu'à Chrome 160. L'API a
-été renommée en route (Chrome 150, puis 155 : `layoutsubtree` est devenu
-`content="drawable"`). Teste `"drawElementImage" in CanvasRenderingContext2D.prototype`
-et garde un rendu de repli.
+été renommée en route (`layoutsubtree` est devenu `content="drawable"` dans Chrome
+155). Teste `"drawElementImage" in CanvasRenderingContext2D.prototype`.
 :::
 
 Côté transitions, `element.startViewTransition()` (Chrome 147+) borne l'animation à un
@@ -216,9 +203,8 @@ await reponse.body
   .pipeTo(liste.streamAppendHTML());   // affiché au fil de l'arrivée
 ```
 
-Comme `setHTML()`, ces méthodes assainissent le balisage pendant l'analyse ; les
-variantes suffixées `Unsafe` ne le font pas (voir `/web/senior/security`). Détecte-les
-avec `"streamAppendHTML" in Element.prototype`.
+Comme `setHTML()`, elles assainissent le balisage pendant l'analyse ; les variantes
+`Unsafe`, non (voir `/web/senior/security`). Test : `"appendHTML" in Element.prototype`.
 
 ## Mesure : les soft navigations entrent dans CrUX
 
@@ -227,20 +213,16 @@ Vitals. Les changements de route suivants — les *soft navigations* — restaie
 invisibles. Depuis Chrome 151, le navigateur les détecte et émet des entrées dédiées :
 
 ```js
-if (PerformanceObserver.supportedEntryTypes.includes("soft-navigation")) {
-  new PerformanceObserver((liste) => {
-    for (const nav of liste.getEntries()) envoyer(nav.name, nav.navigationId);
-  }).observe({ type: "soft-navigation", buffered: true });
-}
+new PerformanceObserver((liste) => {
+  for (const nav of liste.getEntries()) envoyer(nav.name, nav.navigationId);
+}).observe({ type: "soft-navigation", buffered: true });
 ```
 
 Côté CrUX, des variantes expérimentales de LCP, INP et CLS incluant ces navigations
 existent depuis le jeu de données de septembre 2026 (publié le 13 octobre). L'équipe
 prévoit de les intégrer **à partir de mai 2027**. Sur les données d'octobre, 60,3 % des
 origines obtiennent alors de bons Core Web Vitals, une hausse de 7,1 % selon les notes
-de version. Si ton site est une SPA, tes chiffres vont donc bouger sans que tu touches
-au code : compare dès maintenant ces variantes à tes métriques actuelles (les seuils
-restent ceux de `/web/senior/core-web-vitals`).
+de version. Si ton site est une SPA, compare dès maintenant ces variantes à tes chiffres.
 
 ## Un nouveau rythme : une version toutes les deux semaines
 
@@ -254,15 +236,12 @@ Firefox : Chrome 153 et 154, Firefox 155, 156 et 157 dans le même mois. Deux ef
 
 Dernier repère : **Interop 2027**. L'appel à propositions s'est clos le 23 septembre
 2026, la sélection est attendue avant le 17 décembre, et le périmètre sera publié dans
-la première moitié de février 2027. C'est lui qui dira lesquels de ces sujets les
-moteurs s'engagent à aligner.
+la première moitié de février 2027 : il dira quels sujets les moteurs vont aligner.
 
 ## À retenir
 
-L'hiver solde l'horizon précédent : ce qui était « Chromium d'abord » devient Baseline,
-une sortie stable après l'autre. La vague suivante — moins de JavaScript de plomberie,
-plus d'attributs HTML — n'en est qu'au premier moteur : adopte-la comme une
-amélioration progressive, jamais comme un prérequis.
+L'hiver solde l'horizon précédent, une sortie stable après l'autre. La vague suivante
+n'en est qu'au premier moteur : amélioration progressive, jamais prérequis.
 
 :::cheatsheet
 - title: "Baseline cet hiver"

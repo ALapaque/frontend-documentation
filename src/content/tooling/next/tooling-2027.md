@@ -58,9 +58,8 @@ rapides**. Sur une vraie base, l'équipe de Linear mesure un rendu à froid jusq
 :::callout{type="warn"}
 **Expérimental en novembre 2026.** Le mode couvre le côté navigateur et les
 plugins de base : un plugin tiers peut ne pas fonctionner. Côté SSR, Vite 8.4
-(26 novembre 2026) n'apporte qu'une prise en charge « hautement expérimentale »,
-fondation pour les méta-frameworks. À essayer sur une grosse app qui démarre
-lentement ; sans intérêt sur un projet de quelques centaines de modules.
+(26 novembre 2026) n'apporte qu'une prise en charge « hautement expérimentale ».
+À essayer sur une grosse app qui démarre lentement, pas sur un petit projet.
 :::
 
 ### Deux défauts à anticiper pour la prochaine majeure
@@ -72,34 +71,22 @@ changements de défaut se dessinent pourtant, et tu peux déjà les essayer.
 ton disque. Si quelqu'un d'autre peut l'atteindre (réseau partagé, `--host`), le
 contrôle `server.fs` doit l'empêcher de lire ton `.env`. Jusqu'ici, c'était une
 liste de blocage, et chaque bizarrerie du système de fichiers ou du parsing HTTP
-devenait un contournement à corriger. Vite 8.4 permet d'inverser la logique.
+devenait un contournement à corriger. Vite 8.4 permet d'inverser la logique :
 
-:::compare
-::bad
 ```ts vite.config.ts
-// Défaut actuel, liste de blocage : tout le workspace est servi,
-// sauf les fichiers que Vite sait sensibles.
-export default defineConfig({ server: { fs: { strict: true } } });
-```
-::
-::good
-```ts vite.config.ts
-// Opt-in depuis Vite 8.4, liste d'autorisation : seuls les fichiers
-// référencés depuis le point d'entrée sont servis.
+// strict "extended" : contrôle aussi les modules chargés par les plugins.
+// allow vide : rien d'autre que ce que le point d'entrée référence.
 export default defineConfig({
   server: { fs: { strict: "extended", allow: [] } },
 });
 ```
-::
-:::
 
-**Pourquoi.** Une liste de blocage doit prévoir chaque attaque. Une liste
-d'autorisation ne sert que ce que ton graphe de modules référence, par `import` ou
-par un `url()` en CSS, de proche en proche ; `"extended"` étend le contrôle aux
-modules chargés par les plugins. L'équipe Vite dit vouloir en faire le défaut de
-la prochaine majeure. Active-la maintenant : si un plugin référence un fichier
-autrement que par un import, tu obtiens un 403 en dev, et son auteur peut déclarer
-le module avec `this.environment.addSafeModule`.
+Une liste de blocage doit prévoir chaque attaque. Une liste d'autorisation ne sert
+que ce que ton graphe de modules référence, par `import` ou par un `url()` en CSS,
+de proche en proche. L'équipe Vite dit vouloir en faire le défaut de la prochaine
+majeure. Active-la maintenant : si un plugin référence un fichier autrement, tu
+obtiens un 403 en dev, et son auteur peut le déclarer avec
+`this.environment.addSafeModule`.
 
 **Lightning CSS comme transformateur par défaut, peut-être.** Aujourd'hui,
 Lightning CSS minifie déjà le CSS des builds de production, mais le traitement
@@ -109,8 +96,7 @@ prochaine majeure : une intention, pas une décision.
 :::callout{type="warn"}
 **Expérimental en novembre 2026.** L'option `css.transformer: "lightningcss"`
 existe déjà, mais reste expérimentale. Essaie-la sur une branche et fais
-l'inventaire de tes plugins PostCSS. Les CSS Modules se règlent alors dans
-`css.lightningcss.cssModules`, plus dans `css.modules`.
+l'inventaire de tes plugins PostCSS avant que le défaut ne change.
 :::
 
 ## tsrs : TypeScript porté en Rust
@@ -127,8 +113,8 @@ plus lent de la chaîne. Le 20 octobre 2026, Cloudflare et VoidZero ont annoncé
 - **Les chiffres.** Jusqu'à **8× plus rapide** et environ 70 % de mémoire en moins
   que TypeScript 7.0, à nombre égal de workers de vérification.
 - **Rust ne sert pas qu'à la vitesse.** Compilé en WebAssembly, il n'embarque pas
-  de ramasse-miettes : toute la chaîne TypeScript peut tourner en bac à sable,
-  dans un Worker ou dans le navigateur.
+  de ramasse-miettes : toute la chaîne peut tourner en bac à sable, dans un Worker
+  ou dans le navigateur.
 
 ```bash
 npm install -D tsrs
@@ -141,8 +127,8 @@ réponse au « goulot typecheck » décrit dans `/tooling/senior/rust-toolchain`
 
 :::callout{type="warn"}
 **Bêta en novembre 2026.** Le paquet npm `tsrs` n'existe qu'en préversion
-(`7.1.0-beta.tsrs5` au 23 novembre), calée sur un TypeScript 7.1 lui-même en bêta
-(`/typescript/next/typescript-7-1`). L'annonce reconnaît des écarts avec le
+(`7.1.0-beta.tsrs5` au 23 novembre), calée sur un TypeScript 7.1 lui-même en
+bêta (`/typescript/next/typescript-7-1`). L'annonce reconnaît des écarts avec le
 compilateur officiel, comme l'ordre d'affichage des diagnostics. Garde `tsc` comme
 juge en CI ; fais tourner tsrs à côté, dans un job non bloquant, et compare.
 :::
@@ -151,16 +137,9 @@ juge en CI ; fais tourner tsrs à côté, dans un job non bloquant, et compare.
 
 **pnpm 12** est une réécriture de pnpm en Rust, et elle est **stable** : 12.0.0
 publiée le 26 août 2026, tag npm `latest` sur la ligne 12 en novembre. C'est un
-exécutable natif : installé par le script autonome, il tourne sans Node. La
-montée de version ne doit pas ressembler à une migration : mêmes commandes, mêmes
-réglages, même format de lockfile que pnpm 11.
-
-```bash
-pnpm self-update   # depuis pnpm 11.10.0 ou plus récent
-pnpm peers check   # remplace « pnpm install --resolution-only », supprimé
-```
-
-Les différences qui comptent :
+exécutable natif : installé par le script autonome, il tourne sans Node. Mêmes
+commandes, mêmes réglages, même format de lockfile que pnpm 11 : la montée de
+version ne doit pas ressembler à une migration. Trois différences comptent :
 
 - **Deux syntaxes refusées** : `--resolution-only` et `--frozen-lockfile false`
   (utilise `--no-frozen-lockfile`). Cherche-les dans tes scripts de CI.
@@ -169,13 +148,17 @@ Les différences qui comptent :
 - **`node` suit le projet.** Un `node`, `deno` ou `bun` installé globalement par
   pnpm exécute la version épinglée par le projet courant (`devEngines.runtime`).
 
+```bash
+pnpm self-update   # depuis pnpm 11.10.0 ou plus récent
+pnpm peers check   # remplace « pnpm install --resolution-only », supprimé
+```
+
 **npm 12** (8 juillet 2026) bloque par défaut les scripts d'installation des
 dépendances et refuse les sources git ou distantes : le détail est dans
-`/tooling/medior/npm-supply-chain-security`. Ce qui reste à venir, c'est sa
-diffusion. En novembre 2026, Node 26 LTS embarque toujours npm 11, alors que
-l'alpha de Node 27 embarque npm 12. Si cela tient jusqu'en avril, le défaut sûr
-deviendra celui de toute installation neuve. N'attends pas :
-`npm install -g npm@12`, puis remplis `allowScripts`.
+`/tooling/medior/npm-supply-chain-security`. Reste sa diffusion. En novembre 2026,
+Node 26 LTS embarque toujours npm 11, alors que l'alpha de Node 27 embarque
+npm 12. Si cela tient jusqu'en avril, le défaut sûr deviendra celui de toute
+installation neuve. N'attends pas : `npm install -g npm@12`, puis `allowScripts`.
 
 ## Node 27 : une majeure par an
 
@@ -190,15 +173,13 @@ Si tu montes de LTS en LTS, presque rien ne change, sinon la numérotation
 (`/tooling/senior/node-runtimes`). Le changement vise les **auteurs de
 bibliothèques** : les changements cassants sont permis pendant l'alpha. Si tu ne
 testes que les LTS, tu découvres la casse en même temps que tes utilisateurs.
-Ajoute un job de CI facultatif sur l'alpha, dont les binaires sont publiés sur
-nodejs.org/dist.
+Ajoute un job de CI facultatif sur l'alpha, publiée sur nodejs.org/dist.
 
 :::callout{type="warn"}
 **Alpha en novembre 2026.** Les alphas sont signées, taguées et testées avec
-CITGM, contrairement aux nightlies. Mais l'API peut changer de l'une à l'autre et
-leur rythme n'est pas fixe (`v27.0.0-alpha.0.2.0` au 25 novembre). Jamais en
-production. Le calendrier n'est pas définitif : la source de vérité est le
-`schedule.json` du dépôt nodejs/Release.
+CITGM, contrairement aux nightlies. Mais l'API peut changer de l'une à l'autre
+(`v27.0.0-alpha.0.2.0` au 25 novembre) : jamais en production. Le calendrier n'est
+pas définitif ; la source de vérité est le `schedule.json` de nodejs/Release.
 :::
 
 ## Un outillage pensé pour les agents
@@ -207,8 +188,8 @@ Le fil rouge de cette fin d'année : l'utilisateur d'une chaîne d'outils est de
 plus en plus souvent un agent de code, qui relance lint, tests et typecheck en
 boucle (`/ia/medior/agentic-coding-workflow`). Il lui faut des vérifications
 rapides, des commandes sans interface et des outils qui tiennent dans un bac à
-sable. pnpm 12, par exemple, crée son store dans le projet quand le bac à sable de
-l'agent n'autorise l'écriture que là.
+sable : pnpm 12 crée ainsi son store dans le projet quand l'agent ne peut écrire
+que là.
 
 **Storybook 11** en fait son axe principal : tes composants, tes stories et ta
 doc sont le contexte qui manque à un agent pour ne pas réinventer un bouton qui
@@ -238,14 +219,14 @@ novembre et en RC depuis le 24 : `11.0.0-rc.1` sous le tag npm `next`, alors que
 mineure presque chaque semaine (1.8.0 le 24 novembre 2026), `vpx` qui exécute
 directement un fichier TypeScript, le backend tsrs derrière `vp check` depuis la
 1.7. En revanche, ce que l'annonce de la 1.0 remettait à plus tard l'est
-toujours : le **cache distant** et `vp release` n'apparaissent pas dans la
-documentation de la 1.8. Ne bâtis pas la CI d'un monorepo dessus.
+toujours : au 27 novembre, le guide en ligne ne documente ni **cache distant** ni
+`vp release`. Ne bâtis pas la CI d'un monorepo dessus.
 
 ## Quoi adopter maintenant, quoi seulement surveiller
 
 | Sujet | Statut en novembre 2026 | Ce que tu fais |
 | --- | --- | --- |
-| pnpm 12 | Stable | Migrer, après avoir cherché `--resolution-only` en CI |
+| pnpm 12 | Stable | Migrer : traquer `--resolution-only`, accepter un diff unique du lockfile |
 | npm 12 | Stable, absent de Node 24 et 26 | L'installer, remplir `allowScripts` |
 | `server.fs` en liste d'autorisation | Opt-in (Vite 8.4) | L'activer, corriger les 403 |
 | Lightning CSS comme transformateur | Expérimental, défaut envisagé | Tester sur une branche |
