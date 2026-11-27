@@ -201,15 +201,13 @@ doigt ». Interroge la capacité elle-même :
 À l'inverse, `(pointer: coarse)` repère un pointeur imprécis, le doigt : agrandis-y
 les zones cliquables. La famille `prefers-*` lit les réglages du système :
 `prefers-reduced-motion`, `prefers-contrast`, ou `prefers-color-scheme`, le point
-d'entrée du [mode sombre](/css/medior/dark-mode). Ce sont des demandes de
-l'utilisateur : respecte-les.
+d'entrée du [mode sombre](/css/medior/dark-mode). Respecte ces demandes.
 
 :::callout{type="info"}
 Une media query regarde la **fenêtre**. Pour une carte qui doit s'adapter à la place
 qu'on **lui** donne (sidebar étroite ici, grille large là), l'outil est la
-[container query](/css/senior/container-queries). Le partage des rôles : media queries
-pour la mise en page de la page et les préférences de l'utilisateur, container queries
-pour l'intérieur d'un composant.
+[container query](/css/senior/container-queries). Partage des rôles : media queries
+pour la page et les préférences de l'utilisateur, container queries pour un composant.
 :::
 
 ## Écrans pliables : un aperçu
@@ -217,7 +215,8 @@ pour l'intérieur d'un composant.
 Un téléphone pliable tenu à moitié ouvert, comme un livre, présente deux demi-écrans
 séparés par une pliure. Deux nouvelles familles de caractéristiques la décrivent :
 `device-posture`, qui vaut `folded` (à moitié plié) ou `continuous` (écran à plat,
-grand ouvert ou refermé), et les *viewport segments*, qui comptent les demi-écrans.
+grand ouvert ou refermé), et les *viewport segments*, qui comptent les demi-écrans
+côte à côte (`horizontal-viewport-segments`) ou empilés (`vertical-viewport-segments`).
 
 ```css
 /* deux segments côte à côte : une colonne de chaque côté de la pliure */
@@ -225,14 +224,11 @@ grand ouvert ou refermé), et les *viewport segments*, qui comptent les demi-éc
   .lecteur {
     display: grid;
     grid-template-columns:
-      env(viewport-segment-width 0 0)
-      env(viewport-segment-width 1 0);
+      env(viewport-segment-width 0 0)   /* largeur du segment colonne 0, ligne 0 */
+      env(viewport-segment-width 1 0);  /* largeur du segment colonne 1, ligne 0 */
   }
 }
 ```
-
-`vertical-viewport-segments` fait de même pour des segments empilés, et
-`env(viewport-segment-width 0 0)` donne la largeur du segment situé colonne 0, ligne 0.
 
 :::callout{type="warn"}
 **Novembre 2026 : expérimental.** Dans Safari 27.1 (23 octobre 2026, iPhone Duo), ces
