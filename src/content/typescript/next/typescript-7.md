@@ -6,9 +6,9 @@ level: "next"
 order: 1
 duration: 15
 prerequisites: ["tsconfig-strict", "module-resolution"]
-updated: 2026-07-25
+updated: 2026-11-27
 seoTitle: "TypeScript 7.0 stable — compilateur natif Go, 8 à 12× plus rapide"
-seoDescription: "TypeScript 7.0 est stable depuis le 8 juillet 2026 : le compilateur natif Go est le tsc du paquet typescript, 8 à 12x plus rapide, editeur 13x plus reactif. Le langage ne change pas, mais l'API programmatique attend la 7.1 — et Vue, Svelte, Astro doivent patienter."
+seoDescription: "TypeScript 7.0 est stable depuis le 8 juillet 2026 : le compilateur natif Go est le tsc du paquet typescript, 8 à 12x plus rapide, editeur 13x plus reactif. Le langage ne change pas, mais l'API programmatique n'arrive qu'avec la 7.1 (beta en octobre 2026) : Vue, Svelte, Astro et les templates Angular restent sur TS 6."
 ogVariant: "iris"
 related:
   - { framework: "typescript", slug: "module-resolution" }
@@ -97,6 +97,10 @@ les gros projets : sur VS Code, le délai d'apparition des erreurs passe de
 **17,5 secondes à moins de 1,3 seconde** — environ **13×**. C'est le gain que tu
 ressens à chaque frappe, avant même de penser à la CI.
 
+Même logique pour `tsc --watch` : le mode a été entièrement reconstruit en 7.0,
+sur un portage en Go du file-watcher de Parcel. La surveillance des fichiers
+est plus stable d'une plateforme à l'autre et consomme moins de ressources.
+
 ## Le parallélisme, et comment le pousser
 
 Le compilateur exécute parsing, type-check et émission en parallèle. Trois
@@ -142,10 +146,20 @@ préparées par la 6.x :
 
 - `target: "es5"` n'est plus pris en charge ;
 - `baseUrl` disparaît (utilise `paths` avec des chemins relatifs) ;
+- `moduleResolution: "node"` (`node10`) n'est plus pris en charge : il reste
+  `nodenext` et `bundler` ;
 - les systèmes de modules historiques sont retirés.
 
 Ce sont des changements de **`tsconfig.json`**, pas de code applicatif. D'où
 l'intérêt de passer par la 6.0 d'abord : elle signale ces points avant le saut.
+
+Une exception si tu vérifies des fichiers **JavaScript annotés en JSDoc** : la
+7.0 a revu cette prise en charge pour l'aligner sur l'analyse des fichiers
+`.ts`. Plusieurs tolérances héritées de Closure disparaissent : `@enum` n'est
+plus reconnu, un `?` seul n'est plus un type (écris `any`), `@class` ne
+transforme plus une fonction en constructeur, et la syntaxe
+`function(string): void` laisse la place à `(s: string) => void`. Là, c'est
+bien ton code — tes commentaires JSDoc — qu'il faut retoucher.
 
 ## Le point qui bloque encore : pas d'API programmatique
 
@@ -154,20 +168,53 @@ C'est **la** limite de la 7.0, et elle concerne directement beaucoup de fronts :
 :::callout{type="warn"}
 **TypeScript 7.0 ne fournit pas d'API programmatique.** Les outils qui *embarquent*
 le compilateur dans leur propre chaîne — Volar, et donc **Vue, Svelte, Astro,
-MDX** — ne peuvent pour l'instant s'appuyer que sur TypeScript 6.0. Si ton projet
-en fait partie, **reste en 6.0** : tu perdrais le support éditeur. L'API est
-attendue en **7.1**, avec un rythme annoncé d'une version tous les 3-4 mois.
+MDX** — ne peuvent pour l'instant s'appuyer que sur TypeScript 6.0. La
+vérification des templates **Angular** est dans le même cas. Si ton projet en
+fait partie, **reste en 6.0** : tu perdrais le support éditeur. La nouvelle API
+arrive avec la **7.1**, sur un rythme annoncé d'une version tous les 3-4 mois.
 :::
 
-Concrètement : un projet React ou Angular en TS pur peut passer en 7.0
-aujourd'hui ; un projet Vue avec des fichiers `.vue` attend la 7.1. Vérifie
-l'état de ton outillage avant de mettre à jour, pas après.
+Concrètement : un projet React en TS pur peut passer en 7.0 aujourd'hui. Un
+projet Vue avec des fichiers `.vue` attend la 7.1. Un projet **Angular** ne
+peut pas basculer non plus : en novembre 2026, `@angular/compiler-cli` 22.3 et
+`@angular/build` 22.3 exigent `typescript >=6.0 <6.1`. Même contrainte pour
+`typescript-eslint`, qui importe l'API du compilateur (la 8.74 exige
+`<6.1.0`). Vérifie l'état de ton outillage avant de mettre à jour, pas après.
+
+Ce que l'équipe TypeScript propose en attendant, c'est de faire tourner les
+deux **côte à côte** : TypeScript 6 reste la dépendance `typescript` que tes
+outils importent, et le compilateur natif s'installe sous un alias.
+
+```json
+{
+  "devDependencies": {
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
+  }
+}
+```
+
+`npx tsc` lance alors la 7.0, `tsc6` et l'API restent en 6.0. Pour Angular,
+c'est le maximum aujourd'hui : un `tsc` 7 en ligne de commande pour détecter
+vite les erreurs du projet, TypeScript 6 pour le build, les templates et
+l'éditeur.
+
+:::callout{type="info"}
+En novembre 2026, la **7.1 est en beta** (publiée le 20 octobre 2026,
+`npm i -D typescript@beta`) : pas encore de Release Candidate, et `latest`
+reste la 7.0.2. Elle apporte la nouvelle API, découpée en points d'entrée
+(`typescript/sync`, `typescript/async`, `typescript/ast`…) plutôt qu'en un
+module monolithique, et les **content mappers** : un point d'extension qui
+laisse un outil fournir à TypeScript une représentation virtuelle d'un fichier
+`.vue`, `.svelte` ou `.astro`. Tant que la 7.1 n'est pas stable et que ton
+outillage ne l'a pas adoptée, la consigne ne change pas.
+:::
 
 ## Ce qui reste identique côté langage
 
 Insistons une dernière fois, parce que c'est la source de confusion : **rien**
 de ce que tu as appris sur le langage ne change avec TS 7.0. Les génériques, les
-types conditionnels, `satisfies`, les décorateurs stage-3, la résolution de
+types conditionnels, `satisfies`, les décorateurs standard, la résolution de
 modules, les utility types — tout fonctionne exactement pareil. Tu ne réécris
 aucune annotation, tu n'apprends aucune syntaxe. La numérotation saute de 6 à 7
 pour marquer le **changement d'implémentation**, pas une rupture du langage.
@@ -181,7 +228,7 @@ const droits = { admin: true, lecteur: false } satisfies Record<Role, boolean>;
 
 :::callout{type="info"}
 Calendrier constaté : beta en avril 2026 (`@typescript/native-preview`), Release
-Candidate le 22 juin, **stable le 8 juillet 2026**. La 6.x reste la dernière
+Candidate le 18 juin, **stable le 8 juillet 2026**. La 6.x reste la dernière
 ligne de l'ancien compilateur JavaScript, et le socle des outils qui attendent
 l'API de la 7.1.
 :::
@@ -200,7 +247,7 @@ l'API de la 7.1.
 - title: "--checkers (défaut 4)"
   desc: "Monter à 8 pousse VS Code à 16,7x. Avec --builders et --singleThreaded pour déboguer."
 - title: "Pas d'API en 7.0"
-  desc: "Vue, Svelte, Astro, MDX (via Volar) restent en TS 6.0 jusqu'à la 7.1. Vérifie ton outillage AVANT."
+  desc: "Vue, Svelte, Astro, MDX (via Volar) et les templates Angular restent en TS 6.0. L'API arrive en 7.1, en beta depuis octobre 2026."
 - title: "Ruptures de config"
-  desc: "target es5, baseUrl et les modules historiques disparaissent. Passe par la 6.0 d'abord."
+  desc: "target es5, baseUrl, moduleResolution node10 et les modules historiques disparaissent. Passe par la 6.0 d'abord."
 :::

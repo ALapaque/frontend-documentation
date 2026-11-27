@@ -6,7 +6,7 @@ level: "senior"
 order: 4
 duration: 16
 prerequisites: ["positioning"]
-updated: 2026-05-23
+updated: 2026-11-27
 seoTitle: "CSS Anchor Positioning — anchor-name, position-area et fallbacks"
 seoDescription: "Positionner tooltips, menus et popovers en pur CSS : anchor-name, position-anchor, la grille 3×3 de position-area, anchor() et position-try-fallbacks anti-débordement."
 ogVariant: "crimson"
@@ -146,20 +146,37 @@ button { anchor-name: --aide; }
 ## Support 2026 et dégradation
 
 :::callout{type="warn"}
-En mai 2026, l'anchor positioning est implémenté dans **Chromium 125+** (Chrome, Edge,
-Opera) mais **pas encore dans Safari ni Firefox**. Une **bannière de compatibilité
-s'affiche** dans la démo ci-dessus sur les navigateurs non compatibles pour t'avertir que
-le positionnement automatique n'y fonctionnera pas.
+En novembre 2026, l'anchor positioning est livré dans les **trois moteurs** :
+**Chromium 125+** (Chrome, Edge, Opera), **Safari 26** (septembre 2025) et **Firefox 147**
+(janvier 2026, activé par défaut). Il n'est **pas encore classé Baseline** pour autant :
+la spécification a encore bougé en 2026, et Firefox n'a pas tous les derniers ajustements
+en version stable. Une **bannière de compatibilité s'affiche** dans la démo ci-dessus sur
+les navigateurs non compatibles pour t'avertir que le positionnement automatique n'y
+fonctionnera pas.
 :::
 
-La dégradation doit être **pensée en amont**. Sur les moteurs qui ne le prennent pas en charge, `position-anchor`
+Deux ajustements récents expliquent ce statut, et tu les croiseras en lisant du code
+écrit avant eux :
+
+- La valeur initiale de `position-anchor` est désormais `normal` (Chrome 151, Firefox 151,
+  Safari 27) : elle se comporte comme `none` tant que `position-area` vaut `none`, et
+  comme `auto` (l'ancre implicite, s'il y en a une) sinon. Safari 26 et Firefox 147
+  partaient encore de `auto`.
+- Les mots-clés de `position-visibility` (qui masque l'élément ancré quand son ancre
+  n'est pas valide ou plus visible) ont été renommés : `anchors-valid` et
+  `anchors-visible` deviennent `anchor-valid` et `anchor-visible` (Chrome 157, Safari 27 ;
+  Firefox 162, en bêta, sortie prévue le 8 décembre 2026).
+
+La dégradation doit être **pensée en amont**. Sur les navigateurs qui ne le prennent pas
+en charge (Safari avant la 26, Firefox avant la 147), `position-anchor`
 et `position-area` sont simplement ignorés : prévois donc un positionnement de secours
 classique (un parent `position: relative` + `top`/`left`), ou détecte la fonctionnalité.
 
 :::compare
 ::bad
 ```css
-/* Aucun secours : sur Safari/Firefox le popover se colle au coin haut-gauche. */
+/* Aucun secours : sur un navigateur sans anchor positioning (Safari < 26,
+   Firefox < 147), le popover se colle au coin haut-gauche. */
 .popover {
   position: absolute;
   position-anchor: --t;

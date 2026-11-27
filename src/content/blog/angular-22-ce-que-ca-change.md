@@ -2,12 +2,13 @@
 title: "Angular 22 est sorti : ce que ça change"
 slug: "angular-22-ce-que-ca-change"
 date: 2026-06-10
+updated: 2026-11-27
 author: "L'équipe Practical Docs"
 tags: ["angular", "release", "migration"]
 cover: "angular-v22"
-lead: "C'est officiel depuis le 3 juin : Signal Forms et Resources sont stables, OnPush devient le défaut, Vitest remplace Karma, TypeScript 6 est requis. La première release où Angular est « signal-first » de bout en bout. Le guide pour migrer sans se rater."
+lead: "C'est officiel depuis le 3 juin : Signal Forms et Resources sont stables, OnPush devient le défaut, Vitest reste le runner par défaut, TypeScript 6 est requis. La première release où Angular est « signal-first » de bout en bout. Le guide pour migrer sans se rater."
 seoTitle: "Angular 22 est sorti — Signal Forms et Resources stables, OnPush par défaut, Vitest"
-seoDescription: "Angular 22 (3 juin 2026) stabilise les Signal Forms et les Resources, fait d'OnPush la détection par défaut, bascule sur Vitest et exige TypeScript 6. Ce qui change, comment migrer, et les décisions à prendre."
+seoDescription: "Angular 22 (3 juin 2026) stabilise les Signal Forms et les Resources, fait d'OnPush la détection par défaut, garde Vitest comme runner par défaut et exige TypeScript 6. Ce qui change, comment migrer, et les décisions à prendre."
 related:
   - { framework: "angular", slug: "angular-22" }
   - { framework: "angular", slug: "signal-forms" }
@@ -20,7 +21,7 @@ Voici ce qui a **réellement été livré**, et ce qu'il faut décider.
 
 ## Signal Forms : stables
 
-Les Signal Forms quittent l'expérimental. `@angular/forms/signals` est désormais une API publique : `form()`, le binding `[control]`, les schémas de validation (`required`, `min`, `validate`), la validation croisée (`valueOf`), les tableaux dynamiques (`applyEach`), la validation serveur (`validateHttp`), l'intégration Zod (`validateStandardSchema`), et `submit()` qui remappe les erreurs renvoyées par l'API.
+Les Signal Forms quittent l'expérimental. `@angular/forms/signals` est désormais une API publique : `form()`, le binding `[formField]`, les schémas de validation (`required`, `min`, `validate`), la validation croisée (`valueOf`), les tableaux dynamiques (`applyEach`), la validation serveur (`validateHttp`), l'intégration Zod (`validateStandardSchema`), et `submit()` qui remappe les erreurs renvoyées par l'API.
 
 L'idée centrale reste la même : ton **signal de données est la source de vérité**, et le formulaire en est une projection réactive. Plus de double état entre `FormGroup` et ton modèle, plus de `valueChanges` à observer pour savoir si c'est valide.
 
@@ -70,9 +71,13 @@ L'ordre qui marche, qu'on a vu tenir sur plusieurs migrations :
 
 Détails et pièges dans le module [Zoneless](/angular/senior/zoneless), qu'on vient de refondre pour cette release.
 
-## Vitest est le runner par défaut, Karma est retiré
+## Vitest est le runner par défaut, Karma reste disponible
 
-Karma a vécu — il est retiré d'Angular 22. Le **runner par défaut est Vitest**, intégré au compilateur, qui démarre en quelques millisecondes plutôt que quelques secondes et tourne sur les mêmes outils que ton bundler.
+Karma n'est pas retiré d'Angular 22 : la 22.0 supprime seulement les builders expérimentaux Jest et Web Test Runner. Le **runner par défaut est Vitest**, comme depuis la 21 : intégré au compilateur, il démarre en quelques millisecondes plutôt que quelques secondes et tourne sur les mêmes outils que ton bundler.
+
+:::callout{type="info"}
+**Mise à jour de novembre 2026.** Karma est sur la sortie : la 22.3 déprécie l'option `testRunner` des schematics, et les nouveaux projets ne seront à terme configurés qu'avec Vitest.
+:::
 
 Pour les apps existantes : une migration **`migrate-karma-to-vitest`** est fournie par le CLI, et elle est rapide quand les tests sont écrits proprement (peu d'`async/done` à l'ancienne, peu de chronométrage Zone.js explicite). Les utilitaires `fakeAsync` restent pris en charge. En zoneless, le mantra de test devient `await fixture.whenStable()` plutôt que `tick()` — la détection est planifiée par les signals, pas par un drain de microtâches.
 
@@ -84,7 +89,7 @@ Deux morceaux très attendus manquent à l'appel :
 - Le bloc **`@boundary`** (frontières d'erreur dans les templates : un composant qui plante affiche un fallback au lieu d'emporter la page) est annoncé pour **v22.1 ou v23**, en developer preview.
 
 :::callout{type="info"}
-On en reparle quand ce sera stable. Pour l'instant, `imports: [...]` reste obligatoire — c'est l'un des derniers points d'inconfort résiduels des composants standalone.
+Pour l'instant, `imports: [...]` reste obligatoire — c'est l'un des derniers points d'inconfort résiduels des composants standalone. **Mise à jour de novembre 2026.** `@boundary` est arrivé en 22.2, en developer preview. Le selectorless, lui, n'est plus au programme : son prototype a été retiré du compilateur en 22.3 et la roadmap officielle n'en parle plus. Le point complet est dans [Angular 22](/angular/next/angular-22).
 :::
 
 ## Et le reste

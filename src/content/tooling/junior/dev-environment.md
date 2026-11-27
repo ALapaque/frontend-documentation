@@ -6,7 +6,7 @@ level: "junior"
 order: 3
 duration: 14
 prerequisites: ["package-managers"]
-updated: 2026-05-23
+updated: 2026-11-27
 seoTitle: "Env de dev : Node LTS, nvm, .env, EditorConfig (Junior)"
 seoDescription: "Maîtriser son environnement : versions de Node avec nvm/fnm/Volta, .editorconfig, variables d'env, TypeScript, et fin du works on my machine."
 ogVariant: "sage"
@@ -25,22 +25,31 @@ ou des variables d'environnement différentes.
 
 ## Node LTS et gestion de versions
 
-Node sort une version **LTS** (Long Term Support) paire tous les ans ; c'est
-celle qu'on vise en production pour sa stabilité. Mais tu jongles souvent entre
-plusieurs projets exigeant des versions différentes. D'où les **gestionnaires de
-versions** : **nvm**, **fnm** (rapide, écrit en Rust) ou **Volta**.
+Node publie une ligne **LTS** (Long Term Support) par an ; c'est celle qu'on vise
+en production pour sa stabilité. Jusqu'à Node 26, seules les majeures paires
+deviennent LTS. À partir de Node 27 (avril 2027), il n'y a plus qu'une majeure
+par an et chacune devient LTS en octobre, sans distinction pair/impair. En
+novembre 2026, la LTS active est **Node 26** ; Node 22 reste maintenu jusqu'au
+30 avril 2027.
+
+Mais tu jongles souvent entre plusieurs projets exigeant des versions
+différentes. D'où les **gestionnaires de versions** : **nvm**, **fnm** (rapide,
+écrit en Rust) ou **Volta**. Volta fonctionne toujours, mais ses auteurs
+l'annoncent non maintenu et recommandent de migrer vers mise. Certains outils du
+projet savent aussi installer Node eux-mêmes : `pnpm runtime` côté pnpm,
+`vp env` côté Vite+.
 
 Le fichier `.nvmrc` (ou le champ `volta`) déclare la version attendue **dans le
 dépôt** :
 
 ```bash .nvmrc
-22
+26
 ```
 
 ```json package.json
 {
   "engines": {
-    "node": ">=22 <23"
+    "node": ">=26 <27"
   }
 }
 ```
@@ -56,7 +65,7 @@ la CI et certains outils. Combine-le toujours avec un `.nvmrc` et un
 ::bad
 ```bash
 # Chacun lance le projet avec le Node qu'il avait sous la main
-node -v   # toi : v22 ; collègue : v18
+node -v   # toi : v26 ; collègue : v22
 # build vert chez toi, rouge chez lui
 ```
 ::
@@ -69,7 +78,7 @@ npm ci             # même Node, même lockfile -> même résultat
 ::
 :::
 
-**Pourquoi.** Node évolue : une API ajoutée en v22 n'existe pas en v18, et
+**Pourquoi.** Node évolue : une API ajoutée en v26 n'existe pas en v22, et
 certaines syntaxes ou comportements de `node_modules` diffèrent d'une majeure à
 l'autre. Si chacun exécute le code sur un runtime différent, tu ne testes plus
 le même programme. Le `.nvmrc` versionné dans Git transforme « la bonne version

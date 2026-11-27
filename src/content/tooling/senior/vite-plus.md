@@ -6,9 +6,9 @@ level: "senior"
 order: 4
 duration: 14
 prerequisites: ["vite", "monorepo"]
-updated: 2026-07-09
+updated: 2026-11-27
 seoTitle: "Vite+ (VoidZero) — une seule toolchain : Vite, Vitest, Rolldown, Oxc, tsdown"
-seoDescription: "Vite+ regroupe la constellation VoidZero (Vite, Vitest, Rolldown, Oxlint, tsdown) derrière une CLI unique et cohérente. Ce qu'il apporte face à une toolchain assemblée à la main, le modèle OSS/commercial, et son statut en 2026."
+seoDescription: "Vite+ regroupe la constellation VoidZero (Vite, Vitest, Rolldown, Oxlint, tsdown) derrière une CLI unique et cohérente. Ce qu'il apporte face à une toolchain assemblée à la main, le modèle OSS/commercial, et son statut fin 2026 : 1.0 stable sous MIT."
 ogVariant: "sage"
 related:
   - { framework: "tooling", slug: "vite" }
@@ -53,7 +53,7 @@ exactement de là : deux moteurs qui ne traitent pas ton TypeScript ou tes impor
 ```json
 {
   "devDependencies": {
-    "vite-plus": "^0.2.0"
+    "vite-plus": "^1.8.0"
   }
 }
 ```
@@ -75,17 +75,23 @@ gestionnaire de paquets, task runner). Concrètement, `vp` orchestre :
 - **Oxlint** et **Oxfmt** pour le lint et le format, sur le socle Oxc.
 - **tsdown** pour bundler une **bibliothèque** (types `.d.ts` inclus).
 - **Vite Task**, un task runner avec cache, pour orchestrer un monorepo.
-- La gestion du **runtime Node** et la détection du **gestionnaire de paquets**.
+- La gestion du **runtime Node** (`vp env`) et du **gestionnaire de paquets**
+  (`vp install` délègue à celui du projet).
 
 ```bash
 vp create        # scaffolder un projet
+vp install       # installer les dépendances (gestionnaire du projet)
 vp dev           # dev server + HMR (Vite 8 / Rolldown)
-vp check         # lint + format + typecheck en une passe
+vp check         # format + lint + typecheck en une passe
 vp test          # tests (Vitest)
 vp build         # build de prod (Rolldown)
 vp pack          # bundler une lib (tsdown)
 vp run <task>    # task runner avec cache (monorepo)
+vp env           # gérer la version de Node
 ```
+
+Ces neuf commandes couvrent le cycle local. S'y ajoute `vp migrate`, qui convertit
+un projet existant vers Vite+.
 
 :::callout{type="info"}
 Le point structurant : un **seul moteur Rust** — Oxc pour le parsing/transform,
@@ -144,7 +150,8 @@ En juin 2026, **Cloudflare a acquis VoidZero** (l'équipe d'Evan You) et a engag
 un fonds indépendant pour l'écosystème Vite. Dans la foulée, Vite+ est passé
 **pleinement open source sous MIT** : les paliers payants annoncés à l'origine ne
 décrivent plus le modèle actuel. Si tu lis un article de 2025 sur « le produit
-commercial Vite+ », il est daté. À la mi-2026, Vite+ est gratuit et MIT.
+commercial Vite+ », il est daté. La 1.0 de septembre 2026 le confirme : Vite+ est
+gratuit et MIT.
 :::
 
 Pour un architecte, la leçon n'est pas le prix : c'est la **question de fond**.
@@ -154,23 +161,32 @@ la déplace vers un acteur d'infrastructure. Dans les deux cas le socle MIT te
 protège d'un lock-in dur — mais la trajectoire de l'intégration, elle, dépend
 d'un éditeur unique. Un paramètre à intégrer, pas un épouvantail.
 
-## Statut en 2026 : beta, à évaluer
+## Statut fin 2026 : 1.0 stable
 
-Sois exact sur ce qui est **disponible** aujourd'hui. Vite+ est en **beta**
-(annoncée le 2 juillet 2026), en développement actif — les versions défilent
-(0.2.x à la mi-juillet). Ce n'est **pas** encore un défaut universel comme peut
-l'être Vite 8 pour un projet neuf.
+Sois exact sur ce qui est **disponible** aujourd'hui. Après une **beta** annoncée
+le 2 juillet 2026, Vite+ **1.0** est sorti le 28 septembre 2026 : stable, sous
+licence MIT. En novembre 2026, npm en est à la 1.8. L'annonce de la 1.0 parle de
+près de deux millions de téléchargements hebdomadaires et de plus de 2 600 dépôts
+publics qui en dépendent.
 
-Le bon réflexe : un **projet pilote** — un nouveau paquet du monorepo, ou un
+Depuis la beta, l'outillage autour de `vp` s'est étoffé : `vp migrate` gère aussi
+les migrations depuis tsup, `vp hooks` installe les hooks Git et `vp staged` ne
+vérifie que les fichiers indexés, et `setup-vp` existe pour GitLab CI/CD en plus
+de l'action GitHub.
+
+Le bon réflexe reste un **projet pilote** — un nouveau paquet du monorepo, ou un
 service secondaire — sur lequel tu mesures le confort réel (`vp check`, `vp run`
-avec cache) et les frictions (plugin ou règle manquante) avant tout engagement.
+avec cache) et les frictions (plugin ou règle manquante) avant de généraliser.
+Sur une base existante, `vp migrate` affiche son plan avant de modifier les
+fichiers : lis-le, et lis le guide de migration si le projet est en production.
 
 :::callout{type="warn"}
-Une beta 0.2.x n'est pas une v1. L'API de la CLI et les conventions de config
-peuvent encore bouger, et la couverture (règles de lint, cas de build de lib)
-n'égale pas toujours un outil dédié mûr. Évalue-le sur un projet réel avant d'en
-faire le socle d'un monorepo de production — ne le pose pas par principe parce
-qu'il vient de l'auteur de Vite.
+Une 1.0 stable n'est pas un produit fini. L'annonce le dit elle-même : le cache
+distant, `vp release` et `vp docs` sont encore sur la feuille de route. Et la
+couverture (règles de lint, cas de build de lib) n'égale pas toujours un outil
+dédié mûr. Évalue-le sur un projet réel avant d'en faire le socle d'un monorepo
+de production — ne le pose pas par principe parce qu'il vient de l'auteur de
+Vite.
 :::
 
 ## La décision senior : intégrer ou assembler
@@ -196,10 +212,11 @@ as des besoins pointus (plugins ESLint type-aware, bundler de lib spécifique),
 le gain d'intégration ne justifie pas d'échanger un contrôle qui te sert.
 :::
 
-Pour un **nouveau** monorepo à la mi-2026, Vite+ mérite une évaluation sérieuse :
-pas de dette de config à migrer, tu démarres sur une pile cohérente. Pour une base
-**existante** qui tourne, la question est moins « est-ce mieux » que « le delta de
-maintenance justifie-t-il la migration et le pari sur une beta ».
+Pour un **nouveau** monorepo fin 2026, Vite+ est un point de départ défendable :
+1.0 stable, pas de dette de config à migrer, tu démarres sur une pile cohérente.
+Pour une base **existante** qui tourne, `vp migrate` abaisse le coût d'entrée,
+mais la question reste moins « est-ce mieux » que « le delta de maintenance
+justifie-t-il la migration ».
 
 ## À retenir
 
@@ -207,15 +224,15 @@ Vite+ n'ajoute pas un outil à ta chaîne : il **supprime les frontières** entr
 ceux que tu as déjà. Une CLI, `vp`, un seul moteur Rust (Oxc/Rolldown) du dev au
 build de lib, des versions testées ensemble. Le socle — Vite, Vitest, Rolldown,
 Oxc — reste MIT ; Vite+ lui-même, d'abord annoncé comme produit commercial, est
-devenu open source MIT après l'acquisition de VoidZero par Cloudflare. Statut à la
-mi-2026 : **beta**, prometteur, à piloter — pas encore un défaut universel. La
-décision reste un arbitrage build vs buy : intègre quand ta douleur est la
-maintenance de l'assemblage ; assemble quand le contrôle fin te sert plus qu'il
-ne te coûte.
+devenu open source MIT après l'acquisition de VoidZero par Cloudflare. Statut fin
+2026 : **1.0 stable** depuis le 28 septembre, avec `vp migrate` pour l'existant ;
+le cache distant et `vp release` restent à venir. La décision reste un arbitrage
+build vs buy : intègre quand ta douleur est la maintenance de l'assemblage ;
+assemble quand le contrôle fin te sert plus qu'il ne te coûte.
 
 :::cheatsheet
 - title: "vp"
-  desc: "CLI unique : dev, test, build, lint, format, task runner, sur la pile VoidZero."
+  desc: "CLI unique : install, dev, test, build, lint, format, task runner, version de Node."
 - title: "Un seul moteur"
   desc: "Oxc (parse/transform) + Rolldown (bundle) du dev au build de lib. Fini le 'works in dev only'."
 - title: "vp check"
@@ -224,10 +241,12 @@ ne te coûte.
   desc: "Bundler une bibliothèque via tsdown, types .d.ts inclus."
 - title: "vp run"
   desc: "Task runner avec cache pour orchestrer un monorepo."
+- title: "vp migrate"
+  desc: "Convertit un projet existant (tsup compris). Affiche son plan avant d'écrire."
 - title: "Modèle"
   desc: "Briques MIT (Vite, Vitest, Rolldown, Oxc). Vite+ annoncé commercial, désormais MIT après rachat par Cloudflare."
 - title: "Statut 2026"
-  desc: "Beta (juillet 2026), actif. À piloter sur un projet réel, pas encore un défaut universel."
+  desc: "1.0 stable depuis le 28 septembre 2026, MIT. Cache distant et vp release encore à venir."
 - title: "Build vs buy"
   desc: "Intègre si ta douleur est la maintenance de l'assemblage ; assemble si le contrôle fin te sert."
 :::

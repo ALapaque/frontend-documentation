@@ -6,9 +6,9 @@ level: "senior"
 order: 9
 duration: 16
 prerequisites: ["rsc"]
-updated: 2026-07-09
-seoTitle: "React 'use cache' et Cache Components — le cache explicite au niveau du composant"
-seoDescription: "La directive 'use cache' marque un composant ou une fonction comme cachable, avec cacheLife et cacheTag pour la durée et l'invalidation. Couplée aux Cache Components de Next.js (successeur de PPR), elle rend le rendu « statique par défaut, dynamique quand il le faut »."
+updated: 2026-11-27
+seoTitle: "Next.js 'use cache' et Cache Components — le cache explicite au niveau du composant"
+seoDescription: "La directive 'use cache' de Next.js marque un composant ou une fonction comme cachable, avec cacheLife et cacheTag pour la durée et l'invalidation. Avec les Cache Components (successeur de PPR), le rendu devient « dynamique par défaut, cache opt-in », composant par composant."
 ogVariant: "crimson"
 related:
   - { framework: "react", slug: "rsc" }
@@ -19,8 +19,8 @@ Pendant des années, le rendu serveur t'a imposé un choix binaire à la mauvais
 granularité : **la route entière**. Soit statique (SSG) — rapide, mais figée
 jusqu'au prochain build —, soit dynamique (SSR) — fraîche, mais recalculée à
 chaque requête, donc lente. `'use cache'` et les Cache Components descendent
-cette décision au niveau du **composant** : statique par défaut, dynamique là où
-c'est nécessaire, dans la même page.
+cette décision au niveau du **composant** : dynamique par défaut, caché là où
+tu le décides, dans la même page.
 
 ## Le problème : la granularité de la route
 
@@ -36,9 +36,11 @@ rendu. Ce qui manquait, c'était un moyen de dire, composant par composant : « 
 mémoïse-le ; ça, recalcule-le à chaque requête ».
 
 :::callout{type="info"}
-Séparons les deux couches. `'use cache'` est **la directive** (une primitive
-côté React/Server Components). **Cache Components** est le **cadre** Next.js qui
-l'active et orchestre le rendu autour (shell statique + streaming).
+Séparons les deux couches. `'use cache'` est **la directive** — une directive
+Next.js, pas une primitive React : côté Server Components, react.dev ne
+documente que `'use client'` et `'use server'`. **Cache Components** est le
+**cadre** Next.js qui l'active et orchestre le rendu autour (shell statique +
+streaming).
 :::
 
 ## `'use cache'` : marquer une frontière cachable
@@ -136,13 +138,15 @@ export async function updateProduct(id: string) {
 l'invalidation. `revalidateTag('products')` purge tout le catalogue ;
 `revalidateTag('product:abc')` ne touche qu'une fiche.
 
-## Cache Components : statique par défaut, dynamique explicite
+## Cache Components : dynamique par défaut, cache explicite
 
-Côté Next.js, tout vit sous un seul drapeau, `cacheComponents: true` dans
+Côté Next.js, le cadre s'active avec le drapeau `cacheComponents: true` dans
 `next.config`. Ce cadre est le **successeur unifié** de `experimental.ppr`
 (Partial Prerendering) et `experimental.dynamicIO` : il les remplace et absorbe
-leur comportement. Le PPR est désormais **le défaut** ; `experimental.ppr` et le
-segment `experimental_ppr` ont été retirés.
+leur comportement. Une fois le drapeau activé, le PPR est **le défaut** ;
+`experimental.ppr` et le segment `experimental_ppr` ont été retirés. Depuis
+Next.js 16.4, le modèle complet inclut aussi `partialPrefetching: true`
+(Partial Prefetching).
 
 Le modèle mental s'inverse : la donnée est **dynamique par défaut**, et c'est le
 cache que tu ajoutes, composant par composant. Next.js prérend un **shell HTML
@@ -220,12 +224,18 @@ arguments utilisent la sérialisation Server Component (plus restrictive), les
 retours celle des Client Components — d'où le fait qu'on puisse **retourner** du
 JSX mais pas l'**accepter** en argument.
 
-**Statut, honnêtement (mi-2026).** `'use cache'` est apparu en expérimental dans
-Next.js 15. Depuis **Next.js 16**, il s'active via le drapeau `cacheComponents`,
-qui unifie `ppr` + `useCache` + `dynamicIO`. Le drapeau est stable, mais
+**Statut, honnêtement (novembre 2026).** `'use cache'` est apparu en
+expérimental dans Next.js 15. Depuis **Next.js 16**, il s'active via le drapeau
+`cacheComponents`, qui unifie `ppr` + `useCache` + `dynamicIO`. **Next.js 16.4**
+(6 octobre 2026) recommande Cache Components pour toutes les apps et l'active
+par défaut dans `create-next-app` ; le modèle est annoncé comme défaut de
+Next.js 17. Partial Prefetching (`partialPrefetching: true`) fait désormais
+partie du modèle. Nouveau en 16.4 : `ensureStatic` (`'shell'`, `'prefetch'` ou
+`'navigation'`) garantit qu'une route reste statique — avec `'navigation'`, le
+build échoue si du contenu dynamique s'y glisse. Le drapeau est stable, mais
 l'écosystème bouge encore (profils, `'use cache: remote'`, `'use cache: private'`).
-Traite la sémantique fine comme sujette à ajustements, et distingue toujours la
-primitive React du cadre Next.js qui l'orchestre.
+Traite la sémantique fine comme sujette à ajustements, et ne confonds pas les
+étages : la directive comme le cadre sont du Next.js, pas du React.
 :::
 
 ## À retenir
@@ -233,8 +243,8 @@ primitive React du cadre Next.js qui l'orchestre.
 `'use cache'` marque un composant ou une fonction async comme cachable, avec une
 clé dérivée des arguments sérialisables. `cacheLife` gère la péremption
 temporelle, `cacheTag` + `revalidateTag` l'invalidation ciblée. Cache Components
-(Next.js 16, successeur de PPR/`dynamicIO`) en fait un modèle « statique par
-défaut, dynamique explicite », avec `<Suspense>` pour séparer le shell caché du
+(Next.js 16, successeur de PPR/`dynamicIO`) en fait un modèle « dynamique par
+défaut, cache explicite », avec `<Suspense>` pour séparer le shell caché du
 contenu dynamique streamé.
 
 :::cheatsheet
@@ -245,9 +255,9 @@ contenu dynamique streamé.
 - title: "cacheTag + revalidateTag"
   desc: "Étiquette une entrée puis invalide à la demande depuis une Server Action. Granularité de l'étiquette = granularité de l'invalidation."
 - title: "Cache Components (Next.js)"
-  desc: "cacheComponents: true. Successeur de PPR/dynamicIO. Shell statique + streaming ; <Suspense> = frontière shell/dynamique."
+  desc: "cacheComponents: true. Successeur de PPR/dynamicIO. Dynamique par défaut, cache opt-in ; <Suspense> = frontière shell/dynamique. Recommandé pour toutes les apps depuis Next.js 16.4, défaut annoncé pour Next.js 17."
 - title: "Interdit dans un segment caché"
   desc: "cookies()/headers()/searchParams. Lis-les hors cache, passe-les en arguments (sinon build qui pend)."
 - title: "React vs Next.js"
-  desc: "La directive = primitive (React/RSC). Cache Components = cadre Next.js qui l'active et orchestre le rendu."
+  desc: "'use cache' = directive Next.js, pas une primitive React. Cache Components = cadre Next.js qui l'active et orchestre le rendu."
 :::

@@ -6,9 +6,9 @@ level: "senior"
 order: 10
 duration: 15
 prerequisites: ["rsc", "streaming-ssr"]
-updated: 2026-07-08
+updated: 2026-11-27
 seoTitle: "Sécurité RSC — frontière de confiance, taint API, fuites de props, CVE 2025-2026"
-seoDescription: "Les Server Components déplacent la frontière de confiance : ce qui fuit via les props sérialisées, la taint API de React, la validation des Server Actions, et les leçons des CVE de fin 2025. Le guide pour ne pas exposer tes secrets."
+seoDescription: "Les Server Components déplacent la frontière de confiance : ce qui fuit via les props sérialisées, la taint API de React, la validation des Server Actions, et les leçons des CVE, de décembre 2025 à novembre 2026. Le guide pour ne pas exposer tes secrets."
 ogVariant: "crimson"
 related:
   - { framework: "react", slug: "rsc" }
@@ -17,7 +17,7 @@ related:
 
 Les Server Components mélangent serveur et client **dans un même arbre** : tu écris `await db.user.findUnique()` trois lignes au-dessus d'un bouton interactif. C'est leur force — et leur risque. La frontière de confiance ne passe plus entre deux projets ou deux APIs, mais entre deux composants qui se ressemblent. Et tout ce qui traverse cette frontière est **sérialisé et envoyé au navigateur**, secrets compris.
 
-Ce module trace la carte : où passe exactement la ligne, quels patterns empêchent une fuite (DTO, Data Access Layer, taint API), pourquoi une Server Action est un endpoint public, et ce que les CVE de décembre 2025 ont rappelé à tout l'écosystème.
+Ce module trace la carte : où passe exactement la ligne, quels patterns empêchent une fuite (DTO, Data Access Layer, taint API), pourquoi une Server Action est un endpoint public, et ce que les CVE de décembre 2025, puis celles de l'automne 2026, ont rappelé à tout l'écosystème.
 
 ## La frontière invisible
 
@@ -81,7 +81,7 @@ export async function getUser(id: string) {
 }
 ```
 
-**Pourquoi.** `taintObjectReference` marque la **référence** : un spread (`{ ...user }`) crée un objet neuf, non tainté — le filet est troué par copie. `taintUniqueValue` marque la **valeur** elle-même, plus robuste pour un token ou une clé. L'API est toujours préfixée `experimental_` mi-2026 (Next.js l'expose derrière `experimental.taint`), mais elle est utilisée en production réelle. Prends-la pour ce qu'elle est : une ceinture de sécurité qui transforme une fuite silencieuse en crash bruyant. Ta stratégie reste le DTO ; la taint API attrape ce que la revue de code a raté.
+**Pourquoi.** `taintObjectReference` marque la **référence** : un spread (`{ ...user }`) crée un objet neuf, non tainté — le filet est troué par copie. `taintUniqueValue` marque la **valeur** elle-même, plus robuste pour un token ou une clé. L'API est toujours préfixée `experimental_` en novembre 2026 (Next.js l'expose derrière `experimental.taint`), mais elle est utilisée en production réelle. Prends-la pour ce qu'elle est : une ceinture de sécurité qui transforme une fuite silencieuse en crash bruyant. Ta stratégie reste le DTO ; la taint API attrape ce que la revue de code a raté.
 
 ## Server Actions = endpoints publics
 
@@ -115,7 +115,13 @@ Le 11 décembre, deux suites : **CVE-2025-55184** (déni de service — une bouc
 Sans dramatiser : le correctif est sorti le jour de la divulgation, et l'écosystème a suivi vite (outil `npx fix-react2shell-next`, patchs hébergeurs). Ce que l'épisode a montré, c'est que **la désérialisation des Server Functions est une surface d'attaque de niveau framework** — invisible dans ton code, exposée sur chaque app RSC. Abonne-toi aux advisories React et Next.js, et traite ce type de mise à jour comme un déploiement d'urgence, pas comme un ticket de fond de backlog.
 :::
 
-Deux leçons durables. D'abord, la sécurité du framework ne remplace pas la tienne : la CVE d'exposition de code source rappelle qu'un secret écrit en dur dans un module serveur finit par sortir un jour — les patterns de ce module (DTO, `server-only`, taint) limitent le rayon d'explosion même quand la couche du dessous casse. Ensuite, une app RSC jamais mise à jour est une app exposée : fige tes versions, mais pas ta veille.
+La série ne s'est pas arrêtée là. Le 26 janvier 2026, React 19.0.4 / 19.1.5 / 19.2.4 ont ajouté des mitigations DoS sur les Server Actions et durci les Server Components.
+
+Le 14 octobre 2026, mise à jour hors cycle, avec trois failles. Une **RCE non authentifiée** dans les React Server Components (GHSA-xqc2-xf4c-x3h3, CVE-2026-126187, critique) : côté Next.js (GHSA-673q-mjm6-r5xr), elle se déclenche quand une fonction `'use cache'` renvoie plusieurs typed arrays, sans contournement connu. Une seconde RCE critique dans l'API Image Optimization avec SVG (CVE-2026-96889), via une bibliothèque amont — contournement : `sharp` ≥ 0.35.5. Et un DoS sur les apps App Router qui exposent au moins une Server Action. Correctifs : **React 19.0.9 / 19.1.10 / 19.2.9 / 19.3.1** et **Next.js 16.4.1 / 15.5.28**.
+
+Le 3 novembre 2026, nouvelle release de sécurité, **Next.js 16.4.5 / 15.5.29** : sept avis, dont plusieurs **fuites de cache** avec Cache Components. Le plus sévère : une fonction `'use cache'` qui lit un root param (un identifiant de tenant, par exemple), appelée à la fois directement et depuis `unstable_cache`, peut servir le contenu d'un tenant à un autre. Les autres touchent les fonctions `'use cache'` imbriquées qui lisent un root param et les arguments binaires, dont deux valeurs distinctes pouvaient produire la même clé de cache.
+
+Deux leçons durables de 2025. D'abord, la sécurité du framework ne remplace pas la tienne : la CVE d'exposition de code source rappelle qu'un secret écrit en dur dans un module serveur finit par sortir un jour — les patterns de ce module (DTO, `server-only`, taint) limitent le rayon d'explosion même quand la couche du dessous casse. Ensuite, une app RSC jamais mise à jour est une app exposée : fige tes versions, mais pas ta veille. 2026 en ajoute une troisième : le cache est une frontière de confiance. Une clé de cache qui oublie le tenant ou l'utilisateur, c'est une fuite de données.
 
 ## Checklist de revue
 
@@ -127,7 +133,7 @@ Deux leçons durables. D'abord, la sécurité du framework ne remplace pas la ti
 - **`import 'server-only'`** présent dans tout module qui touche la base, les secrets ou les tokens.
 - **Taint** posée sur les modèles sensibles (`user`, `account`, clés) au point de lecture.
 - **Env** : aucun secret dans une variable `NEXT_PUBLIC_*` — ce préfixe signifie « inliné dans le bundle client ».
-- **Versions** : React ≥ 19.2.3 (ou 19.0.3 / 19.1.4) et Next.js patché ; pas d'advisory ouverte sur la stack.
+- **Versions** : en novembre 2026, React ≥ 19.3.1 (ou 19.0.9 / 19.1.10 / 19.2.9) et Next.js ≥ 16.4.5 (ou 15.5.29 sur la ligne 15.5). Ces planchers bougent : vérifie les advisories React et Next.js, pas d'advisory ouverte sur la stack.
 :::
 
 ## À retenir
@@ -143,6 +149,6 @@ Deux leçons durables. D'abord, la sécurité du framework ne remplace pas la ti
   desc: "experimental_taintObjectReference / taintUniqueValue font échouer la sérialisation. Attention : le spread détainte l'objet."
 - title: "Server Action = endpoint public"
   desc: "Appelable par n'importe qui. Valider (Zod) + authn + authz dans l'action, à chaque appel."
-- title: "CVE déc. 2025"
-  desc: "RCE CVE-2025-55182 (Flight), puis DoS et fuite de source. Correctifs complets : React 19.0.3 / 19.1.4 / 19.2.3. Patcher vite, suivre les advisories."
+- title: "CVE 2025-2026"
+  desc: "Déc. 2025 : RCE CVE-2025-55182 (Flight), puis DoS et fuite de source. Oct.-nov. 2026 : RCE via 'use cache', fuites de cache entre tenants. Planchers en novembre 2026 : React 19.0.9 / 19.1.10 / 19.2.9 / 19.3.1, Next.js 16.4.5 / 15.5.29. Patcher vite, suivre les advisories."
 :::

@@ -1,7 +1,7 @@
 ---
 title: "Formulaires"
 lead: "Saisie, validation, soumission : trois approches du même problème."
-updated: 2026-05-22
+updated: 2026-11-27
 seoTitle: "Formulaires — Angular vs React vs Vue"
 seoDescription: "Reactive/Signal Forms (Angular) vs React Hook Form/Actions (React) vs v-model (Vue) : binding, validation, soumission."
 related:
@@ -37,8 +37,8 @@ champ enfant bidirectionnel sans plomberie.
 @Component({
   template: `
     <form (submit)="submit($event)">
-      <input [field]="form.email" type="email" />
-      <input [field]="form.password" type="password" />
+      <input [formField]="form.email" type="email" />
+      <input [formField]="form.password" type="password" />
       <button [disabled]="form().invalid()">Connexion</button>
     </form>`,
 })

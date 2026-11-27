@@ -6,7 +6,7 @@ level: "medior"
 order: 8
 duration: 24
 prerequisites: ["forms-basics", "signals"]
-updated: 2026-06-10
+updated: 2026-11-27
 seoTitle: "Angular Signal Forms — des bases à la validation avancée"
 seoDescription: "Les Signal Forms : form(), Field, schémas de validation par signaux, interop avec les Reactive Forms, puis la partie avancée — validation croisée, tableaux dynamiques, validation serveur, schémas Zod et soumission."
 ogVariant: "gold"
@@ -44,18 +44,19 @@ f.email().value();   // ''
 f.age().value();     // 0
 ```
 
-## form() et le binding via [control]
+## form() et le binding via [formField]
 
 `form()` produit un arbre de `Field`. Chaque champ expose des signaux : `value()`,
 `valid()`, `touched()`, `errors()`. Dans le template, on relie un input natif au
-champ avec la directive `[control]` — pas de `formControlName`, pas de
-`FormGroup` à déclarer.
+champ avec la directive `[formField]` — pas de `formControlName`, pas de
+`FormGroup` à déclarer. La directive s'appelle `FormField` et s'importe depuis
+`@angular/forms/signals`, comme `form()`.
 
 ```ts
 @Component({
-  imports: [Control],
+  imports: [FormField],
   template: `
-    <input [control]="f.email" />
+    <input [formField]="f.email" />
     @if (f.email().touched() && !f.email().valid()) {
       <span>{{ f.email().errors()[0]?.message }}</span>
     }
@@ -66,6 +67,15 @@ export class SignupForm {
 }
 ```
 
+:::callout{type="info"}
+Tu croises `[field]` dans un tutoriel ? C'est l'ancien nom : la directive a été
+renommée `[formField]` en 21.0.9 (janvier 2026). En v22, seul `[formField]`
+compile.
+:::
+
+Pour cibler une erreur précise, `f.email().getError('required')` renvoie la
+première erreur de ce type, ou `undefined` (ajout de la 22.0).
+
 :::cheatsheet
 - title: "form(modelSignal)"
   desc: "Dérive un arbre de Field depuis un signal de données."
@@ -73,7 +83,7 @@ export class SignupForm {
   desc: "Signal de la valeur courante du champ, en lecture/écriture."
 - title: "field().valid() / errors()"
   desc: "État de validation dérivé, recalculé quand la valeur change."
-- title: "[control]=\"f.x\""
+- title: "[formField]=\"f.x\""
   desc: "Relie un élément de formulaire natif au Field correspondant."
 :::
 
@@ -214,15 +224,20 @@ validateHttp(path.pseudo, {
   request: ({ value }) => `/api/pseudo-libre?u=${encodeURIComponent(value())}`,
   onSuccess: (res) => (res.pris ? { kind: 'taken', message: 'Pseudo déjà pris' } : null),
   onError: () => ({ kind: 'net', message: 'Vérification impossible' }),
+  debounce: 300, // en ms : attend une pause dans la frappe (option de la 22.0)
 });
 ```
 
 :::callout{type="warn"}
 Pendant l'appel, `field().pending()` est `true` et `field().valid()` renvoie
 `false` — un formulaire en attente de validation serveur **n'est pas valide**.
-Désactive le bouton de soumission sur `pending()`, et debounce : `validateHttp`
-se redéclenche à chaque frappe.
+Désactive le bouton de soumission sur `pending()`, et pose l'option `debounce`
+(22.0, aussi sur `validateAsync`) : sans elle, `validateHttp` se redéclenche à
+chaque frappe.
 :::
+
+Pour rejouer la vérification sans toucher à la valeur, `field().reloadValidation()`
+(22.0) relance les validateurs asynchrones du champ et de ses descendants.
 
 ### Réutiliser un schéma serveur : `validateStandardSchema`
 
@@ -286,7 +301,7 @@ template — lire la racine abonne la vue à *tout* le formulaire. Côté test, 
 - title: "applyEach"
   desc: "Sous-schéma par élément d'un tableau ; le FormArray dérive du modèle."
 - title: "validateHttp + pending()"
-  desc: "Validation serveur async ; pending() → invalide, désactive la soumission et debounce."
+  desc: "Validation serveur async ; pending() → invalide, désactive la soumission et pose l'option debounce."
 - title: "validateStandardSchema"
   desc: "Brancher un schéma Zod/Valibot existant ; base des formulaires dynamiques."
 - title: "disabled / when + submit()"

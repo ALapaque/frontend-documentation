@@ -6,9 +6,9 @@ level: "senior"
 order: 4
 duration: 17
 prerequisites: ["narrowing", "utility-types"]
-updated: 2026-05-23
+updated: 2026-11-27
 seoTitle: "tsconfig strict TypeScript — strictNullChecks, noUncheckedIndexedAccess, bundler"
-seoDescription: "La famille strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes, verbatimModuleSyntax et moduleResolution bundler. Pourquoi activer strict dès le départ coûte moins cher que migrer."
+seoDescription: "La famille strict, activée par défaut depuis TypeScript 6.0, puis noUncheckedIndexedAccess, exactOptionalPropertyTypes, verbatimModuleSyntax et moduleResolution bundler. Pourquoi un projet hérité en strict false coûte cher à migrer."
 ogVariant: "crimson"
 related:
   - { framework: "typescript", slug: "narrowing" }
@@ -18,17 +18,28 @@ related:
 ## La compilation ne valide pas, elle vérifie ce que tu lui demandes
 
 Un `tsconfig.json` n'est pas un fichier de build : c'est le **contrat de
-rigueur** que le compilateur applique. Par défaut, sans `strict`, TypeScript est
-laxiste — il accepte des `any` implicites, ignore `null`, et te laisse écrire du
-JavaScript à peine annoté. La valeur du langage est proportionnelle à la sévérité
-que tu actives. Comprendre chaque flag, c'est savoir *quelle classe de bug* il
-élimine.
+rigueur** que le compilateur applique. Jusqu'à TypeScript 5.9, le défaut était
+laxiste : sans `strict`, le compilateur acceptait des `any` implicites, ignorait
+`null`, et te laissait écrire du JavaScript à peine annoté. Depuis **TypeScript
+6.0** (mars 2026), `strict` vaut `true` par défaut : c'est `"strict": false`
+qu'il faut écrire pour retrouver l'ancien comportement. La valeur du langage
+reste proportionnelle à la sévérité que tu gardes active. Comprendre chaque
+flag, c'est savoir *quelle classe de bug* il élimine — et ce que perd un projet
+hérité qui l'a coupé.
+
+:::callout{type="info"}
+TypeScript 6.0 a changé d'autres défauts en même temps que `strict` : `module`
+vaut `esnext`, `target` suit l'édition ECMAScript courante (`es2025` en 6.0) et
+`types` vaut `[]` — les paquets `@types/*` ne sont plus chargés automatiquement,
+tu les listes (`"types": ["node"]`). Un `tsconfig.json` écrit pour la 5.x et
+jamais relu peut donc changer de comportement à la montée de version.
+:::
 
 ## La famille `strict`
 
 `"strict": true` est un **méta-flag** : il active d'un coup une douzaine de
-contrôles, et en activera de nouveaux à chaque version majeure. Les plus
-structurants :
+contrôles, et en activera de nouveaux à chaque version majeure. C'est la valeur
+par défaut depuis la 6.0. Les plus structurants :
 
 - **`strictNullChecks`** : `null` et `undefined` ne sont plus assignables à
   n'importe quel type. `string` ne contient plus `null` ; tu dois écrire
@@ -53,6 +64,9 @@ structurants :
   }
 }
 ```
+
+Depuis la 6.0, cette ligne est redondante. La garder documente l'intention, et
+te protège si quelqu'un compile encore le projet avec une 5.x.
 
 :::callout{type="tip"}
 N'active jamais les sous-flags un par un en désactivant `strict`. Garde
@@ -146,7 +160,8 @@ Webpack) gère la résolution finale. Elle reproduit le comportement des bundler
 modernes : elle lit le champ `exports` du `package.json`, autorise les imports
 **sans extension**, mais n'impose pas les règles strictes de Node ESM (`.js`
 obligatoire dans le code source). À coupler avec `"module": "esnext"` ou
-`"preserve"`.
+`"preserve"`. L'ancienne résolution `node` (`node10`) est dépréciée en 6.0 et
+n'est plus prise en charge en 7.0 : il reste `bundler` et `nodenext`.
 
 ```json
 {
@@ -167,37 +182,44 @@ obligatoire dans le code source). À coupler avec `"module": "esnext"` ou
 alors qu'au type-checking. `"skipLibCheck": true` saute la vérification des `.d.ts`
 des dépendances — un compromis de vitesse universellement adopté.
 
-## Activer `strict` dès le départ coûte moins cher
+## Couper `strict` coûte plus cher que le garder
 
 :::compare
 ::bad
 ```json
-// Projet démarré sans strict, migration prévue "plus tard"
+// Projet hérité : strict coupé, migration prévue "plus tard"
 { "compilerOptions": { "strict": false } }
 ```
 ::
 ::good
 ```json
-// strict dès le premier commit
+// Défaut de la 6.0 conservé, plus un contrôle hors strict
 { "compilerOptions": { "strict": true, "noUncheckedIndexedAccess": true } }
 ```
 ::
 :::
 
-**Pourquoi.** Sans `strictNullChecks` au départ, *chaque* type inféré de la
-base de code oublie `null`/`undefined` : les signatures, les retours d'API, les
-champs optionnels propagent une fausse certitude dans tout le graphe de types.
+**Pourquoi.** Sans `strictNullChecks`, *chaque* type inféré de la base de code
+oublie `null`/`undefined` : les signatures, les retours d'API, les champs
+optionnels propagent une fausse certitude dans tout le graphe de types.
 Activer le flag après coup ne révèle pas un bug isolé mais des **milliers**
 d'erreurs corrélées, car le compilateur recalcule la nullabilité de l'ensemble
 d'un coup. Le coût de migration croît de façon super-linéaire avec la taille du
-projet, et chaque correction risque d'en masquer une autre. En partant strict, le
+projet, et chaque correction risque d'en masquer une autre. En restant strict, le
 coût est amorti une ligne à la fois, au moment où le code est écrit et où son
 auteur a le contexte en tête. La rigueur est une dette qui ne s'emprunte pas : on
 la paie comptant ou elle compose.
 
+Depuis la 6.0, un projet neuf part strict sans rien écrire. Le vrai sujet, ce
+sont les bases héritées : celles qui ont posé `"strict": false`, et celles qui
+comptaient sur l'ancien défaut et découvrent les erreurs en montant de version.
+Dans les deux cas, n'écris pas `"strict": false` pour faire taire le
+compilateur. Garde `strict` et désactive temporairement, un par un, les
+sous-flags trop bruyants.
+
 :::cheatsheet
 - title: "strict: true"
-  desc: "Méta-flag ; active strictNullChecks, noImplicitAny, etc. et les futurs."
+  desc: "Méta-flag, défaut depuis TS 6.0 ; active strictNullChecks, noImplicitAny, etc. et les futurs."
 - title: "strictNullChecks"
   desc: "null/undefined explicites ; le plus rentable des contrôles."
 - title: "noUncheckedIndexedAccess"

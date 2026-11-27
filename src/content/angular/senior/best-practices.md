@@ -6,7 +6,7 @@ level: "senior"
 order: 9
 duration: 18
 prerequisites: ["signals", "change-detection", "dependency-injection"]
-updated: 2026-06-01
+updated: 2026-11-27
 seoTitle: "Best practices Angular 2026 — nommage, structure, signals, OnPush, perf, a11y"
 seoDescription: "Les habitudes qui tiennent à l'échelle en Angular : nommage, structure par feature, OnPush par défaut, signals en source de vérité, effets ciblés, tests pragmatiques, accessibilité, performance et les anti-patterns à éviter."
 ogVariant: "iris"
@@ -117,7 +117,7 @@ Trois choses suffisent dans 80 % des cas :
 2. **Composants** — `ComponentFixture` + `whenStable()` en zoneless, click → DOM. Pas de snapshot.
 3. **Pure functions** (validators, formatters) — tests unitaires nus, sans TestBed.
 
-Vitest est le runner par défaut depuis Angular 22 — adopte-le, Karma est retiré. Voir le module [testing-strategy](/angular/senior/testing-strategy).
+Vitest est le runner par défaut des nouveaux projets depuis Angular 21 — adopte-le. Karma n'est pas retiré, mais il est sur la sortie : en novembre 2026, la 22.3 déprécie l'option `testRunner` des schematics, et les nouveaux projets ne seront à terme configurés qu'avec Vitest. Pour l'existant, le CLI fournit la migration `migrate-karma-to-vitest`. Voir le module [testing-strategy](/angular/senior/testing-strategy).
 
 ## Accessibilité par défaut
 

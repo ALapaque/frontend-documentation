@@ -6,9 +6,9 @@ level: "medior"
 order: 7
 duration: 15
 prerequisites: ["html-semantics"]
-updated: 2026-05-23
+updated: 2026-11-27
 seoTitle: "Popover API, dialog et Invoker Commands — overlays natifs sans JS"
-seoDescription: "Construire des overlays accessibles en HTML natif : l'attribut popover (auto/manual), popovertarget, le top-layer qui tue le z-index, dialog/showModal/::backdrop/closedby, et les Invoker Commands command/commandfor baseline 2026 pour piloter sans JavaScript."
+seoDescription: "Construire des overlays accessibles en HTML natif : l'attribut popover (auto/manual), popovertarget, le top-layer qui tue le z-index, dialog/showModal/::backdrop/closedby, et les Invoker Commands command/commandfor (Baseline depuis décembre 2025) pour piloter sans JavaScript."
 ogVariant: "gold"
 related:
   - { framework: "web", slug: "html-semantics" }
@@ -93,7 +93,7 @@ dialog::backdrop {
 }
 ```
 
-L'attribut **`closedby`** (baseline 2026) déclare la stratégie de fermeture directement en HTML, alignant `<dialog>` sur le light-dismiss des popovers :
+L'attribut **`closedby`** (Chrome 134+, Firefox 141+ ; dans Safari, seulement à partir de la 27.3, encore en bêta en novembre 2026) déclare la stratégie de fermeture directement en HTML, alignant `<dialog>` sur le light-dismiss des popovers :
 
 - `closedby="any"` : ferme au clic extérieur **et** à `Échap` (comme `popover=auto`).
 - `closedby="closerequest"` : ferme seulement sur une « demande de fermeture » (`Échap`, bouton système).
@@ -115,7 +115,7 @@ L'attribut **`closedby`** (baseline 2026) déclare la stratégie de fermeture di
 
 ## Invoker Commands : piloter sans JavaScript
 
-Nouveauté **baseline 2026**, les **Invoker Commands** généralisent l'idée de `popovertarget` à n'importe quelle action. Un bouton porte `command` (l'action) et `commandfor` (l'`id` de la cible) :
+**Baseline** depuis décembre 2025, les **Invoker Commands** généralisent l'idée de `popovertarget` à n'importe quelle action. Un bouton porte `command` (l'action) et `commandfor` (l'`id` de la cible) :
 
 ```html
 <button command="show-modal" commandfor="confirm">Supprimer</button>
@@ -170,15 +170,19 @@ Mets toujours tes invokers dans un `<button>`, jamais une `<div>` cliquable. Le 
 - title: "::backdrop"
   desc: "Pseudo-élément stylable derrière une modale (overlay, blur)."
 - title: "closedby"
-  desc: "any (clic+Échap) / closerequest (Échap) / none. Light-dismiss déclaratif."
+  desc: "any (clic+Échap) / closerequest (Échap) / none. Light-dismiss déclaratif. Safari : 27.3, en bêta (nov. 2026)."
 - title: "command / commandfor"
-  desc: "Invoker baseline 2026 : show-modal, close, toggle-popover… sans JS."
+  desc: "Invokers, Baseline depuis déc. 2025 : show-modal, close, toggle-popover… sans JS."
 - title: "form method=dialog"
   desc: "Ferme le dialog sans requête ; le button value alimente returnValue."
 :::
 
 ## Support 2026
 
-En mai 2026, la **Popover API** et **`<dialog>`** (avec `showModal()` et `::backdrop`) sont **baseline** sur tous les navigateurs evergreen depuis plusieurs versions. Les **Invoker Commands** (`command`/`commandfor`) et l'attribut **`closedby`** ont atteint le statut **baseline 2026** : utilisables sans polyfill sur Chrome, Edge, Safari et Firefox à jour.
+En novembre 2026, la **Popover API** et **`<dialog>`** (avec `showModal()` et `::backdrop`) sont **baseline** sur tous les navigateurs evergreen depuis plusieurs versions. Les **Invoker Commands** (`command`/`commandfor`) sont **Baseline** depuis le 12 décembre 2025 (Chrome 135, Firefox 144, Safari 26.2) : utilisables sans polyfill sur Chrome, Edge, Safari et Firefox à jour.
 
-La dégradation est douce par construction. Sur un très vieux moteur, un `[popover]` non reconnu reste un simple élément visible (prévois un `[popover] { display: none }` de secours si besoin), et un `command`/`commandfor` ignoré n'active rien — d'où l'intérêt de garder `<dialog>` + `showModal()` accessible aussi via une petite ligne de JS de repli si ta cible inclut l'historique lointain. Pour un projet 2026 visant l'evergreen, tu peux t'appuyer entièrement sur le natif.
+L'attribut **`closedby`**, lui, n'est **pas encore Baseline** : Chrome 134+, Edge et Firefox 141+ le gèrent, mais Safari ne l'ajoute que dans la 27.3, encore en bêta (la version stable est la 27.2). Là où l'attribut est ignoré, une modale garde son comportement par défaut : `Échap` ferme, le clic extérieur ne fait rien. Si ce clic compte, ou si tu veux bloquer `Échap` avec `closedby="none"`, prévois un repli JS, activé quand `'closedBy' in HTMLDialogElement.prototype` est faux.
+
+Autre changement récent : depuis Chrome 154 (22 septembre 2026), le light dismiss des popovers et des dialogs se déclenche sur l'événement `click`, et non plus sur la paire `pointerdown`/`pointerup`. Un défilement tactile ou un clic droit ne ferme plus l'overlay par accident.
+
+La dégradation est douce par construction. Sur un très vieux moteur, un `[popover]` non reconnu reste un simple élément visible (prévois un `[popover] { display: none }` de secours si besoin), et un `command`/`commandfor` ignoré n'active rien — d'où l'intérêt de garder `<dialog>` + `showModal()` accessible aussi via une petite ligne de JS de repli si ta cible inclut l'historique lointain. Pour un projet 2026 visant l'evergreen, tu peux t'appuyer sur le natif, `closedby` mis à part tant que Safari 27.3 n'est pas sorti en stable.

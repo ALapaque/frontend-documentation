@@ -1,14 +1,14 @@
 ---
-title: "Les décorateurs stage-3"
+title: "Les décorateurs standard TC39"
 slug: "decorators"
 framework: "typescript"
 level: "senior"
 order: 7
 duration: 14
 prerequisites: ["generics", "declaration-files"]
-updated: 2026-05-23
-seoTitle: "Décorateurs stage-3 TypeScript — standard ECMAScript, context, metadata, vs legacy"
-seoDescription: "Les décorateurs stage-3 standardisés ECMAScript : signature classe/méthode/accessor, l'objet context, l'absence de décorateurs de paramètres, Symbol.metadata et pourquoi migrer depuis les legacy experimentalDecorators."
+updated: 2026-11-27
+seoTitle: "Décorateurs standard TC39 en TypeScript — context, metadata, vs legacy"
+seoDescription: "Les décorateurs standard TC39, revenus au stade 2.7 en mai 2026 et exécutés uniquement par transpilation : signature classe/méthode/accessor, l'objet context, l'absence de décorateurs de paramètres, Symbol.metadata et quand migrer depuis les legacy experimentalDecorators."
 ogVariant: "crimson"
 related:
   - { framework: "typescript", slug: "generics" }
@@ -18,18 +18,29 @@ related:
 
 Le mot « décorateur » recouvre aujourd'hui **deux mécanismes incompatibles**.
 Les **legacy decorators**, derrière `experimentalDecorators: true`, datent d'une
-ancienne proposition TC39 et de l'écosystème Angular/NestJS. Les **stage-3
-decorators** sont la version qui a atteint le stade 3 du comité ECMAScript, est
-implémentée nativement par les moteurs JS et activée **par défaut** dans
-TypeScript depuis la 5.0 (sans aucun flag). Ce ne sont pas deux dialectes d'une
-même idée : leurs signatures, leur modèle d'exécution et leurs capacités
-diffèrent. Ce chapitre traite uniquement du **standard**.
+ancienne proposition TC39 et de l'écosystème Angular/NestJS. Les **décorateurs
+standard** suivent la proposition TC39 actuelle : c'est le modèle activé **par
+défaut** dans TypeScript depuis la 5.0 (sans aucun flag). Aucun moteur JS ne les
+exécute nativement : ils ne tournent que par transpilation (TypeScript 5.0+,
+Babel). Ce ne sont pas deux dialectes d'une même idée : leurs signatures, leur
+modèle d'exécution et leurs capacités diffèrent. Ce chapitre traite uniquement
+du **standard**.
+
+:::callout{type="warn"}
+Statut en novembre 2026 : tu liras partout « stage-3 decorators », mais la
+proposition n'est **plus au stade 3**. Elle y était depuis mars 2022 sans
+qu'aucun moteur ne livre d'implémentation. Le 19 mai 2026, le comité TC39 l'a
+ramenée au **stade 2.7**, avec sa proposition jumelle Decorator Metadata
+(`Symbol.metadata`). Deux conséquences : la sémantique peut encore évoluer, et
+l'exécution native n'est pas pour demain. Ce que TypeScript compile depuis la
+5.0 reste valable, mais ce n'est pas une cible figée.
+:::
 
 L'idée commune reste : un décorateur est une fonction qui **enveloppe ou observe**
 une déclaration (classe, méthode, accesseur, champ) au moment où elle est définie,
 pour en modifier le comportement ou l'enregistrer quelque part.
 
-## La signature d'un décorateur stage-3
+## La signature d'un décorateur standard
 
 La rupture majeure : un décorateur standard reçoit la **valeur décorée** et un
 objet **`context`**, et ne touche **plus** au descripteur de propriété comme le
@@ -101,7 +112,7 @@ cycle de vie de la déclaration.
 ## L'absence de décorateurs de paramètres
 
 Piège majeur lors d'une migration : **les décorateurs de paramètres n'existent
-pas** en stage-3. Le legacy permettait `constructor(@Inject(X) x: X)` — pilier de
+pas** dans le standard. Le legacy permettait `constructor(@Inject(X) x: X)` — pilier de
 l'injection de dépendances d'Angular et NestJS. Le standard a délibérément retiré
 cette capacité (elle pose des problèmes de modèle de données et d'ordre
 d'évaluation), avec une proposition séparée encore en amont.
@@ -117,10 +128,11 @@ compatibilité de ta pile technique avant de toucher au flag.
 
 ## Metadata via `Symbol.metadata`
 
-Le standard apporte un canal de **métadonnées** intégré, sans dépendre de
-`reflect-metadata`. Chaque `context` expose un objet `metadata` partagé pour la
-classe ; il est ensuite accessible au runtime via `Class[Symbol.metadata]`. C'est
-le remplaçant standardisé de `emitDecoratorMetadata`.
+La proposition jumelle **Decorator Metadata** (elle aussi au stade 2.7) apporte
+un canal de **métadonnées** intégré, sans dépendre de `reflect-metadata`. Chaque
+`context` expose un objet `metadata` partagé pour la classe ; il est ensuite
+accessible au runtime via `Class[Symbol.metadata]`. C'est le remplaçant prévu
+de `emitDecoratorMetadata`.
 
 ```ts
 function serialisable(_: unknown, context: ClassFieldDecoratorContext) {
@@ -140,10 +152,10 @@ console.log(Entite[Symbol.metadata]?.champs); // ["id", "nom"]
 :::callout{type="info"}
 `Symbol.metadata` est récent ; selon ta cible, il faut le **polyfill**
 (`Symbol.metadata ??= Symbol("metadata")`) ou activer la lib correspondante dans
-`tsconfig`. Le mécanisme étant standardisé, les outils convergent vers ce canal
-unique au lieu des conventions propriétaires de `reflect-metadata` — un même
-objet `metadata` est visible par tous les décorateurs d'une classe et survit
-jusqu'au runtime.
+`tsconfig`. L'intérêt du mécanisme : un canal unique, décrit par la proposition,
+au lieu des conventions propriétaires de `reflect-metadata` — un même objet
+`metadata` est visible par tous les décorateurs d'une classe et survit jusqu'au
+runtime.
 :::
 
 ## Pourquoi migrer depuis les legacy
@@ -161,7 +173,7 @@ function log(target: any, key: string, desc: PropertyDescriptor) {
 ::
 ::good
 ```ts
-// Stage-3 : standard, pas de flag, signature uniforme value + context
+// Standard TC39 : pas de flag, signature uniforme value + context
 function log(value: Function, context: ClassMethodDecoratorContext) {
   return function (this: unknown, ...a: unknown[]) {
     console.log(String(context.name));
@@ -173,20 +185,23 @@ function log(value: Function, context: ClassMethodDecoratorContext) {
 :::
 
 **Pourquoi.** Les legacy manipulent le `PropertyDescriptor` — une mécanique
-spécifique à TypeScript et à un brouillon TC39 **abandonné**. Ce modèle n'a jamais
-été standardisé, donc aucun moteur JS ne l'exécute nativement : il faut
-transpiler, et le comportement peut diverger du futur standard. Les stage-3
-décrivent l'API que TC39 a **réellement** retenue : `value` + `context`, retour
-qui remplace, `addInitializer` pour le cycle de vie. À terme les moteurs les
-exécutent sans transpilation, le typage est plus précis (chaque `context` connaît
-son `kind`), et tu écris contre une cible **stable** plutôt qu'expérimentale. La
-migration libère ton code d'un flag déprécié et d'une sémantique vouée à
-disparaître — au prix de réécrire les signatures et d'abandonner les décorateurs
-de paramètres.
+spécifique à TypeScript et à un brouillon TC39 **abandonné**. Ce modèle ne sera
+jamais standardisé : il reste lié à un flag expérimental, et son comportement
+diverge de ce que TC39 prépare. Les décorateurs standard décrivent l'API que le
+comité fait avancer : `value` + `context`, retour qui remplace, `addInitializer`
+pour le cycle de vie. Le typage est plus précis (chaque `context` connaît son
+`kind`) et tu n'as plus de flag à activer.
+
+Ne survends pas l'argument pour autant. En novembre 2026, les décorateurs
+standard ne s'exécutent eux aussi que transpilés, et le retour au stade 2.7
+signifie que leur sémantique peut encore bouger avant d'arriver dans les
+moteurs. Écris le code neuf et tes propres bibliothèques contre le standard ;
+ne lance pas une réécriture massive au nom d'une « cible stable » qui ne l'est
+pas encore — d'autant que tu y perds les décorateurs de paramètres.
 
 :::cheatsheet
-- title: "stage-3 vs legacy"
-  desc: "Standard ECMAScript, défaut depuis TS 5.0 ; legacy = experimentalDecorators, modèle abandonné."
+- title: "standard vs legacy"
+  desc: "Proposition TC39 (stade 2.7 depuis mai 2026), défaut depuis TS 5.0 ; legacy = experimentalDecorators, modèle abandonné."
 - title: "(value, context)"
   desc: "Signature uniforme : la déclaration décorée + un objet context typé."
 - title: "retour du décorateur"
@@ -196,9 +211,9 @@ de paramètres.
 - title: "context.addInitializer"
   desc: "Exécute du code à l'instanciation (ex. bind d'une méthode), sans toucher le constructeur."
 - title: "pas de décorateurs de paramètres"
-  desc: "Retirés du standard : l'injection par @Inject reste sur les legacy."
+  desc: "Absents de la proposition standard : l'injection par @Inject reste sur les legacy."
 - title: "Symbol.metadata"
-  desc: "Canal de métadonnées standard partagé par classe, lu via Class[Symbol.metadata]."
+  desc: "Canal de métadonnées de la proposition Decorator Metadata, partagé par classe, lu via Class[Symbol.metadata]."
 - title: "migrer"
-  desc: "Quitter un flag expérimental + descripteurs pour une API stable exécutée nativement."
+  desc: "Quitter un flag expérimental + descripteurs pour le modèle TC39. Toujours transpilé, sémantique pas encore figée."
 :::

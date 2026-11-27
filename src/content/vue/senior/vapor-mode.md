@@ -6,7 +6,7 @@ level: "senior"
 order: 2
 duration: 19
 prerequisites: ["reactivity-internals"]
-updated: 2026-05-22
+updated: 2026-11-27
 seoTitle: "Vue Vapor — le mode sans virtual DOM"
 seoDescription: "Vapor compile les composants en opérations DOM directes : ce qui change, et ce qui ne change pas."
 ogVariant: "crimson"
@@ -38,11 +38,24 @@ const count = ref(0)
 </template>
 ```
 
-Introduit avec Vue 3.6 — **encore en beta** au moment d'écrire (la dernière
-version stable est 3.5), donc à ne pas mettre en prod aveuglément. Vapor s'active
-par composant (`<script setup vapor>`) et exige le runtime Vapor au montage. Un composant Vapor et un composant v-node
-peuvent cohabiter, mais le franchissement de frontière a un coût d'interop — d'où
-le déploiement par îlots.
+Introduit avec Vue 3.6 — en **Release Candidate** depuis juillet 2026
+(`3.6.0-rc.16` en novembre 2026, la dernière version stable reste la 3.5), donc
+à ne pas mettre en prod aveuglément. Vapor s'active par composant
+(`<script setup vapor>`), et il lui faut le bon runtime au montage. Deux cas :
+
+```ts
+// Cas 1 — app entièrement Vapor : pas de runtime virtual DOM embarqué
+import { createVaporApp } from 'vue'
+createVaporApp(App).mount('#app')
+
+// Cas 2 — app v-node existante qui accueille des composants Vapor
+import { createApp, vaporInteropPlugin } from 'vue'
+createApp(App).use(vaporInteropPlugin).mount('#app')
+```
+
+Avec le plugin d'interop, un composant Vapor et un composant v-node peuvent
+cohabiter, mais le franchissement de frontière a un coût d'interop — d'où le
+déploiement par îlots.
 
 :::cheatsheet
 - title: "Pas de virtual DOM"
@@ -50,7 +63,7 @@ le déploiement par îlots.
 - title: "Réactivité fine"
   desc: "Une mise à jour ne touche que les nœuds liés à la valeur changée."
 - title: "Moins de runtime"
-  desc: "Bundle et mémoire réduits : pas de diff à embarquer."
+  desc: "Bundle et mémoire réduits : pas de diff à embarquer dans une app createVaporApp()."
 :::
 
 ### Idée reçue : « Vapor change ma façon d'écrire »
@@ -66,6 +79,8 @@ est mesurable, pas en big bang.
 
 ## Code source
 
-Suivre `vuejs/core-vapor` et la sortie du compilateur (`@vue/compiler-vapor`)
-montre concrètement comment un template devient des appels DOM — un excellent
-miroir du React Compiler côté React.
+Vapor vit désormais dans `vuejs/core` : les paquets `runtime-vapor` et
+`compiler-vapor` sont sur la branche `minor`, celle de la 3.6. Suivre ce dépôt
+et la sortie du compilateur (`@vue/compiler-vapor`) montre concrètement comment
+un template devient des appels DOM — un excellent miroir du React Compiler côté
+React.

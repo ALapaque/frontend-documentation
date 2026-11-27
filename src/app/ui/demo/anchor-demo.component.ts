@@ -21,7 +21,7 @@ const CONTROLS: readonly Control[] = [
       [values]="state()"
       [css]="css()"
       compatTest="anchor-name: --a"
-      compatLabel="L'anchor positioning nécessite Chromium 125+ ; Safari et Firefox stables ne le supportent pas encore."
+      compatLabel="L'anchor positioning nécessite Chrome 125+, Safari 26+ ou Firefox 147+."
       (set)="set($event)"
       (reset)="reset()"
     >

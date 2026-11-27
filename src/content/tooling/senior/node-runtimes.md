@@ -6,7 +6,7 @@ level: "senior"
 order: 5
 duration: 15
 prerequisites: ["dev-environment"]
-updated: 2026-09-24
+updated: 2026-11-27
 seoTitle: "Node vs Deno vs Bun en 2026 — TypeScript natif, APIs web et choix de runtime"
 seoDescription: "Les trois runtimes JavaScript ont convergé : TypeScript exécuté nativement, APIs web-standard, gestion de paquets intégrée. Ce qui distingue encore Node, Deno 2 et Bun, et comment choisir selon le contexte."
 ogVariant: "sage"
@@ -75,14 +75,20 @@ C'est voulu : ça pousse vers la syntaxe effaçable, portable entre runtimes.
 
 L'autre atout est **la stabilité LTS**. La ligne LTS garantit des correctifs de
 sécurité sur plusieurs années, un cycle de release prévisible, et une compat que
-les hébergeurs et images Docker suivent au doigt. En 2026, **Node 24** porte la
-LTS courante et **Node 26** (sorti en mai) y bascule en **octobre**. Pour de la
-prod, c'est décisif : tu ne veux pas que ton runtime soit la variable qui bouge. Node
-reste ainsi **la cible par défaut de la production** — le choix qu'il faut
-justifier de ne *pas* faire, pas l'inverse.
+les hébergeurs et images Docker suivent au doigt. Depuis le 28 octobre 2026,
+**Node 26** (sorti en mai) porte la LTS active et **Node 24** est passé en
+maintenance. Pour de la prod, c'est décisif : tu ne veux pas que ton runtime soit
+la variable qui bouge. Node reste ainsi **la cible par défaut de la production**
+— le choix qu'il faut justifier de ne *pas* faire, pas l'inverse.
+
+La cadence change aussi. Node 26 est la dernière ligne de l'ancien modèle : à
+partir de **Node 27** (avril 2027), il n'y a plus qu'**une majeure par an**, et
+chacune devient LTS en octobre — fini la distinction pair/impair. Le rôle de
+test des versions impaires passe à un canal **alpha**, ouvert fin octobre 2026
+pour la 27 : il vise les auteurs de bibliothèques et la CI, pas la production.
 
 :::callout{type="info"}
-**Node 26** (mai 2026, LTS en octobre) apporte deux choses qui se voient depuis
+**Node 26** (mai 2026, LTS depuis octobre) apporte deux choses qui se voient depuis
 le front : la **Temporal API activée par défaut** — plus de polyfill de dates
 côté serveur (voir `/web/medior/temporal`) — et V8 14.6, qui amène
 `Map.prototype.getOrInsert()` / `getOrInsertComputed()` et `Iterator.concat()`.
@@ -161,7 +167,10 @@ ce qui permet d'essayer Bun sur un repo réel sans big-bang.
 La **compatibilité Node** de Bun progresse vite mais n'est pas encore totale : la
 grande majorité des paquets marchent, les points durs restent les addons natifs et
 les recoins les plus obscurs des modules `node:`. À vérifier avant de viser la prod
-sur une app lourde en dépendances système.
+sur une app lourde en dépendances système. Signe que l'écart se réduit : depuis
+Playwright 1.65 (novembre 2026), son test runner tourne sous Bun avec
+`bunx --bun playwright test`, au prix de quelques limites documentées (pas de
+mode watch, par exemple).
 
 **Où Bun brille.** La **DX** au quotidien (un binaire, feedback instantané), les
 **monorepos** (install et tâches rapides changent l'ergonomie à l'échelle), et les
@@ -234,7 +243,7 @@ décision réversible.
 - title: "Convergence"
   desc: "TS sans build (type-stripping), fetch/URL/Web Streams, package manager intégré partout."
 - title: "Node"
-  desc: "Écosystème max, LTS stable, type-stripping natif (stable 24.12/25.2). Défaut prod."
+  desc: "Écosystème max, LTS stable (Node 26 depuis octobre 2026), type-stripping natif (stable 24.12/25.2). Défaut prod."
 - title: "Deno 2"
   desc: "Sécurité par permissions, TS première classe, compat npm + JSR, fmt/lint/test intégrés."
 - title: "Bun"
