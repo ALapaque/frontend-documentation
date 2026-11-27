@@ -193,8 +193,8 @@ médias) ; des pages tirées au hasard pour au moins 10 % de l'échantillon. Et 
 
 L'audit débouche sur un document public. Pour l'EAA, l'annexe V demande que les
 conditions générales, ou un document équivalent, expliquent comment le service
-satisfait aux exigences. Le RGAA en fait une **déclaration d'accessibilité** à trois
-états : conformité totale (tous les critères), partielle (au moins 50 %),
+satisfait aux exigences. Le RGAA, lui, impose une **déclaration d'accessibilité** à
+trois états : conformité totale (tous les critères), partielle (au moins 50 %),
 non-conformité (moins de 50 %, ou aucun audit valide). Déclare l'état réel : face à
 un écart, la directive attend des mesures correctives (article 13).
 
